@@ -1,0 +1,21 @@
+[18-Apr-2025 12:44:47 UTC] PHP Warning:  require(/home/everzkym/selectionlogistics.com/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/everzkym/selectionlogistics.com/public/index.php on line 34
+[18-Apr-2025 12:44:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/everzkym/selectionlogistics.com/public/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/everzkym/selectionlogistics.com/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/everzkym/selectionlogistics.com/public/index.php on line 34
+[18-Apr-2025 12:44:50 UTC] PHP Warning:  require(/home/everzkym/selectionlogistics.com/vendor/composer/../symfony/deprecation-contracts/function.php): Failed to open stream: No such file or directory in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php on line 41
+[18-Apr-2025 12:44:50 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/everzkym/selectionlogistics.com/vendor/composer/../symfony/deprecation-contracts/function.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php(45): {closure}()
+#1 /home/everzkym/selectionlogistics.com/vendor/autoload.php(25): ComposerAutoloaderInit65e85f9f959c0b087110331754d451cf::getLoader()
+#2 /home/everzkym/selectionlogistics.com/public/index.php(34): require('/home/everzkym/...')
+#3 {main}
+  thrown in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php on line 41
+[18-Apr-2025 12:44:53 UTC] PHP Warning:  require(/home/everzkym/selectionlogistics.com/vendor/composer/../symfony/deprecation-contracts/function.php): Failed to open stream: No such file or directory in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php on line 41
+[18-Apr-2025 12:44:53 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/everzkym/selectionlogistics.com/vendor/composer/../symfony/deprecation-contracts/function.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php(45): {closure}()
+#1 /home/everzkym/selectionlogistics.com/vendor/autoload.php(25): ComposerAutoloaderInit65e85f9f959c0b087110331754d451cf::getLoader()
+#2 /home/everzkym/selectionlogistics.com/public/index.php(34): require('/home/everzkym/...')
+#3 {main}
+  thrown in /home/everzkym/selectionlogistics.com/vendor/composer/autoload_real.php on line 41

@@ -1,0 +1,1 @@
+@includeIf('admin.pages.products.order.slip_content')
