@@ -21,133 +21,134 @@ use Yajra\DataTables\DataTables;
 use Milon\Barcode\DNS2D;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ProductStockBatch;
+
 class OrderController extends Controller
 {
     public function checkout(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-        $states = State::all();
-               $cartItems = \App\Models\Cart::where('sub_seller_id', auth()->id())->count();
-if ($cartItems <= 0){
-    return redirect()->route('all_cart');
-}
-            ActivityLogger::UserLog(Auth::user()->name. ' Open checkout');
-            
-        return view('seller.pages.products.checkout',compact('states'));
-    }
+            $states = State::all();
+            $cartItems = \App\Models\Cart::where('sub_seller_id', auth()->id())->count();
+            if ($cartItems <= 0) {
+                return redirect()->route('all_cart');
+            }
+            ActivityLogger::UserLog(Auth::user()->name . ' Open checkout');
+
+            return view('seller.pages.products.checkout', compact('states'));
+        }
     }
     public function getCartData()
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-            if (Auth::user()->role == 'seller'){
+            if (Auth::user()->role == 'seller') {
                 $cartItems = Cart::where('seller_id', Auth::id())
                     ->with(['product', 'productVariation', 'ProductStockBatch'])
                     ->get();
-            }else{
+            } else {
                 $cartItems = Cart::where('sub_seller_id', Auth::id())
                     ->with(['product', 'productVariation', 'ProductStockBatch'])
                     ->get();
             }
-    
+
             $html = view('seller.pages.products.partials.cart_items', compact('cartItems'))->render();
-        return response()->json(['html' => $html]);
+            return response()->json(['html' => $html]);
         }
     }
     public function updateCartAjax(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-        $cart = Cart::find($request->cart_id);
-        if (!$cart) {
-            return response()->json(['status' => 0, 'message' => 'Cart item not found']);
-        }
+            $cart = Cart::find($request->cart_id);
+            if (!$cart) {
+                return response()->json(['status' => 0, 'message' => 'Cart item not found']);
+            }
 
-        $product = Product::find($request->product_id);
-        if (!$product) {
-            return response()->json(['status' => 0, 'message' => 'Product not found']);
-        }
-        $productStockBatch =  ProductStockBatch::where('id', $cart->batch_id)->first();
-        $newQuantity = (int) $request->quantity;
-        $oldQuantity = $cart->quantity;
-        $quantityDifference = $newQuantity - $oldQuantity;
+            $product = Product::find($request->product_id);
+            if (!$product) {
+                return response()->json(['status' => 0, 'message' => 'Product not found']);
+            }
+            $productStockBatch =  ProductStockBatch::where('id', $cart->batch_id)->first();
+            $newQuantity = (int) $request->quantity;
+            $oldQuantity = $cart->quantity;
+            $quantityDifference = $newQuantity - $oldQuantity;
             if ($productStockBatch->quantity < $quantityDifference) {
                 return response()->json(['status' => 0, 'message' => 'Not enough stock']);
             }
             $productStockBatch->quantity -= $quantityDifference;
             $productStockBatch->save();
-       
 
-        $cart->quantity = $newQuantity;
-        $cart->save();
-            ActivityLogger::UserLog(Auth::user()->name. ' Update Cart items');
-        return response()->json(['status' => 1, 'message' => 'Cart updated successfully']);
-    }
+
+            $cart->quantity = $newQuantity;
+            $cart->save();
+            ActivityLogger::UserLog(Auth::user()->name . ' Update Cart items');
+            return response()->json(['status' => 1, 'message' => 'Cart updated successfully']);
+        }
     }
     public function get_areas(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-        $areas = Area::where('state_id','=',$request->state_id)->get();
-        $options = '<option value="" disabled selected>Choose Area</option>';
-        foreach ($areas as $area) {
-            $options .= '<option value="' . $area->id . '">' . $area->area . '</option>';
+            $areas = Area::where('state_id', '=', $request->state_id)->get();
+            $options = '<option value="" disabled selected>Choose Area</option>';
+            foreach ($areas as $area) {
+                $options .= '<option value="' . $area->id . '">' . $area->area . '</option>';
+            }
+            return response()->json(['options' => $options]);
         }
-        return response()->json(['options' => $options]);
     }
-    }
-   
+
     public function get_areas_shipping(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-        $areas = Area::where('id','=',$request->id)->first();
-        $shipping = $areas->shipping;
-        return response()->json(['shipping' => $shipping]);
-    }
+            $areas = Area::where('id', '=', $request->id)->first();
+            $shipping = $areas->shipping;
+            return response()->json(['shipping' => $shipping]);
+        }
     }
     public function get_cart_subtotal(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'checkout')) {
-        $user_id = auth()->id();
-            if (Auth::user()->role == 'seller'){
-                $cartItems  = Cart::where('seller_id',$user_id)->get();
-            }else{
-                $cartItems  = Cart::where('sub_seller_id',$user_id)->get();
+            $user_id = auth()->id();
+            if (Auth::user()->role == 'seller') {
+                $cartItems  = Cart::where('seller_id', $user_id)->get();
+            } else {
+                $cartItems  = Cart::where('sub_seller_id', $user_id)->get();
             }
-        $subtotal = 0;
+            $subtotal = 0;
 
-        foreach ($cartItems as $cart) {
-            $product  = Product::where('id',$cart->product_id)->first();
-            $ProductStockBatch  = ProductStockBatch::where('id',$cart->batch_id)->first();
+            foreach ($cartItems as $cart) {
+                $product  = Product::where('id', $cart->product_id)->first();
+                $ProductStockBatch  = ProductStockBatch::where('id', $cart->batch_id)->first();
                 $price = $ProductStockBatch->regular_price;
-            
-            $subtotal += $price * $cart->quantity;
+
+                $subtotal += $price * $cart->quantity;
+            }
+            return response()->json(['subtotal' => $subtotal]);
         }
-        return response()->json(['subtotal' => $subtotal]);
-    }
     }
     public function get_seller_service_charges(Request $request)
     {
         if (!ActivityLogger::hasSellerPermission('orders', 'checkout')) {
             return response()->json(['status' => false, 'message' => 'Unauthorized.'], 403);
         }
-    
+
         $cod_amount = (float) $request->cod_amount;
-       
+
         $sellerId = Auth::user()->role === 'seller'
             ? Auth::id()
             : Auth::user()->seller_id;
-            $serviceCharge = ServiceCharge::where('user_id', $sellerId)
+        $serviceCharge = ServiceCharge::where('user_id', $sellerId)
             ->orderBy('start_range')
             ->get()
             ->first(function ($charge) use ($cod_amount) {
                 return $cod_amount >= $charge->start_range && $cod_amount <= $charge->end_range;
             });
-    
+
         if ($serviceCharge) {
             return response()->json([
                 'status' => true,
                 'details' => $serviceCharge
             ]);
         }
-    
+
         return response()->json([
             'status' => true,
             'details' => ''
@@ -172,7 +173,7 @@ if ($cartItems <= 0){
     //                     if (!empty($request->start_date)) {
     //                         $query->whereDate('delivery_date', '>=', $request->start_date);
     //                     }
-        
+
     //                     if (!empty($request->end_date)) {
     //                         $query->whereDate('delivery_date', '<=', $request->end_date);
     //                     }
@@ -183,7 +184,7 @@ if ($cartItems <= 0){
     //                     if (!empty($request->start_date)) {
     //                         $query->whereDate('company_assign_date', '>=', $request->start_date);
     //                     }
-        
+
     //                     if (!empty($request->end_date)) {
     //                         $query->whereDate('company_assign_date', '<=', $request->end_date);
     //                     }
@@ -194,7 +195,7 @@ if ($cartItems <= 0){
     //                     if (!empty($request->start_date)) {
     //                         $query->whereDate('driver_assign_date', '>=', $request->start_date);
     //                     }
-        
+
     //                     if (!empty($request->end_date)) {
     //                         $query->whereDate('driver_assign_date', '<=', $request->end_date);
     //                     }
@@ -202,17 +203,17 @@ if ($cartItems <= 0){
     //                     if (!empty($request->current_date)) {
     //                         $query->whereDate('created_at', '=', $request->current_date);
     //                     }
-        
+
     //                     if (!empty($request->start_date)) {
     //                         $query->whereDate('created_at', '>=', $request->start_date);
     //                     }
-        
+
     //                     if (!empty($request->end_date)) {
     //                         $query->whereDate('created_at', '<=', $request->end_date);
     //                     }
     //                 }
     //                     $query->where('status', $request->status);
-                   
+
     //             }
     //         if (empty($request->status) && !empty($request->current_date)) {
     //                 $query->whereDate('created_at', '=', $request->current_date);
@@ -382,22 +383,85 @@ if ($cartItems <= 0){
                     $query->where('area_id', $request->area);
                 }
                 if (!empty($request->status)) {
+                    if ($request->status == 'Delivered' || $request->status == 'Future') {
+                        if (!empty($request->current_date)) {
+                            $query->whereDate('delivery_date', '=', $request->current_date);
+                        }
+                        if (!empty($request->start_date)) {
+                            $query->whereDate('delivery_date', '>=', $request->start_date);
+                        }
+
+                        if (!empty($request->end_date)) {
+                            $query->whereDate('delivery_date', '<=', $request->end_date);
+                        }
+                    } else if ($request->status == 'Processing') {
+                        if (!empty($request->current_date)) {
+                            $query->whereDate('company_assign_date', '=', $request->current_date);
+                        }
+                        if (!empty($request->start_date)) {
+                            $query->whereDate('company_assign_date', '>=', $request->start_date);
+                        }
+
+                        if (!empty($request->end_date)) {
+                            $query->whereDate('company_assign_date', '<=', $request->end_date);
+                        }
+                    } else if ($request->status == 'Shipped' || $request->status == 'Out_for_delivery') {
+                        if (!empty($request->current_date)) {
+                            $query->whereDate('driver_assign_date', '=', $request->current_date);
+                        }
+                        if (!empty($request->start_date)) {
+                            $query->whereDate('driver_assign_date', '>=', $request->start_date);
+                        }
+
+                        if (!empty($request->end_date)) {
+                            $query->whereDate('driver_assign_date', '<=', $request->end_date);
+                        }
+                    } else {
+                        if (!empty($request->current_date)) {
+                            $query->whereDate('created_at', '=', $request->current_date);
+                        }
+
+                        if (!empty($request->start_date)) {
+                            $query->whereDate('created_at', '>=', $request->start_date);
+                        }
+
+                        if (!empty($request->end_date)) {
+                            $query->whereDate('created_at', '<=', $request->end_date);
+                        }
+                    }
                     $query->where('status', $request->status);
                 }
-                if (!empty($request->current_date)) {
+                if (empty($request->status) && !empty($request->current_date)) {
                     $query->whereDate('created_at', '=', $request->current_date);
                 }
-                if (!empty($request->start_date)) {
+
+                if (empty($request->status) && !empty($request->start_date)) {
                     $query->whereDate('created_at', '>=', $request->start_date);
                 }
-                if (!empty($request->end_date)) {
+
+                if (empty($request->status) && !empty($request->end_date)) {
                     $query->whereDate('created_at', '<=', $request->end_date);
                 }
+
+                if (empty($request->status) && empty($request->start_date) && empty($request->end_date) && empty($request->current_date)) {
+                    $query->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year);
+                }
+
+
                 if (Auth::user()->role == 'seller') {
                     $data = $query->where('seller_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
                 } else {
                     $data = $query->where('sub_seller_id', Auth::user()->id)->orderBy('id', 'DESC')->get();
                 }
+
+
+
+
+
+
+
+
                 $totalCod = 0;
                 $deliveredCod = 0;
                 $cancelledCod = 0;
@@ -432,6 +496,15 @@ if ($cartItems <= 0){
                         $totalFutureCount += 1;
                     }
                 }
+
+                $totalOrdersCount =
+                    $totalPendingCount +
+                    $totalProcessingCount +
+                    $totalShippedCount +
+                    $totalDeliveredCount +
+                    $totalCancelledCount +
+                    $totalOut_for_deliveryCount +
+                    $totalFutureCount;
                 return Datatables::of($data)
                     ->addColumn('customerName', function ($data) {
                         if (!empty($data->customer_name)) {
@@ -521,11 +594,11 @@ if ($cartItems <= 0){
 
                         return $action;
                     })
-                    ->with('totalCod', $totalCod)
-                    ->with('deliveredCod', $deliveredCod)
-                    ->with('cancelledCod', $cancelledCod)
-                    ->with('totalProfit', $totalProfit)
-                    ->with('totalShipping', $totalShipping)
+                    ->with('totalCod', number_format($totalCod, 2, '.', ''))
+                    ->with('deliveredCod', number_format($deliveredCod, 2, '.', ''))
+                    ->with('cancelledCod', number_format($cancelledCod, 2, '.', ''))
+                    ->with('totalProfit', number_format($totalProfit, 2, '.', ''))
+                    ->with('totalShipping', number_format($totalShipping, 2, '.', ''))
                     ->with('totalPendingCount', $totalPendingCount)
                     ->with('totalProcessingCount', $totalProcessingCount)
                     ->with('totalShippedCount', $totalShippedCount)
@@ -533,6 +606,7 @@ if ($cartItems <= 0){
                     ->with('totalCancelledCount', $totalCancelledCount)
                     ->with('totalOut_for_deliveryCount', $totalOut_for_deliveryCount)
                     ->with('totalFutureCount', $totalFutureCount)
+                    ->with('totalOrdersCount', $totalOrdersCount)
                     ->rawColumns(['BulkAction', 'COD', 'Location', 'OrderPlacedBy', 'customerName', 'statusView', 'action'])
                     ->make(true);
             }
@@ -542,7 +616,7 @@ if ($cartItems <= 0){
             return view('seller.pages.products.order.all', compact('StateData', 'AreaData'));
         }
     }
-    
+
     public function get_order(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'view')) {
@@ -578,37 +652,36 @@ if ($cartItems <= 0){
     public function placeOrder(Request $request)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'add')) {
-            if (empty($request->cus_name) || empty($request->phone) || empty($request->state) || empty($request->areas) || empty($request->address) || empty($request->total)|| empty($request->profit)) 
-            {
+            if (empty($request->cus_name) || empty($request->phone) || empty($request->state) || empty($request->areas) || empty($request->address) || empty($request->total) || empty($request->profit)) {
                 return response()->json(2);
             }
-            if (Auth::user()->role == 'seller'){
+            if (Auth::user()->role == 'seller') {
                 $seller_id = Auth::user()->id;
                 $sub_seller_id = Auth::user()->id;
-            }else{
+            } else {
                 $seller_id = Auth::user()->seller_id;
                 $sub_seller_id = Auth::user()->id;
             }
-                $order = Order::create([
-                    'seller_id'       => $seller_id,
-                    'sub_seller_id'  => $sub_seller_id,
-                    'customer_name' => $request->cus_name,
-                    'phone'         => $request->phone,
-                    'whatsapp'      => $request->whatsapp,
-                    'state_id'      => $request->state,
-                    'area_id'       => $request->areas,
-                    'instructions'  => $request->instructions,
-                    'address'       => $request->address,
-                    'map_url'       => $request->map_url,
-                    'subtotal'      => $request->subtotal,
-                    'shipping_fee'  => $request->shipping,
-                    'total'         => $request->total,
-                    'cod_amount'    => $request->cod_amount,
-                    'profit'    => $request->profit,
-                    'service_charges'    => $request->service_charge_input,
-                    'service_charges_id'    => $request->service_charge_input_id,
-                    'status'        => 'Pending',
-                ]);
+            $order = Order::create([
+                'seller_id'       => $seller_id,
+                'sub_seller_id'  => $sub_seller_id,
+                'customer_name' => $request->cus_name,
+                'phone'         => $request->phone,
+                'whatsapp'      => $request->whatsapp,
+                'state_id'      => $request->state,
+                'area_id'       => $request->areas,
+                'instructions'  => $request->instructions,
+                'address'       => $request->address,
+                'map_url'       => $request->map_url,
+                'subtotal'      => $request->subtotal,
+                'shipping_fee'  => $request->shipping,
+                'total'         => $request->total,
+                'cod_amount'    => $request->cod_amount,
+                'profit'    => $request->profit,
+                'service_charges'    => $request->service_charge_input,
+                'service_charges_id'    => $request->service_charge_input_id,
+                'status'        => 'Pending',
+            ]);
             $qrCode = new DNS2D();
             $publicURL = route('order_public_details', encrypt($order->id));
             $qrCodeImage = $qrCode->getBarcodePNG($publicURL, 'QRCODE', 5, 5);
@@ -624,30 +697,30 @@ if ($cartItems <= 0){
             $order->qr_code = $qrCodeFileName;
             $order->qr_code_rto = $qrCodeRtoFileName;
             $order->save();
-            if (Auth::user()->role == 'seller'){
+            if (Auth::user()->role == 'seller') {
                 $cartItems = Cart::where('seller_id', auth()->id())->get();
-            }else{
+            } else {
                 $cartItems = Cart::where('sub_seller_id', auth()->id())->get();
             }
-                foreach ($cartItems as $item) {
-                    OrderItem::create([
-                        'order_id'            => $order->id,
-                        'product_id'          => $item->product_id,
-                        'product_variation_id' => $item->product_variation_id,
-                        'batch_id' => $item->batch_id,
-                        'quantity'            => $item->quantity,
-                    ]);
-                }
-            if (Auth::user()->role == 'seller'){
+            foreach ($cartItems as $item) {
+                OrderItem::create([
+                    'order_id'            => $order->id,
+                    'product_id'          => $item->product_id,
+                    'product_variation_id' => $item->product_variation_id,
+                    'batch_id' => $item->batch_id,
+                    'quantity'            => $item->quantity,
+                ]);
+            }
+            if (Auth::user()->role == 'seller') {
                 Cart::where('seller_id', auth()->id())->delete();
-            }else{
+            } else {
                 Cart::where('sub_seller_id', auth()->id())->delete();
             }
 
-                ActivityLogger::UserLog('Placed an order: ' . $order->id);
-            ActivityLogger::UserLog(Auth::user()->name. ' Place Order');
-                return response()->json(1);
-    }
+            ActivityLogger::UserLog('Placed an order: ' . $order->id);
+            ActivityLogger::UserLog(Auth::user()->name . ' Place Order');
+            return response()->json(1);
+        }
     }
     public function edit($id)
     {
@@ -665,21 +738,21 @@ if ($cartItems <= 0){
 
             // Get all products that can be added to the order
             $products = Product::where('status', 'active')
-            ->with([
-                'batches' => function ($query) {
-                    $query->where('quantity', '>', 0)
-                          ->orderBy('purchase_date', 'asc');
-                },
-                'variations' => function ($query) {
-                    $query->with(['batches' => function ($batchQuery) {
-                        $batchQuery->where('quantity', '>', 0)
-                                   ->orderBy('purchase_date', 'asc');
-                    }]);
-                }
-            ])
-            ->get();
+                ->with([
+                    'batches' => function ($query) {
+                        $query->where('quantity', '>', 0)
+                            ->orderBy('purchase_date', 'asc');
+                    },
+                    'variations' => function ($query) {
+                        $query->with(['batches' => function ($batchQuery) {
+                            $batchQuery->where('quantity', '>', 0)
+                                ->orderBy('purchase_date', 'asc');
+                        }]);
+                    }
+                ])
+                ->get();
 
-            ActivityLogger::UserLog(Auth::user()->name. ' Edit order: '.$id);
+            ActivityLogger::UserLog(Auth::user()->name . ' Edit order: ' . $id);
             return view('seller.pages.products.order.edit', compact('order', 'states', 'areas', 'products'));
         }
     }
@@ -719,13 +792,12 @@ if ($cartItems <= 0){
 
                 DB::commit();
 
-                ActivityLogger::UserLog(Auth::user()->name. ' Updated order: '.$id);
+                ActivityLogger::UserLog(Auth::user()->name . ' Updated order: ' . $id);
                 return response()->json([
                     'success' => true,
                     'message' => 'Order updated successfully',
                     'totals' => $totals
                 ]);
-
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json([
@@ -738,16 +810,16 @@ if ($cartItems <= 0){
     public function addItemToOrder(Request $request, $orderId)
     {
         if (!ActivityLogger::hasSellerPermission('orders', 'edit')) return abort(403);
-    
+
         $request->validate([
             'product_id' => 'required',
             'quantity' => 'required|numeric|min:1',
             'variation_id' => 'nullable'
         ]);
-    
+
         $order = Order::findOrFail($orderId);
         $product = Product::findOrFail($request->product_id);
-    
+
         DB::beginTransaction();
         try {
             $existingItem = OrderItem::where('order_id', $orderId)
@@ -758,14 +830,14 @@ if ($cartItems <= 0){
                     return $q->whereNull('product_variation_id');
                 })
                 ->first();
-    
+
             $requiredQty = $request->quantity;
             $consumedBatches = [];
-    
+
             $batchQuery = ProductStockBatch::where('product_id', $product->id)
                 ->where('quantity', '>', 0)
                 ->orderBy('purchase_date', 'asc');
-    
+
             if ($product->product_type === 'variable') {
                 if (!$request->variation_id) {
                     throw new \Exception('Variation is required for variable products');
@@ -774,29 +846,29 @@ if ($cartItems <= 0){
             } else {
                 $batchQuery->whereNull('product_variation_id');
             }
-    
+
             $batches = $batchQuery->get();
             $remainingQty = $requiredQty;
-    
+
             foreach ($batches as $batch) {
                 if ($remainingQty <= 0) break;
-    
+
                 $deductQty = min($batch->quantity, $remainingQty);
                 $batch->quantity -= $deductQty;
                 $batch->save();
-    
+
                 $consumedBatches[] = [
                     'batch_id' => $batch->id,
                     'used_quantity' => $deductQty
                 ];
-    
+
                 $remainingQty -= $deductQty;
             }
-    
+
             if ($remainingQty > 0) {
                 throw new \Exception('Not enough stock available in FIFO batches');
             }
-    
+
             if ($existingItem) {
                 $existingItem->quantity += $requiredQty;
                 $existingItem->save();
@@ -809,17 +881,16 @@ if ($cartItems <= 0){
                     'batch_id' => $consumedBatches[0]['batch_id'] ?? null,
                 ]);
             }
-    
+
             $this->recalculateOrderTotals($order);
             DB::commit();
-    
+
             ActivityLogger::UserLog(Auth::user()->name . ' Added item to order: ' . $orderId);
             return response()->json([
                 'success' => true,
                 'message' => 'Item added to order successfully',
                 'stock' => $batches->sum('quantity') // Optional
             ]);
-    
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -828,7 +899,7 @@ if ($cartItems <= 0){
             ], 400);
         }
     }
-    
+
     public function updateOrderItem(Request $request, $orderId)
     {
         if (ActivityLogger::hasSellerPermission('orders', 'edit')) {
@@ -837,7 +908,7 @@ if ($cartItems <= 0){
                 'quantity' => 'required|numeric|min:1'
             ]);
 
-            $orderItem = OrderItem::with(['product', 'productVariation','productStockBatch'])
+            $orderItem = OrderItem::with(['product', 'productVariation', 'productStockBatch'])
                 ->where('order_id', $orderId)
                 ->where('id', $request->item_id)
                 ->firstOrFail();
@@ -850,14 +921,14 @@ if ($cartItems <= 0){
             DB::beginTransaction();
 
             try {
-                    $productStockBatch = ProductStockBatch::where('id', $orderItem->batch_id)->first();
-                    if ($quantityDifference > 0 && $orderItem->productStockBatch->quantity < $quantityDifference) {
-                        throw new \Exception('Not enough stock available for this variation');
-                    }
+                $productStockBatch = ProductStockBatch::where('id', $orderItem->batch_id)->first();
+                if ($quantityDifference > 0 && $orderItem->productStockBatch->quantity < $quantityDifference) {
+                    throw new \Exception('Not enough stock available for this variation');
+                }
 
-                    $productStockBatch->quantity -= $quantityDifference;
-                    $productStockBatch->save();
-              
+                $productStockBatch->quantity -= $quantityDifference;
+                $productStockBatch->save();
+
                 // Update order item
                 $orderItem->quantity = $newQuantity;
                 $orderItem->save();
@@ -868,13 +939,12 @@ if ($cartItems <= 0){
 
                 DB::commit();
 
-                ActivityLogger::UserLog(Auth::user()->name. ' Updated item in order: '.$orderId);
+                ActivityLogger::UserLog(Auth::user()->name . ' Updated item in order: ' . $orderId);
                 return response()->json([
                     'success' => true,
                     'message' => 'Item updated successfully',
                     'new_stock' => $orderItem->productStockBatch->quantity
                 ]);
-
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json([
@@ -900,10 +970,10 @@ if ($cartItems <= 0){
             DB::beginTransaction();
 
             try {
-               $productStockBatch = ProductStockBatch::where('id', $orderItem->batch_id)->first();
-                    $productStockBatch->quantity += $orderItem->quantity;
-                    $productStockBatch->save();
-                
+                $productStockBatch = ProductStockBatch::where('id', $orderItem->batch_id)->first();
+                $productStockBatch->quantity += $orderItem->quantity;
+                $productStockBatch->save();
+
 
                 // Delete order item
                 $orderItem->delete();
@@ -914,13 +984,12 @@ if ($cartItems <= 0){
 
                 DB::commit();
 
-                ActivityLogger::UserLog(Auth::user()->name. ' Removed item from order: '.$orderId);
+                ActivityLogger::UserLog(Auth::user()->name . ' Removed item from order: ' . $orderId);
                 return response()->json([
                     'success' => true,
                     'message' => 'Item removed successfully',
                     'restored_stock' => $orderItem->productStockBatch->quantity
                 ]);
-
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json([
@@ -936,15 +1005,15 @@ if ($cartItems <= 0){
         $subtotal = 0;
 
         foreach ($order->orderItems as $item) {
-        
-                $price = $item->productStockBatch->regular_price;
-         
+
+            $price = $item->productStockBatch->regular_price;
+
             $subtotal += $price * $item->quantity;
         }
 
         // Get shipping fee from area (or use existing if area not changed)
         $shipping = $order->area->shipping ?? $order->shipping_fee;
-$services_charge = $order->service_charges ?? 0;
+        $services_charge = $order->service_charges ?? 0;
         // Calculate total
         $total = $subtotal + $shipping + $services_charge;
 
@@ -974,7 +1043,7 @@ $services_charge = $order->service_charges ?? 0;
 
             $options = '<option value="">Select Variation</option>';
             foreach ($variations as $variation) {
-                $options .= '<option value="'.$variation->id.'">'.$variation->variation_name.': '.$variation->variation_value.'</option>';
+                $options .= '<option value="' . $variation->id . '">' . $variation->variation_name . ': ' . $variation->variation_value . '</option>';
             }
 
             return response()->json(['options' => $options]);
