@@ -42,9 +42,6 @@ Route::get('/order-rto/{id}', [OrderController::class, 'order_rto_view'])->name(
 Route::post('/order-rto', [OrderController::class, 'order_rto'])->name('order_public_rto_submit');
 Route::get('/user-register', [UserRegisterController::class, 'user_register'])->name('user_register');
 Route::post('/user-register', [UserRegisterController::class, 'user_register_store'])->name('user_register_store');
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Auth::routes();
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
