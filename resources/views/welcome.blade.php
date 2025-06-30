@@ -9,9 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Techneketax - leading tax &amp; accounting practice management software" />
+    <meta property="og:title" content="Arrbaab" />
     <meta property="og:url" content="" />
-    <meta property="og:site_name" content="Techneketax | leading tax &amp; accounting practice management software" />
+    <meta property="og:site_name" content="Arrbaab" />
     <link rel="canonical" href="/" />
     <link rel="icon" type="image/x-icon" href="{{asset('logo.png')}}"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -39,15 +39,16 @@ background-size: cover; ">
                     <a href="/" class="py-9 mb-5">
                         <img alt="Logo" src="{{asset('logo.png')}}" class="h-100px" />
                     </a>
-                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to Arrbaab!</h1>
+                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to Arrbaab</h1>
 
                     <p class="fw-bold" style="color: #fff;">
-                        Login to discover exclusive properties, manage your favorites, and stay updated on the latest real estate opportunities.</p>
+                        Your trusted partner for dropshipping success in the UAE and beyond. We provide comprehensive solutions for modern e-commerce entrepreneurs.
+                    </p>
 
                 </div>
                 <div class="d-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain justify-content-center bgi-position-y-bottom min-h-100px min-h-lg-350px" >
                     <div class="d-flex align-items-center">
-                        <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
+                        <a href="https://www.linkedin.com/company/pitgpk/" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
                             <img alt="Logo" src="{{asset('assets/dash/assets/media/icons/linkedin.svg')}}" class="p-4">
                         </a>
                         <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
