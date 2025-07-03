@@ -45,3 +45,4 @@ Route::post('/user-register', [UserRegisterController::class, 'user_register_sto
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::post('contact', [WelcomeController::class, 'contact'])->name('contact');
