@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arrbaab - Your Gateway to Global Commerce</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,7 +36,7 @@
             z-index: 1000;
             padding: 8px 2rem;
             border-radius: 100px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
 
@@ -47,7 +48,7 @@
 
         .header:hover {
             background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
             transform: translateX(-50%) translateY(-2px);
         }
 
@@ -112,7 +113,8 @@
             gap: 1rem;
         }
 
-        .login-btn, .register-btn {
+        .login-btn,
+        .register-btn {
             padding: 0.6rem 1.2rem;
             border: 1px solid;
             border-radius: 100px !important;
@@ -137,7 +139,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: 0.5s;
         }
 
@@ -225,7 +227,7 @@
                 background: #2563eb;
                 padding: 1rem;
                 border-radius: 0 0 20px 20px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             }
 
             .nav-menu.active {
@@ -243,12 +245,14 @@
                 gap: 0.5rem;
             }
 
-            .login-btn, .register-btn {
+            .login-btn,
+            .register-btn {
                 width: 100%;
                 padding: 0.8rem;
             }
+
             .register-btn {
-                background-color: #2563eb ;
+                background-color: #2563eb;
             }
 
             .hamburger {
@@ -273,9 +277,17 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .hero::before {
@@ -332,12 +344,12 @@
             font-size: 1.1rem;
             transition: all 0.3s;
             animation: fadeInUp 1s ease 0.4s both;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
         /* Sales Graph Section */
@@ -407,7 +419,9 @@
         }
 
         @keyframes showDots {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
 
         .stats-grid {
@@ -441,6 +455,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -484,15 +499,41 @@
             margin: 0 -1rem;
         }
 
-        .col-1 { width: 8.33%; }
-        .col-2 { width: 16.66%; }
-        .col-3 { width: 25%; }
-        .col-4 { width: 33.33%; }
-        .col-6 { width: 50%; }
-        .col-8 { width: 66.66%; }
-        .col-12 { width: 100%; }
+        .col-1 {
+            width: 8.33%;
+        }
 
-        .col-1, .col-2, .col-3, .col-4, .col-6, .col-8, .col-12 {
+        .col-2 {
+            width: 16.66%;
+        }
+
+        .col-3 {
+            width: 25%;
+        }
+
+        .col-4 {
+            width: 33.33%;
+        }
+
+        .col-6 {
+            width: 50%;
+        }
+
+        .col-8 {
+            width: 66.66%;
+        }
+
+        .col-12 {
+            width: 100%;
+        }
+
+        .col-1,
+        .col-2,
+        .col-3,
+        .col-4,
+        .col-6,
+        .col-8,
+        .col-12 {
             padding: 0 1rem;
             margin-bottom: 2rem;
         }
@@ -502,7 +543,7 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
             height: 100%;
             border: 2px solid transparent;
@@ -551,7 +592,7 @@
             border-radius: 15px;
             padding: 2.5rem;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
@@ -592,7 +633,7 @@
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
             border: 2px solid transparent;
         }
@@ -677,12 +718,39 @@
             border: 2px solid #2563eb;
         }
 
-        .country-point:nth-child(2) { top: -30px; left: 50%; transform: translateX(-50%); }
-        .country-point:nth-child(3) { top: 50%; right: -30px; transform: translateY(-50%); }
-        .country-point:nth-child(4) { bottom: -30px; left: 50%; transform: translateX(-50%); }
-        .country-point:nth-child(5) { top: 50%; left: -30px; transform: translateY(-50%); }
-        .country-point:nth-child(6) { top: 20%; right: 20%; }
-        .country-point:nth-child(7) { bottom: 20%; left: 20%; }
+        .country-point:nth-child(2) {
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .country-point:nth-child(3) {
+            top: 50%;
+            right: -30px;
+            transform: translateY(-50%);
+        }
+
+        .country-point:nth-child(4) {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .country-point:nth-child(5) {
+            top: 50%;
+            left: -30px;
+            transform: translateY(-50%);
+        }
+
+        .country-point:nth-child(6) {
+            top: 20%;
+            right: 20%;
+        }
+
+        .country-point:nth-child(7) {
+            bottom: 20%;
+            left: 20%;
+        }
 
         /* Features Section */
         .feature-card {
@@ -690,7 +758,7 @@
             border-radius: 15px;
             padding: 2rem;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
             border: 2px solid transparent;
         }
@@ -718,7 +786,7 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
             border: 2px solid transparent;
             transition: all 0.3s;
@@ -752,7 +820,7 @@
             border-radius: 10px;
             margin-bottom: 1rem;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border: 2px solid transparent;
             transition: all 0.3s;
         }
@@ -790,7 +858,7 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border: 2px solid transparent;
             transition: all 0.3s;
         }
@@ -896,7 +964,7 @@
                 padding: 2rem;
                 border-radius: 15px;
                 margin-top: 1rem;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
 
             .nav-menu.active {
@@ -933,7 +1001,12 @@
                 font-size: 2rem;
             }
 
-            .col-1, .col-2, .col-3, .col-4, .col-6, .col-8 {
+            .col-1,
+            .col-2,
+            .col-3,
+            .col-4,
+            .col-6,
+            .col-8 {
                 width: 100%;
             }
 
@@ -953,6 +1026,7 @@
         }
 
         @media (max-width: 480px) {
+
             .nav-container,
             .container {
                 padding: 0 1rem;
@@ -971,8 +1045,8 @@
             }
         }
 
-     /* WhatsApp Floating Button */
-                .whatsapp-float {
+        /* WhatsApp Floating Button */
+        .whatsapp-float {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -1038,6 +1112,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Enhanced Header -->
     <header class="header">
@@ -1051,8 +1126,8 @@
                     <li><a href="#products">Products</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li class="auth-buttons">
-                        <a  href="/login"class="login-btn" >Login</a>
-                        <a href="/user-register" class="register-btn" >Register</a>
+                        <a href="/login"class="login-btn">Login</a>
+                        <a href="/user-register" class="register-btn">Register</a>
                     </li>
                 </ul>
                 <div class="hamburger" id="hamburger">
@@ -1069,7 +1144,8 @@
         <div class="hero-content">
             <div class="hero-text">
                 <h1>Start Your Dropshipping Empire Today</h1>
-                <p>Connect with suppliers worldwide and build your e-commerce business with zero inventory risk. Join thousands of successful dropshippers already earning with our platform.</p>
+                <p>Connect with suppliers worldwide and build your e-commerce business with zero inventory risk. Join
+                    thousands of successful dropshippers already earning with our platform.</p>
                 <a href="#portal" class="cta-button">Explore Our Portal</a>
             </div>
 
@@ -1083,7 +1159,8 @@
                     <div class="chart-area">
                         <svg class="chart-svg" viewBox="0 0 400 200">
                             <defs>
-                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%"
+                                    y2="100%">
                                     <stop offset="0%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
                                     <stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:0" />
                                 </linearGradient>
@@ -1091,24 +1168,25 @@
 
                             <!-- Grid lines -->
                             <g stroke="rgba(255,255,255,0.1)" stroke-width="1">
-                                <line x1="0" y1="40" x2="400" y2="40"/>
-                                <line x1="0" y1="80" x2="400" y2="80"/>
-                                <line x1="0" y1="120" x2="400" y2="120"/>
-                                <line x1="0" y1="160" x2="400" y2="160"/>
+                                <line x1="0" y1="40" x2="400" y2="40" />
+                                <line x1="0" y1="80" x2="400" y2="80" />
+                                <line x1="0" y1="120" x2="400" y2="120" />
+                                <line x1="0" y1="160" x2="400" y2="160" />
                             </g>
 
                             <!-- Sales line -->
-                            <path class="chart-line" d="M20,160 Q80,140 120,120 T200,100 T280,80 T360,60"/>
+                            <path class="chart-line" d="M20,160 Q80,140 120,120 T200,100 T280,80 T360,60" />
 
                             <!-- Area under curve -->
-                            <path fill="url(#gradient)" d="M20,160 Q80,140 120,120 T200,100 T280,80 T360,60 L360,180 L20,180 Z"/>
+                            <path fill="url(#gradient)"
+                                d="M20,160 Q80,140 120,120 T200,100 T280,80 T360,60 L360,180 L20,180 Z" />
 
                             <!-- Data points -->
-                            <circle class="chart-dots" cx="20" cy="160"/>
-                            <circle class="chart-dots" cx="120" cy="120"/>
-                            <circle class="chart-dots" cx="200" cy="100"/>
-                            <circle class="chart-dots" cx="280" cy="80"/>
-                            <circle class="chart-dots" cx="360" cy="60"/>
+                            <circle class="chart-dots" cx="20" cy="160" />
+                            <circle class="chart-dots" cx="120" cy="120" />
+                            <circle class="chart-dots" cx="200" cy="100" />
+                            <circle class="chart-dots" cx="280" cy="80" />
+                            <circle class="chart-dots" cx="360" cy="60" />
                         </svg>
                     </div>
 
@@ -1134,28 +1212,32 @@
     <section id="portal" class="section">
         <div class="container">
             <h2 class="section-title">Our Dropshipping Portal</h2>
-            <p class="section-subtitle">Discover our comprehensive platform designed to streamline your dropshipping journey from product sourcing to order fulfillment.</p>
+            <p class="section-subtitle">Discover our comprehensive platform designed to streamline your dropshipping
+                journey from product sourcing to order fulfillment.</p>
 
             <div class="row">
                 <div class="col-4">
                     <div class="portal-card">
                         <div class="portal-image">📊</div>
                         <h3>Analytics Dashboard</h3>
-                        <p>Track your sales, monitor profit margins, and analyze market trends with our advanced analytics tools. Make data-driven decisions to grow your business.</p>
+                        <p>Track your sales, monitor profit margins, and analyze market trends with our advanced
+                            analytics tools. Make data-driven decisions to grow your business.</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="portal-card">
                         <div class="portal-image">🛍️</div>
                         <h3>Product Catalog</h3>
-                        <p>Access thousands of trending products from verified suppliers. Browse categories, check inventory levels, and import products to your store instantly.</p>
+                        <p>Access thousands of trending products from verified suppliers. Browse categories, check
+                            inventory levels, and import products to your store instantly.</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="portal-card">
                         <div class="portal-image">⚡</div>
                         <h3>Order Management</h3>
-                        <p>Automate your order processing with our smart fulfillment system. Track shipments, manage returns, and keep customers updated automatically.</p>
+                        <p>Automate your order processing with our smart fulfillment system. Track shipments, manage
+                            returns, and keep customers updated automatically.</p>
                     </div>
                 </div>
             </div>
@@ -1166,28 +1248,32 @@
     <section id="how-it-works" class="section" style="background: #f8fafc;">
         <div class="container">
             <h2 class="section-title">How To Start Working</h2>
-            <p class="section-subtitle">Get started with dropshipping in just three simple steps and begin earning within 24 hours.</p>
+            <p class="section-subtitle">Get started with dropshipping in just three simple steps and begin earning
+                within 24 hours.</p>
 
             <div class="row">
                 <div class="col-4">
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <h3>Register Your Account</h3>
-                        <p>Sign up for free and complete your profile. Verify your identity and connect your payment methods to get started immediately.</p>
+                        <p>Sign up for free and complete your profile. Verify your identity and connect your payment
+                            methods to get started immediately.</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h3>Choose Your Products</h3>
-                        <p>Browse our curated product catalog and select items that match your niche. Import products to your store with one-click integration.</p>
+                        <p>Browse our curated product catalog and select items that match your niche. Import products to
+                            your store with one-click integration.</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="step-card">
                         <div class="step-number">3</div>
                         <h3>Start Selling</h3>
-                        <p>Launch your marketing campaigns and start receiving orders. We handle fulfillment while you focus on growing your business.</p>
+                        <p>Launch your marketing campaigns and start receiving orders. We handle fulfillment while you
+                            focus on growing your business.</p>
                     </div>
                 </div>
             </div>
@@ -1198,7 +1284,8 @@
     <section id="products" class="section">
         <div class="container">
             <h2 class="section-title">Popular Products</h2>
-            <p class="section-subtitle">Discover our best-selling products that are generating high profits for our dropshippers worldwide.</p>
+            <p class="section-subtitle">Discover our best-selling products that are generating high profits for our
+                dropshippers worldwide.</p>
 
             <div class="row">
                 <div class="col-3">
@@ -1249,7 +1336,8 @@
     <section id="countries" class="section countries-section">
         <div class="container">
             <h2 class="section-title">Global Reach, UAE Focused</h2>
-            <p class="section-subtitle">We primarily serve the UAE market with shipping connections to neighboring countries for expanded opportunities.</p>
+            <p class="section-subtitle">We primarily serve the UAE market with shipping connections to neighboring
+                countries for expanded opportunities.</p>
 
             <div class="country-hub">
                 <div class="country-orbit">
@@ -1267,7 +1355,8 @@
 
             <div style="text-align: center; margin-top: 3rem;">
                 <h3 style="color: #2563eb; margin-bottom: 1rem;">Primary Market: United Arab Emirates</h3>
-                <p>Fast delivery, local support, and optimized logistics for the UAE market with expansion capabilities to surrounding regions.</p>
+                <p>Fast delivery, local support, and optimized logistics for the UAE market with expansion capabilities
+                    to surrounding regions.</p>
             </div>
         </div>
     </section>
@@ -1276,35 +1365,40 @@
     <section id="features" class="section">
         <div class="container">
             <h2 class="section-title">Why Choose Arrbaab</h2>
-            <p class="section-subtitle">Our platform is built with powerful features to maximize your dropshipping success and profitability.</p>
+            <p class="section-subtitle">Our platform is built with powerful features to maximize your dropshipping
+                success and profitability.</p>
 
             <div class="row">
                 <div class="col-3">
                     <div class="feature-card">
                         <div class="feature-icon">⚡</div>
                         <h4>Lightning Fast</h4>
-                        <p>Ultra-fast product imports, instant order processing, and rapid page load speeds for better customer experience.</p>
+                        <p>Ultra-fast product imports, instant order processing, and rapid page load speeds for better
+                            customer experience.</p>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="feature-card">
                         <div class="feature-icon">💳</div>
                         <h4>Easy Payments</h4>
-                        <p>Multiple payment gateways, automated transactions, and instant payouts to your preferred accounts.</p>
+                        <p>Multiple payment gateways, automated transactions, and instant payouts to your preferred
+                            accounts.</p>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="feature-card">
                         <div class="feature-icon">📈</div>
                         <h4>Profit Calculator</h4>
-                        <p>Real-time profit analysis, margin optimization tools, and ROI tracking for maximum profitability.</p>
+                        <p>Real-time profit analysis, margin optimization tools, and ROI tracking for maximum
+                            profitability.</p>
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="feature-card">
                         <div class="feature-icon">🔄</div>
                         <h4>Advanced Restocking</h4>
-                        <p>AI-powered inventory management, automatic reorder alerts, and supplier coordination for seamless operations.</p>
+                        <p>AI-powered inventory management, automatic reorder alerts, and supplier coordination for
+                            seamless operations.</p>
                     </div>
                 </div>
             </div>
@@ -1315,13 +1409,15 @@
     <section id="testimonials" class="section" style="background: #f8fafc;">
         <div class="container">
             <h2 class="section-title">What Our Clients Say</h2>
-            <p class="section-subtitle">Join thousands of successful dropshippers who have transformed their business with our platform.</p>
+            <p class="section-subtitle">Join thousands of successful dropshippers who have transformed their business
+                with our platform.</p>
 
             <div class="row">
                 <div class="col-4">
                     <div class="testimonial-card">
                         <div class="testimonial-avatar">👨</div>
-                        <p>"Arrbaab transformed my business completely. Within 3 months, I went from zero to $50k monthly revenue. The platform is incredibly user-friendly!"</p>
+                        <p>"Arrbaab transformed my business completely. Within 3 months, I went from zero to $50k
+                            monthly revenue. The platform is incredibly user-friendly!"</p>
                         <h5 style="margin-top: 1rem; color: #2563eb;">Ahmed Al-Rashid</h5>
                         <small style="color: #6b7280;">Dubai, UAE</small>
                     </div>
@@ -1329,7 +1425,8 @@
                 <div class="col-4">
                     <div class="testimonial-card">
                         <div class="testimonial-avatar">👩</div>
-                        <p>"The automated order processing saved me 20 hours per week. Now I can focus on marketing and scaling my business instead of manual tasks."</p>
+                        <p>"The automated order processing saved me 20 hours per week. Now I can focus on marketing and
+                            scaling my business instead of manual tasks."</p>
                         <h5 style="margin-top: 1rem; color: #2563eb;">Sarah Johnson</h5>
                         <small style="color: #6b7280;">Abu Dhabi, UAE</small>
                     </div>
@@ -1337,7 +1434,8 @@
                 <div class="col-4">
                     <div class="testimonial-card">
                         <div class="testimonial-avatar">👨</div>
-                        <p>"Best ROI I've ever seen! The profit calculator helped me optimize my margins and the supplier network is top-notch. Highly recommended!"</p>
+                        <p>"Best ROI I've ever seen! The profit calculator helped me optimize my margins and the
+                            supplier network is top-notch. Highly recommended!"</p>
                         <h5 style="margin-top: 1rem; color: #2563eb;">Mohammed Hassan</h5>
                         <small style="color: #6b7280;">Sharjah, UAE</small>
                     </div>
@@ -1361,7 +1459,8 @@
                             <span>+</span>
                         </button>
                         <div class="faq-answer">
-                            You can start for free! We offer a free plan with basic features. Premium plans start from $29/month with advanced features and higher limits.
+                            You can start for free! We offer a free plan with basic features. Premium plans start from
+                            $29/month with advanced features and higher limits.
                         </div>
                     </div>
 
@@ -1371,7 +1470,8 @@
                             <span>+</span>
                         </button>
                         <div class="faq-answer">
-                            Yes! We have partnerships with reliable suppliers who handle all packaging and shipping directly to your customers with your branding.
+                            Yes! We have partnerships with reliable suppliers who handle all packaging and shipping
+                            directly to your customers with your branding.
                         </div>
                     </div>
 
@@ -1381,7 +1481,8 @@
                             <span>+</span>
                         </button>
                         <div class="faq-answer">
-                            Profit margins typically range from 30-90% depending on the product category and your pricing strategy. Our profit calculator helps optimize margins.
+                            Profit margins typically range from 30-90% depending on the product category and your
+                            pricing strategy. Our profit calculator helps optimize margins.
                         </div>
                     </div>
 
@@ -1391,7 +1492,8 @@
                             <span>+</span>
                         </button>
                         <div class="faq-answer">
-                            Absolutely! We provide 24/7 customer support via chat, email, and phone. Our dedicated success team helps you every step of the way.
+                            Absolutely! We provide 24/7 customer support via chat, email, and phone. Our dedicated
+                            success team helps you every step of the way.
                         </div>
                     </div>
                 </div>
@@ -1399,10 +1501,15 @@
                 <div class="col-6">
                     <div class="contact-form">
                         <h3 style="margin-bottom: 2rem; color: #2563eb;">Get In Touch</h3>
-                        <form>
+                        <form id="contactForm" class="contact-form">
+                            @csrf
                             <div class="form-group">
                                 <label for="name">Full Name</label>
                                 <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required>
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
@@ -1413,6 +1520,9 @@
                                 <textarea id="message" name="message" rows="4" placeholder="Tell us about your business goals..."></textarea>
                             </div>
                             <button type="submit" class="submit-btn">Send Message</button>
+
+                            <div id="formMessage" style="margin-top: 15px;"></div>
+
                         </form>
                     </div>
                 </div>
@@ -1442,7 +1552,9 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #374151;">
-                <p>© 2025  Arrbaab. All rights reserved. | Developed By  <a style="color: white;" class="reference-text" href="https://pitgtech.com/" target="_blank" >Prime Information Technology Group (PITG) </a></p>
+                <p>© 2025 Arrbaab. All rights reserved. | Developed By <a style="color: white;" class="reference-text"
+                        href="https://pitgtech.com/" target="_blank">Prime Information Technology Group (PITG) </a>
+                </p>
             </div>
         </div>
     </footer>
@@ -1457,7 +1569,7 @@
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
@@ -1489,12 +1601,7 @@
             icon.textContent = answer.classList.contains('active') ? '−' : '+';
         }
 
-        // Form submission
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your message! We will get back to you within 24 hours.');
-            this.reset();
-        });
+
 
         // Enhanced scroll effect for header
         window.addEventListener('scroll', () => {
@@ -1524,12 +1631,13 @@
         }, observerOptions);
 
         // Observe all cards and sections
-        document.querySelectorAll('.portal-card, .step-card, .product-card, .feature-card, .testimonial-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'tranaslateY(30px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
+        document.querySelectorAll('.portal-card, .step-card, .product-card, .feature-card, .testimonial-card').forEach(
+            el => {
+                el.style.opacity = '0';
+                el.style.transform = 'tranaslateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
 
         // Animate stats on load
         setTimeout(() => {
@@ -1543,20 +1651,89 @@
         }, 3500);
 
         // Toggle WhatsApp popup
-document.querySelector('.whatsapp-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelector('.whatsapp-popup').classList.toggle('active');
-});
+        document.querySelector('.whatsapp-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelector('.whatsapp-popup').classList.toggle('active');
+        });
 
-// Close WhatsApp popup when clicking outside
-document.addEventListener('click', (e) => {
-    const popup = document.querySelector('.whatsapp-popup');
-    const btn = document.querySelector('.whatsapp-btn');
-    if (!popup.contains(e.target) && !btn.contains(e.target)) {
-        popup.classList.remove('active');
-    }
-});
+        // Close WhatsApp popup when clicking outside
+        document.addEventListener('click', (e) => {
+            const popup = document.querySelector('.whatsapp-popup');
+            const btn = document.querySelector('.whatsapp-btn');
+            if (!popup.contains(e.target) && !btn.contains(e.target)) {
+                popup.classList.remove('active');
+            }
+        });
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("contactForm");
+            const messageDiv = document.getElementById("formMessage");
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            function showMessage(message, color = 'green', duration = 3000) {
+                messageDiv.innerHTML = `<span style="color: ${color};">${message}</span>`;
+                messageDiv.style.display = 'block';
+
+                setTimeout(() => {
+                    messageDiv.innerHTML = '';
+                    messageDiv.style.display = 'none';
+                }, duration);
+            }
+
+            form.addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                // Save original button text
+                const originalText = submitButton.innerHTML;
+
+                // Show loading state on button
+                submitButton.innerHTML = 'Loading...';
+
+                const formData = new FormData(form);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                    'content');
+
+                try {
+                    const response = await fetch("{{ route('contact') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": csrfToken
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        showMessage('Thank you! Your message has been sent.', 'green');
+                        form.reset();
+                    } else if (response.status === 422) {
+                        const data = await response.json();
+                        let errors = data.errors;
+                        let errorHtml = '<ul style="color:red;">';
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorHtml += `<li>${errors[key][0]}</li>`;
+                            }
+                        }
+                        errorHtml += '</ul>';
+                        messageDiv.innerHTML = errorHtml;
+
+                        setTimeout(() => {
+                            messageDiv.innerHTML = '';
+                        }, 3000);
+                    } else {
+                        showMessage('Something went wrong. Please try again later.', 'red');
+                    }
+
+                } catch (error) {
+                    console.error("AJAX error:", error);
+                    showMessage('Error sending request.', 'red');
+                } finally {
+                    // Restore original button text
+                    submitButton.innerHTML = originalText;
+                }
+            });
+        });
     </script>
 </body>
+
 </html>
