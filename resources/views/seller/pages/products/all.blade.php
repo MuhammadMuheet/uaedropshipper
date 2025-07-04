@@ -248,9 +248,10 @@
 
                     // Set product name
                     $('#product_name').html(
-                        `<h3 class="text-center">${dataResult.product.product_name}</h3>`);
+                        `<h3 class="text-center">${dataResult.product.product_name}</h3>`
+                    );
 
-                    // If SIMPLE product
+                    // SIMPLE product
                     if (dataResult.product.product_type === 'simple') {
                         const priceInfo = dataResult.fifo_batch_price;
                         $('#product_batch_id').val(dataResult.batch_id);
@@ -262,24 +263,34 @@
                     </div>
                 `);
 
+                        const productImage = dataResult.product.product_image ?
+                            `{{ asset('storage/') }}/${dataResult.product.product_image}` :
+                            `{{ asset('images/product.jpg') }}`;
+
                         $('#product-variations-image').append(`
                     <div class="col-md-12 mt-2 mb-2 text-center">
-                        <img src="{{ asset('storage/') }}/${dataResult.product.product_image}" class="w-50 h-auto">
+                        <img src="${productImage}" class="w-50 h-auto">
                     </div>
                 `);
                     }
 
-                    // If VARIABLE product
+                    // VARIABLE product
                     if (dataResult.product.product_type === 'variable') {
                         const variationPrices = dataResult.variation_prices;
-                        let firstVariationId = null;
                         let options = '';
 
                         $.each(variationPrices, function(index, variation) {
-                            console.log(variation);
                             if (index === 0) {
-                                firstVariationId = variation.variation_id;
-                                // Set default price and image for the first variation
+                                $('#product_variation_id').val(variation.variation_id);
+                                $('#product_batch_id').val(variation.batch_id);
+
+                                // Fallback to product image if variation image is missing
+                                const variationImage = variation.variation_image ?
+                                    `{{ asset('storage/') }}/${variation.variation_image}` :
+                                    (dataResult.product.product_image ?
+                                        `{{ asset('storage/') }}/${dataResult.product.product_image}` :
+                                        `{{ asset('images/product.jpg') }}`);
+
                                 $('#product-variations-price').append(`
                             <div class="col-md-12 mt-2 mb-2">
                                 <p class="text-danger" style="font-weight: 900 !important; font-size: 14px !important;">
@@ -290,11 +301,9 @@
 
                                 $('#product-variations-image').append(`
                             <div class="col-md-12 mt-2 mb-2 text-center">
-                                <img src="{{ asset('storage/') }}/${variation.variation_image}" class="w-50 h-auto">
+                                <img src="${variationImage}" class="w-50 h-auto">
                             </div>
                         `);
-                                $('#product_variation_id').val(variation.variation_id);
-                                $('#product_batch_id').val(variation.batch_id);
                             }
 
                             options += `<option value="${variation.variation_id}" ${index === 0 ? 'selected' : ''}>
