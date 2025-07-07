@@ -672,6 +672,7 @@
             align-items: center;
             justify-content: center;
             min-height: 400px;
+            margin: 80px 0px;
         }
 
         .uae-center {
@@ -697,19 +698,18 @@
 
         .country-orbit {
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             border: 2px dashed #2563eb;
             border-radius: 50%;
-            opacity: 0.3;
         }
 
         .country-point {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 50px;
             background: white;
-            border-radius: 50%;
+            border-radius: 10%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -720,6 +720,11 @@
             border: 2px solid #2563eb;
         }
 
+        .country-point:nth-child(1) {
+            top: 20px;
+            left: 15%;
+            transform: translateX(-50%);
+        }
         .country-point:nth-child(2) {
             top: -30px;
             left: 50%;
@@ -733,7 +738,7 @@
         }
 
         .country-point:nth-child(4) {
-            bottom: -30px;
+            bottom: -15px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -745,13 +750,8 @@
         }
 
         .country-point:nth-child(6) {
-            top: 20%;
-            right: 20%;
-        }
-
-        .country-point:nth-child(7) {
-            bottom: 20%;
-            left: 20%;
+            top: 10%;
+            right: 5%;
         }
 
         /* Features Section */
@@ -1019,7 +1019,14 @@
                 width: 250px;
                 height: 250px;
             }
-
+            .country-hub {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            margin: 0px 0px;
+        }
             .footer-content {
                 flex-direction: column;
                 text-align: center;
@@ -1028,6 +1035,11 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            .country-point {
+            position: absolute;
+            width: 70px;
+            height: 40px;
+        }
         }
 
         @media (max-width: 480px) {
@@ -1048,6 +1060,19 @@
             .graph-container {
                 padding: 1.5rem;
             }
+            .country-point {
+            position: absolute;
+            width: 70px;
+            height: 40px;
+        }
+        .country-hub {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            margin: 0px 0px;
+        }
         }
 
         /* WhatsApp Floating Button */
@@ -1346,15 +1371,15 @@
 
             <div class="country-hub">
                 <div class="country-orbit">
-                    <div class="country-point">BD</div>
-                    <div class="country-point">LK</div>
-                    <div class="country-point">PK</div>
-                    <div class="country-point">IN</div>
-                    <div class="country-point">AF</div>
-                    <div class="country-point">OM</div>
+                    <img class="country-point" src="countries/bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/sri-lanka.png"  alt="Sri Lanka flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/pakistan.png"  alt="Pakistan flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/india.png"  alt="India flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/afghanistan.png" alt="Afghanistan flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/iran.png" alt="Iran flag" style="object-fit: cover; object-position:center;">
                 </div>
                 <div class="uae-center">
-                    <div class="uae-flag"></div>
+                    <img src="countries/uae-flag.png" width="130">
                 </div>
             </div>
 
