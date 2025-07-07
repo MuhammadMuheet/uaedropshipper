@@ -257,6 +257,7 @@
 
             .hamburger {
                 display: flex;
+                padding-right: 20px;
             }
         }
 
@@ -978,6 +979,9 @@
             .hamburger {
                 display: flex;
             }
+            .hero {
+                padding: 750px 1rem 650px 1rem;
+            }
 
             .hero-content {
                 flex-direction: column;
@@ -1033,7 +1037,7 @@
             }
 
             .hero {
-                padding: 0 1rem;
+                padding: 750px 1rem 650px 1rem;
             }
 
             .section {
