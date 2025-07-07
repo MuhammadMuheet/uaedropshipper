@@ -8,6 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{asset('favicon.png')}}"/>
     <style>
         * {
             margin: 0;
@@ -1121,7 +1122,7 @@
     <!-- Enhanced Header -->
     <header class="header">
         <div class="nav-container">
-            <div class="logo"> <img src="logo-white.png" alt="Arrbaab-Logo" width="160" height="90"></div>
+            <div class="logo"> <img src="logo-white.png" alt="Arrbaab-Logo" width="100" height="60"></div>
             <nav>
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="#hero">Home</a></li>
@@ -1196,7 +1197,7 @@
 
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-value">$127K</span>
+                            <span class="stat-value">AED 127K</span>
                             <span class="stat-label">Monthly Revenue</span>
                         </div>
                         <div class="stat-item">
