@@ -1372,11 +1372,11 @@
 
             <div class="country-hub">
                 <div class="country-orbit">
-                    <img class="country-point" src="countries/bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/sri-lanka.png"  alt="Sri Lanka flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/Bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/Sri-Lanka.png"  alt="Sri Lanka flag" style="object-fit: cover; object-position: center;">
                     <img class="country-point" src="countries/pakistan.png"  alt="Pakistan flag" style="object-fit: cover; object-position: center;">
                     <img class="country-point" src="countries/india.png"  alt="India flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/afghanistan.png" alt="Afghanistan flag" style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/Afghanistan.png" alt="Afghanistan flag" style="object-fit: cover; object-position: center;">
                     <img class="country-point" src="countries/iran.png" alt="Iran flag" style="object-fit: cover; object-position:center;">
                 </div>
                 <div class="uae-center">
