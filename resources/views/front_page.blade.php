@@ -1369,7 +1369,6 @@
             <h2 class="section-title">Global Reach, UAE Focused</h2>
             <p class="section-subtitle">We primarily serve the UAE market with shipping connections to neighboring
                 countries for expanded opportunities.</p>
-
             <div class="country-hub">
                 <div class="country-orbit">
                     <img class="country-point" src="countries/Bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
