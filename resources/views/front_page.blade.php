@@ -1155,7 +1155,7 @@
                     <li><a href="#portal">Portal</a></li>
                     <li><a href="#how-it-works">How It Works</a></li>
                     <li><a href="#products">Products</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
                     <li class="auth-buttons">
                         <a href="/login"class="login-btn">Login</a>
                         <a href="/user-register" class="register-btn">Register</a>
@@ -1369,6 +1369,7 @@
             <h2 class="section-title">Global Reach, UAE Focused</h2>
             <p class="section-subtitle">We primarily serve the UAE market with shipping connections to neighboring
                 countries for expanded opportunities.</p>
+
             <div class="country-hub">
                 <div class="country-orbit">
                     <img class="country-point" src="countries/Bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
@@ -1765,5 +1766,4 @@
         });
     </script>
 </body>
-
 </html>
