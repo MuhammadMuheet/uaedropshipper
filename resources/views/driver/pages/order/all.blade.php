@@ -1,5 +1,5 @@
 @extends('driver.layouts.app')
-@section('title','Orders')
+@section('title', 'Orders')
 @section('content')
     @php
         use App\Helpers\ActivityLogger;
@@ -7,7 +7,9 @@
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-xxl d-flex flex-stack">
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
+                    data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
+                    class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
                     <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Orders</h1>
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
                     <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
@@ -29,189 +31,229 @@
                                 <div class="widget-content widget-content-area card">
                                     <div class="card-header border-0 pt-6 w-100">
 
-                                            <div class="col-md-12 mt-3" id="filter_section" style="display: none;">
-                                                <div class="row">
-                                                    <div class="col-md-4 mt-3">
-                                                        <label class="required mb-2">State</label>
-                                                        <select name="state" id="state" class="js-example-basic-single form-control form-control-solid" onchange="get_area(this.value)">
-                                                            <option value="" selected>Choose a State</option>
-                                                            @foreach($StateData as $state)
-                                                                <option value="{{$state->id}}">{{$state->state}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4 mt-3">
-                                                        <label class="required mb-2">Area</label>
-                                                        <select name="area" id="area" class="js-example-basic-single1 form-control form-control-solid">
-                                                            <option value="" selected>Choose an Area</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4 mt-3">
-                                                        <label class="required mb-2">Status</label>
-                                                        <select name="status" id="status" class="form-control form-control-solid">
-                                                            <option value="" selected>Choose a Status</option>
-                                                            <option value="Pending">Pending</option>
-                                                            <option value="Processing">Processing</option>
-                                                            <option value="Shipped">Shipped</option>
-                                                            <option value="Delivered">Delivered</option>
-                                                            <option value="Cancelled">Cancelled</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4 mt-3" >
-                                                        <label class="required mb-2">Current Date</label>
-                                                        <input type="date" class="form-control form-control-solid" name="current_date" id="current_date">
-                                                    </div>
-                                                    <div class="col-md-4 mt-3" >
-                                                        <label class="required mb-2">Start Date</label>
-                                                        <input type="date" class="form-control form-control-solid" name="start_date" id="start_date">
-                                                    </div>
-                                                    <div class="col-md-4 mt-3" >
-                                                        <label class="required mb-2">End Date</label>
-                                                        <input type="date" class="form-control form-control-solid" name="end_date" id="end_date">
-                                                    </div>
+                                        <div class="col-md-12 mt-3" id="filter_section" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">State</label>
+                                                    <select name="state" id="state"
+                                                        class="js-example-basic-single form-control form-control-solid"
+                                                        onchange="get_area(this.value)">
+                                                        <option value="" selected>Choose a State</option>
+                                                        @foreach ($StateData as $state)
+                                                            <option value="{{ $state->id }}">{{ $state->state }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
-                                                <hr style="border: none; border-top: 1px solid black;">
-                                            </div>
-                                        
-                                            <div class="col-md-12 mt-3">
-                                                <div class="row">
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalCod">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Total COD</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="deliveredCod">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Delivered COD</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="cancelledCod">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Cancelled COD</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                 
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalPendingCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Pending Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalProcessingCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Processing Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-4 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalShippedCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Shipped Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-3 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalDeliveredCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Delivered Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-3 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalCancelledCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Cancelled Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-3 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalOut_for_deliveryCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Out For Delivery Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6 col-md-3 mb-4">
-                                                        <div class="card-shadow card rounded" >
-                                                            <div class="card-body">
-                                                                <div class="d-flex align-items-center mb-2 pb-1">
-                                                                    <h4 class="ms-1 mb-0" id="totalFutureCount">0</h4>
-                                                                </div>
-                                                                <p class="mb-1">Future Orders</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-    
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">Area</label>
+                                                    <select name="area" id="area"
+                                                        class="js-example-basic-single1 form-control form-control-solid">
+                                                        <option value="" selected>Choose an Area</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">Status</label>
+                                                    <select name="status" id="status"
+                                                        class="form-control form-control-solid">
+                                                        <option value="" selected>Choose a Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Processing">Processing</option>
+                                                        <option value="Shipped">Shipped</option>
+                                                        <option value="Delivered">Delivered</option>
+                                                        <option value="Cancelled">Cancelled</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">Current Date</label>
+                                                    <input type="date" class="form-control form-control-solid"
+                                                        name="current_date" id="current_date">
+                                                </div>
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">Start Date</label>
+                                                    <input type="date" class="form-control form-control-solid"
+                                                        name="start_date" id="start_date">
+                                                </div>
+                                                <div class="col-md-4 mt-3">
+                                                    <label class="required mb-2">End Date</label>
+                                                    <input type="date" class="form-control form-control-solid"
+                                                        name="end_date" id="end_date">
                                                 </div>
                                             </div>
+                                            <hr style="border: none; border-top: 1px solid black;">
+                                        </div>
+
+                                        <div class="col-md-12 mt-3">
+                                            <div class="row">
+                                                <!-- Total COD -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalCod">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Total COD</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Delivered COD -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="deliveredCod">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Delivered COD</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Cancelled COD -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="cancelledCod">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Cancelled COD</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Pending Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalPendingCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Pending Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Processing Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalProcessingCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Processing Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Shipped Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalShippedCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Shipped Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Delivered Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalDeliveredCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Delivered Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Cancelled Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalCancelledCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Cancelled Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Out For Delivery -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalOut_for_deliveryCount">0
+                                                                </h4>
+                                                            </div>
+                                                            <p class="mb-1">Out For Delivery Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Future Orders -->
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalFutureCount">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Future Orders</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
                                         <div class="col-12">
                                             <hr style=" border: none; border-top: 1px solid black;">
                                         </div>
                                         <div class="col-md-6 mt-3 text-md-start text-center">
                                             <div class="d-flex align-items-center position-relative my-1">
                                                 <span class="svg-icon svg-icon-1 position-absolute ms-6">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-														<rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
-														<path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
-													</svg>
-												</span>
-                                                <input type="text" data-kt-customer-table-filter="search" id="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search " />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none">
+                                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546"
+                                                            height="2" rx="1"
+                                                            transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
+                                                        <path
+                                                            d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z"
+                                                            fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                                <input type="text" data-kt-customer-table-filter="search"
+                                                    id="search" class="form-control form-control-solid w-250px ps-15"
+                                                    placeholder="Search " />
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-3 text-md-end text-center">
                                             <button class="btn btn-flex btn-primary fw-bolder" onclick="toggleFilter()">
-    <span class="svg-icon svg-icon-5 svg-icon-gray-500 me-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor"></path>
-        </svg>
-    </span>
+                                                <span class="svg-icon svg-icon-5 svg-icon-gray-500 me-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none">
+                                                        <path
+                                                            d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
+                                                </span>
                                                 Filter
                                             </button>
-                                            <button type="button" class="btn btn-danger me-3" onclick="reset_table()">Reset </button>
+                                            <button type="button" class="btn btn-danger me-3"
+                                                onclick="reset_table()">Reset </button>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="table"  class="table table-hover table-row-dashed fs-6 gy-5 my-0 dataTable no-footer" style="width:100%">
+                                            <table id="table"
+                                                class="table table-hover table-row-dashed fs-6 gy-5 my-0 dataTable no-footer"
+                                                style="width:100%">
                                                 <thead>
-                                                <tr style="display: none;">
-                                                    <th class="min-w-175px"></th>
-                                                </tr>
+                                                    <tr style="display: none;">
+                                                        <th class="min-w-175px"></th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
@@ -226,9 +268,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="kt_modal_new_target" tabindex="-1"
-         data-bs-backdrop="static" data-bs-keyboard="false"
-         style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="kt_modal_new_target" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered mw-750px">
             <div class="modal-content rounded">
                 <div class="modal-header pb-0 border-0 justify-content-end" id="view_close_button">
@@ -238,11 +279,11 @@
                     <form method="post" id="InsertForm" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="order_id" id="order_id">
-                        <div class="d-flex flex-column scroll-y" id="kt_modal_add_user_scroll"
-                             data-kt-scroll="true" data-kt-scroll-activate="{default: true, lg: true}"
-                             data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
-                             data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px"
-                             style="max-height: 570px;">
+                        <div class="d-flex flex-column scroll-y" id="kt_modal_add_user_scroll" data-kt-scroll="true"
+                            data-kt-scroll-activate="{default: true, lg: true}" data-kt-scroll-max-height="auto"
+                            data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                            data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px"
+                            style="max-height: 570px;">
                             <div class="fv-row mb-7 fv-plugins-icon-container">
                                 <div class=" text-center">
                                     <h1 class="">Out For Delivery</h1>
@@ -254,18 +295,28 @@
                                     <div class="card border">
                                         <div class="border-bottom p-4">
                                             <h4 class="">
-                                            <span class="svg-icon svg-icon-2">
-                                            <span class="svg-icon svg-icon-muted svg-icon-1x">
-<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>                                            </span>
-											</span>
-                                                <span class="menu-title">Info</span>  </h4>
+                                                <span class="svg-icon svg-icon-2">
+                                                    <span class="svg-icon svg-icon-muted svg-icon-1x">
+                                                        <svg viewBox="0 0 24 24" width="24" height="24"
+                                                            stroke="currentColor" stroke-width="2" fill="none"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="css-i6dzq1">
+                                                            <circle cx="12" cy="12" r="10"></circle>
+                                                            <line x1="12" y1="16" x2="12"
+                                                                y2="12"></line>
+                                                            <line x1="12" y1="8" x2="12.01"
+                                                                y2="8"></line>
+                                                        </svg> </span>
+                                                </span>
+                                                <span class="menu-title">Info</span>
+                                            </h4>
                                         </div>
                                         <div class="card-body">
-                                            <p  id="driver_assign_date">
+                                            <p id="driver_assign_date">
                                             </p>
-                                            <p  id="view_delivery_cod_amount">
+                                            <p id="view_delivery_cod_amount">
                                             </p>
-                                            <p  id="view_delivery_instructions">
+                                            <p id="view_delivery_instructions">
                                             </p>
                                             <p id="view_delivery_state">
                                             </p>
@@ -283,18 +334,25 @@
                                     <div class="card border">
                                         <div class="border-bottom p-4">
                                             <h4 class="">
-                                            <span class="svg-icon svg-icon-2">
-                                            <span class="svg-icon svg-icon-muted svg-icon-1x">
-<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>                                            </span>
-											</span>
-                                                <span class="menu-title">Customer</span>  </h4>
+                                                <span class="svg-icon svg-icon-2">
+                                                    <span class="svg-icon svg-icon-muted svg-icon-1x">
+                                                        <svg viewBox="0 0 24 24" width="24" height="24"
+                                                            stroke="currentColor" stroke-width="2" fill="none"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="css-i6dzq1">
+                                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                            <circle cx="12" cy="7" r="4"></circle>
+                                                        </svg> </span>
+                                                </span>
+                                                <span class="menu-title">Customer</span>
+                                            </h4>
                                         </div>
                                         <div class="card-body">
-                                            <p  id="view_delivery_customer_name">
+                                            <p id="view_delivery_customer_name">
                                             </p>
-                                            <p  id="view_delivery_phone">
+                                            <p id="view_delivery_phone">
                                             </p>
-                                            <p  id="view_delivery_whatsapp">
+                                            <p id="view_delivery_whatsapp">
                                             </p>
                                             <div class="text-center" id="view_customer_button">
 
@@ -303,75 +361,88 @@
                                     </div>
                                 </div>
                             </div>
-                             <div class="fv-row fv-plugins-icon-container" id="delivery_instructions" style="display:none;">
-                                 <input type="hidden" name="delivery_status" id="delivery_status">
-                            <div class="fv-row mb-7 fv-plugins-icon-container">
-                                <label class="form-label">Delivery Instructions</label>
-                                <textarea class="form-control form-control-solid w-100 required-input" placeholder="Write An Instructions" name="delivery_instruction" id="delivery_instruction"></textarea>
+                            <div class="fv-row fv-plugins-icon-container" id="delivery_instructions"
+                                style="display:none;">
+                                <input type="hidden" name="delivery_status" id="delivery_status">
+                                <div class="fv-row mb-7 fv-plugins-icon-container">
+                                    <label class="form-label">Delivery Instructions</label>
+                                    <textarea class="form-control form-control-solid w-100 required-input" placeholder="Write An Instructions"
+                                        name="delivery_instruction" id="delivery_instruction"></textarea>
 
-                            </div>
-{{--                            <div class="fv-row mb-7 fv-plugins-icon-container" >--}}
-{{--                                    <label class="form-label">Capture Proof of Delivery</label>--}}
-{{--                                    <video id="video" style="width: 100%; height: auto" autoplay></video>--}}
-{{--                                    <button type="button" class="btn btn-secondary mt-2" onclick="capturePhoto()">Capture</button>--}}
-{{--                                    <canvas id="canvas" width="100%" height="250" style="display:none;"></canvas>--}}
-{{--                                    <img id="preview" src="" class="img-fluid mt-2" style="display:none;">--}}
-{{--                                    <input type="hidden" name="image_data" id="image_data">--}}
-{{--                            </div>--}}
-                                 <div class="fv-row mb-7 fv-plugins-icon-container">
-                                     <label class="form-label">Proof of Delivery</label>
+                                </div>
+                                {{--                            <div class="fv-row mb-7 fv-plugins-icon-container" > --}}
+                                {{--                                    <label class="form-label">Capture Proof of Delivery</label> --}}
+                                {{--                                    <video id="video" style="width: 100%; height: auto" autoplay></video> --}}
+                                {{--                                    <button type="button" class="btn btn-secondary mt-2" onclick="capturePhoto()">Capture</button> --}}
+                                {{--                                    <canvas id="canvas" width="100%" height="250" style="display:none;"></canvas> --}}
+                                {{--                                    <img id="preview" src="" class="img-fluid mt-2" style="display:none;"> --}}
+                                {{--                                    <input type="hidden" name="image_data" id="image_data"> --}}
+                                {{--                            </div> --}}
+                                <div class="fv-row mb-7 fv-plugins-icon-container">
+                                    <label class="form-label">Proof of Delivery</label>
 
-                                     <!-- Buttons for separate actions -->
-                                     <div class="d-flex gap-2 mb-3">
-                                         <button type="button" class="btn btn-primary" onclick="startCamera()">📷 Take a Photo</button>
-                                         <button type="button" class="btn btn-secondary" onclick="triggerFileInput()">📂 Choose a Photo</button>
-                                     </div>
+                                    <!-- Buttons for separate actions -->
+                                    <div class="d-flex gap-2 mb-3">
+                                        <button type="button" class="btn btn-primary" onclick="startCamera()">📷 Take a
+                                            Photo</button>
+                                        <button type="button" class="btn btn-secondary" onclick="triggerFileInput()">📂
+                                            Choose a Photo</button>
+                                    </div>
 
-                                     <!-- Camera Section -->
-                                     <div id="cameraSection" style="display:none;">
-                                         <video id="video" style="width: 100%; height: auto;" autoplay></video>
-                                         <button type="button" class="btn btn-danger mt-2" onclick="capturePhoto()">📸 Capture</button>
-                                     </div>
+                                    <!-- Camera Section -->
+                                    <div id="cameraSection" style="display:none;">
+                                        <video id="video" style="width: 100%; height: auto;" autoplay></video>
+                                        <button type="button" class="btn btn-danger mt-2" onclick="capturePhoto()">📸
+                                            Capture</button>
+                                    </div>
 
-                                     <!-- File Input (Hidden) -->
-                                     <input type="file" id="fileInput" class="form-control mt-2" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+                                    <!-- File Input (Hidden) -->
+                                    <input type="file" id="fileInput" class="form-control mt-2" accept="image/*"
+                                        style="display:none;" onchange="handleFileSelect(event)">
 
-                                     <!-- Canvas (Hidden) & Image Preview -->
-                                     <canvas id="canvas" style="display:none;"></canvas>
-                                     <img id="preview" src="" class="img-fluid mt-2" style="display:none;">
+                                    <!-- Canvas (Hidden) & Image Preview -->
+                                    <canvas id="canvas" style="display:none;"></canvas>
+                                    <img id="preview" src="" class="img-fluid mt-2" style="display:none;">
 
-                                     <!-- Hidden Input to Store Image Data -->
-                                     <input type="hidden" name="image_data" id="image_data">
-                                 </div>
-                            <div class="fv-row mb-7 fv-plugins-icon-container" id="want_to_change_cod">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="change_cod" id="change_cod">
-                                    <label class="form-check-label" for="change_cod">
-                                        Are You Want to Change COD
-                                    </label>
+                                    <!-- Hidden Input to Store Image Data -->
+                                    <input type="hidden" name="image_data" id="image_data">
+                                </div>
+                                <div class="fv-row mb-7 fv-plugins-icon-container" id="want_to_change_cod">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="change_cod"
+                                            id="change_cod">
+                                        <label class="form-check-label" for="change_cod">
+                                            Are You Want to Change COD
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="fv-row mb-7 fv-plugins-icon-container" id="cod_amount_section"
+                                    style="display: none;">
+                                    <label class="form-label">Enter Changed COD [AED]</label>
+                                    <input type="number" class="form-control form-control-solid"
+                                        name="changed_cod_amount" id="changed_cod_amount">
                                 </div>
                             </div>
-                                 <div class="fv-row mb-7 fv-plugins-icon-container" id="cod_amount_section" style="display: none;">
-                                     <label class="form-label">Enter Changed COD [AED]</label>
-                                     <input type="number" class="form-control form-control-solid" name="changed_cod_amount" id="changed_cod_amount">
-                                 </div>
-                             </div>
                         </div>
                         <div class="modal-footer d-block">
                             <div class="row" id="submit_btn" style="display:none;">
                                 <div class="col-12 text-center">
-                            <button type="button" id="kt_modal_new_target_submit" class="btn btn-primary" onclick="insert_item()">Update</button>
+                                    <button type="button" id="kt_modal_new_target_submit" class="btn btn-primary"
+                                        onclick="insert_item()">Update</button>
                                 </div>
                             </div>
-                            <div class="row"  id="delivery_btn">
+                            <div class="row" id="delivery_btn">
                                 <div class="col-6">
-                                    <button type="button" onclick="toggleInstructions('Delivered')" class="btn btn-success w-100">Delivered</button>
+                                    <button type="button" onclick="toggleInstructions('Delivered')"
+                                        class="btn btn-success w-100">Delivered</button>
                                 </div>
                                 <div class="col-6">
-                                    <button type="button" onclick="toggleInstructions('Cancelled')" class="btn btn-danger w-100">Canceled</button>
+                                    <button type="button" onclick="toggleInstructions('Cancelled')"
+                                        class="btn btn-danger w-100">Canceled</button>
                                 </div>
                                 <div class="col-12 mt-3">
-                                    <button type="button" onclick="toggleInstructions('Future')" class="btn btn-primary w-100">Future</button>
+                                    <button type="button" onclick="toggleInstructions('Future')"
+                                        class="btn btn-primary w-100">Future</button>
                                 </div>
                             </div>
                         </div>
@@ -386,12 +457,15 @@
             <div class="modal-content rounded">
                 <div class="modal-header pb-0 border-0 justify-content-end">
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                    <span class="svg-icon svg-icon-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
-                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
-                        </svg>
-                    </span>
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                    transform="rotate(-45 6 17.3137)" fill="currentColor"></rect>
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1"
+                                    transform="rotate(45 7.41422 6)" fill="currentColor"></rect>
+                            </svg>
+                        </span>
                     </div>
                 </div>
                 <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
@@ -467,14 +541,14 @@
                         <h3 class="mb-3">Order Items</h3>
                         <table class="table table-hover table-row-dashed fs-6 gy-5 my-0  no-footer">
                             <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                            </tr>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                </tr>
                             </thead>
                             <tbody id="order_items_table">
-                            <!-- Order items will be injected here via AJAX -->
+                                <!-- Order items will be injected here via AJAX -->
                             </tbody>
                         </table>
 
@@ -489,47 +563,48 @@
 @endsection
 @push('js')
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             toggleInstructions('nostatus')
         });
+
         function toggleInstructions(status) {
             let information = document.getElementById('information');
             let delivery_instructions = document.getElementById('delivery_instructions');
             let submit_btn = document.getElementById('submit_btn');
             let delivery_btn = document.getElementById('delivery_btn');
             let want_to_change_cod = document.getElementById('want_to_change_cod');
-if(status === 'Delivered'){
-    information.style.display = "none";
-    delivery_instructions.style.display = "block";
-    submit_btn.style.display = "flex";
-    delivery_btn.style.display = "none";
-    want_to_change_cod.style.display = "block";
-    $('#delivery_status').val('Delivered');
-}else if (status === 'Cancelled'){
-    information.style.display = "none";
-    delivery_instructions.style.display = "block";
-    submit_btn.style.display = "flex";
-    delivery_btn.style.display = "none";
-    want_to_change_cod.style.display = "block";
-    $('#delivery_status').val('Cancelled');
-}else if (status === 'Future'){
-    information.style.display = "none";
-    delivery_instructions.style.display = "block";
-    submit_btn.style.display = "flex";
-    delivery_btn.style.display = "none";
-    want_to_change_cod.style.display = "none";
-    $('#delivery_status').val('Future');
-}else{
-    information.style.display = "block";
-    delivery_instructions.style.display = "none";
-    submit_btn.style.display = "none";
-    delivery_btn.style.display = "flex";
-    want_to_change_cod.style.display = "none";
-    $('#delivery_status').val('');
-}
+            if (status === 'Delivered') {
+                information.style.display = "none";
+                delivery_instructions.style.display = "block";
+                submit_btn.style.display = "flex";
+                delivery_btn.style.display = "none";
+                want_to_change_cod.style.display = "block";
+                $('#delivery_status').val('Delivered');
+            } else if (status === 'Cancelled') {
+                information.style.display = "none";
+                delivery_instructions.style.display = "block";
+                submit_btn.style.display = "flex";
+                delivery_btn.style.display = "none";
+                want_to_change_cod.style.display = "block";
+                $('#delivery_status').val('Cancelled');
+            } else if (status === 'Future') {
+                information.style.display = "none";
+                delivery_instructions.style.display = "block";
+                submit_btn.style.display = "flex";
+                delivery_btn.style.display = "none";
+                want_to_change_cod.style.display = "none";
+                $('#delivery_status').val('Future');
+            } else {
+                information.style.display = "block";
+                delivery_instructions.style.display = "none";
+                submit_btn.style.display = "none";
+                delivery_btn.style.display = "flex";
+                want_to_change_cod.style.display = "none";
+                $('#delivery_status').val('');
+            }
         }
-        $(document).ready(function () {
-            $('#change_cod').change(function () {
+        $(document).ready(function() {
+            $('#change_cod').change(function() {
                 if ($(this).is(':checked')) {
                     $('#cod_amount_section').slideDown();
                 } else {
@@ -538,6 +613,7 @@ if(status === 'Delivered'){
                 }
             });
         });
+
         function toggleFilter() {
             var filterSection = document.getElementById("filter_section");
             if (filterSection.style.display === "none") {
@@ -558,11 +634,13 @@ if(status === 'Delivered'){
             var table = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
-                order: [[0, 'desc']],
+                order: [
+                    [0, 'desc']
+                ],
                 ajax: {
                     url: "{{ route('all_driver_orders') }}",
                     type: 'GET',
-                    data: function (d) {
+                    data: function(d) {
                         d.state = $('#state').val();
                         d.area = $('#area').val();
                         d.start_date = $('#start_date').val();
@@ -585,9 +663,11 @@ if(status === 'Delivered'){
                         return json.data;
                     }
                 },
-                columns: [
-                    { data: 'OrderDetails', name: 'OrderDetails',orderable: false, },
-                ],
+                columns: [{
+                    data: 'OrderDetails',
+                    name: 'OrderDetails',
+                    orderable: false,
+                }, ],
                 responsive: true,
                 pageLength: 5,
                 language: {
@@ -597,24 +677,26 @@ if(status === 'Delivered'){
             $('#search').on('keyup', function() {
                 table.search(this.value).draw();
             });
-            $('#state, #area, #current_date, #start_date, #end_date, #status').on('change', function () {
+            $('#state, #area, #current_date, #start_date, #end_date, #status').on('change', function() {
                 table.ajax.reload();
             });
         });
+
         function reset_table() {
             $('#state, #area, #current_date, #start_date, #end_date, #status, #search').val('').trigger('change');
             $('#table').DataTable().ajax.reload();
         }
+
         function get_area(selectedValue) {
             console.log(selectedValue)
             $.ajax({
-                url: "{{Route('get_driver_areas')}}",
+                url: "{{ Route('get_driver_areas') }}",
                 type: "get",
                 data: {
                     state_id: selectedValue,
                 },
                 cache: false,
-                success: function (dataResult) {
+                success: function(dataResult) {
                     $('#area').html(dataResult.options);
 
                 }
@@ -622,14 +704,16 @@ if(status === 'Delivered'){
         }
     </script>
     <script>
-        $('body').on('click', '.view', function () {
+        $('body').on('click', '.view', function() {
             var id = $(this).data('id');
             $.ajax({
-                url: "{{Route('get_driver_order')}}",
+                url: "{{ Route('get_driver_order') }}",
                 type: "GET",
-                data: { id: id },
+                data: {
+                    id: id
+                },
                 cache: false,
-                success: function (response) {
+                success: function(response) {
                     if (response.order) {
                         var order = response.order;
                         $('#view_order_id').text(order.id);
@@ -642,25 +726,26 @@ if(status === 'Delivered'){
                         $('#view_area').text(order.area ? order.area.area : 'N/A');
                         $('#view_instructions').text(order.instructions);
                         $('#view_address').text(order.address);
-                        $('#view_map_url').html(`<a href="${order.map_url}" target="_blank">${order.map_url}</a>`);
-                        $('#view_subtotal').text(order.subtotal +' AED');
-                        $('#view_shipping_fee').text(order.shipping_fee +' AED');
-                        $('#view_total').text(order.total +' AED');
-                        $('#view_cod_amount').text(order.cod_amount +' AED');
+                        $('#view_map_url').html(
+                            `<a href="${order.map_url}" target="_blank">${order.map_url}</a>`);
+                        $('#view_subtotal').text(order.subtotal + ' AED');
+                        $('#view_shipping_fee').text(order.shipping_fee + ' AED');
+                        $('#view_total').text(order.total + ' AED');
+                        $('#view_cod_amount').text(order.cod_amount + ' AED');
                         $('#view_status').text(order.status);
                         var orderItemsHtml = "";
-                        $.each(order.order_items, function (index, item) {
-                            if(item.product_variation){
-                                var product_image= item.product_variation.variation_image;
-                            }else{
-                                var product_image= item.product.product_image;
+                        $.each(order.order_items, function(index, item) {
+                            if (item.product_variation) {
+                                var product_image = item.product_variation.variation_image;
+                            } else {
+                                var product_image = item.product.product_image;
                             }
-                            var variation = item.product_variation
-                                ? `[ ${item.product_variation.variation_name} - ${item.product_variation.variation_value} ]`
-                                : "";
+                            var variation = item.product_variation ?
+                                `[ ${item.product_variation.variation_name} - ${item.product_variation.variation_value} ]` :
+                                "";
                             orderItemsHtml += `
                         <tr>
-                            <td><img src="{{asset('storage/')}}/${product_image}" width="50"></td>
+                            <td><img src="{{ asset('storage/') }}/${product_image}" width="50"></td>
                             <td>${item.product.product_name} <br> ${variation}</td>
                             <td>${item.quantity}</td>
                         </tr>`;
@@ -669,29 +754,31 @@ if(status === 'Delivered'){
                         $('#edit_kt_modal_new_target').modal('show');
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Error fetching order details");
                 }
             });
         });
-        $('body').on('click', '.delivery', function () {
+        $('body').on('click', '.delivery', function() {
             var id = $(this).data('id');
             $.ajax({
-                url: "{{Route('get_driver_order')}}",
+                url: "{{ Route('get_driver_order') }}",
                 type: "GET",
-                data: { id: id },
+                data: {
+                    id: id
+                },
                 cache: false,
-                success: function (response) {
+                success: function(response) {
                     if (response.order) {
                         var order = response.order;
                         $('#order_id').val(order.id);
-                        $('#view_delivery_customer_name').text('Name: '+order.customer_name);
-                        $('#view_delivery_phone').text('Phone: '+order.phone);
-                        $('#view_delivery_whatsapp').text('Whatsapp: '+order.whatsapp);
-                        $('#view_delivery_state').text('State: '+order.state.state );
-                        $('#view_delivery_area').text('Area: '+order.area.area);
-                        $('#view_delivery_address').text('Address: '+order.address);
-                        $('#view_delivery_instructions').text('Instructions: '+order.instructions);
+                        $('#view_delivery_customer_name').text('Name: ' + order.customer_name);
+                        $('#view_delivery_phone').text('Phone: ' + order.phone);
+                        $('#view_delivery_whatsapp').text('Whatsapp: ' + order.whatsapp);
+                        $('#view_delivery_state').text('State: ' + order.state.state);
+                        $('#view_delivery_area').text('Area: ' + order.area.area);
+                        $('#view_delivery_address').text('Address: ' + order.address);
+                        $('#view_delivery_instructions').text('Instructions: ' + order.instructions);
                         $('#view_close_button').html(`<button class="btn btn-flex btn-primary fw-bolder" data-bs-dismiss="modal" onclick="changeStatus(0, '${order.id}')" >
                     <span class="svg-icon svg-icon-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -716,7 +803,7 @@ if(status === 'Delivered'){
                     </span>
                                         Navigation
                                     </a>`);
-                        $('#view_delivery_cod_amount').text('COD: '+order.cod_amount+' AED' );
+                        $('#view_delivery_cod_amount').text('COD: ' + order.cod_amount + ' AED');
                         $('#view_delivery_status').text(order.status);
                         let date = new Date(order.driver_assign_date);
                         let formattedDate = date.toLocaleDateString('en-US', {
@@ -728,7 +815,7 @@ if(status === 'Delivered'){
 
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Error fetching order details");
                 }
             });
@@ -773,7 +860,12 @@ if(status === 'Delivered'){
             // Stop any existing stream before starting a new one
             stopCamera();
 
-            navigator.mediaDevices.getUserMedia({ video: { width: 1920, height: 1080 } })
+            navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: 1920,
+                        height: 1080
+                    }
+                })
                 .then(newStream => {
                     stream = newStream;
                     let video = document.getElementById('video');
@@ -817,7 +909,7 @@ if(status === 'Delivered'){
 
             if (file) {
                 let reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     document.getElementById('preview').src = e.target.result;
                     document.getElementById('preview').style.display = 'block';
                     document.getElementById('image_data').value = e.target.result;
@@ -833,14 +925,21 @@ if(status === 'Delivered'){
             }
             document.getElementById('cameraSection').style.display = 'none';
         }
+
         function dataURLtoFile(dataurl, filename) {
-            let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            let arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
             while (n--) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            return new File([u8arr], filename, { type: mime });
+            return new File([u8arr], filename, {
+                type: mime
+            });
         }
+
         function insert_item() {
             let orderId = document.getElementById('order_id').value;
             let delivery_status = document.getElementById('delivery_status').value;
@@ -867,13 +966,13 @@ if(status === 'Delivered'){
             let proofFile = dataURLtoFile(imageData, "proof.jpg");
             formData.append('files', proofFile);
             $.ajax({
-                url: "{{route('order.markDelivered')}}",
+                url: "{{ route('order.markDelivered') }}",
                 type: "POST",
                 data: formData,
                 contentType: false,
                 cache: false,
                 processData: false,
-                success: function (dataResult) {
+                success: function(dataResult) {
                     console.log(dataResult);
                     document.getElementById("kt_modal_new_target_submit").innerHTML = "Update";
                     document.getElementById('kt_modal_new_target_submit').disabled = false;
@@ -883,12 +982,11 @@ if(status === 'Delivered'){
                         toastr.success('Status Change Successfully.');
                         document.getElementById("InsertForm").reset();
                         toggleInstructions('nostatus')
-                    } else if(dataResult == 2){
+                    } else if (dataResult == 2) {
                         toastr.error('Order not found');
-                    }else if(dataResult == 3){
+                    } else if (dataResult == 3) {
                         toastr.error('Please Provide Order Proof');
-                    }
-                    else {
+                    } else {
                         toastr.error('Something Went Wrong.');
                     }
 
@@ -918,8 +1016,7 @@ if(status === 'Delivered'){
                     } else if (dataResult == 2) {
                         toggleInstructions('nostatus')
                         $('#table').DataTable().ajax.reload(null, false);
-                    }
-                    else {
+                    } else {
                         toastr.error('Something Went Wrong.');
                     }
                 },
@@ -929,6 +1026,5 @@ if(status === 'Delivered'){
                 }
             });
         }
-
     </script>
 @endpush
