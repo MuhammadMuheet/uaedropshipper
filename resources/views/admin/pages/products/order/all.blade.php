@@ -553,6 +553,40 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm">
+                        @csrf
+                        <input type="hidden" id="update_order_id">
+                        <div class="mb-3">
+                            <label for="order_status" class="form-label">Select New Status</label>
+                            <select id="order_status" class="form-select">
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Future">Future</option>
+                                <option value="Out_for_delivery">Out For Delivery</option>
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('js')
     <script type="text/javascript">
@@ -1003,6 +1037,44 @@
 
             var url = "{{ route('admin.orders.bulk.print') }}?ids=" + selected.join(',');
             window.open(url, '_blank');
+        });
+
+
+        // Show modal when clicking on status badge
+        $(document).on('click', '.change-status', function() {
+            var orderId = $(this).data('id');
+            var currentStatus = $(this).data('status');
+
+            $('#update_order_id').val(orderId);
+            $('#order_status').val(currentStatus);
+            $('#updateStatusModal').modal('show');
+        });
+
+        // Handle status form submission
+        $('#updateStatusForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var orderId = $('#update_order_id').val();
+            var newStatus = $('#order_status').val();
+
+            $.ajax({
+                url: '{{ route('orders.update.status') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: orderId,
+                    status: newStatus
+                },
+                success: function() {
+                    $('#updateStatusModal').modal('hide');
+                    $('#table').DataTable().ajax.reload(null,
+                        false); // Reload without resetting pagination
+                    toastr.success('Status updated successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to update status.');
+                }
+            });
         });
     </script>
 @endpush
