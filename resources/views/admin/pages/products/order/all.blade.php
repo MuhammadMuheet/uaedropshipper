@@ -1205,15 +1205,17 @@
                 success: function(response) {
                     console.log('Status updated successfully:', response);
                     $('#updateStatusModal').modal('hide');
-                    $('#table').DataTable().ajax.reload(null, false);
-                    toastr.success(response.message);
+                    $('#table').DataTable().ajax.reload(null,
+                    false); // Reload without resetting pagination
+                    toastr.success('Status updated successfully.');
                 },
                 error: function(xhr) {
+                    // CURRENT: toastr.error('Failed to update status.');
+                    // IMPROVE TO SHOW ACTUAL MESSAGE FROM BACKEND:
                     let message = 'Failed to update status.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         message = xhr.responseJSON.message;
                     }
-                    console.error('Error updating status:', message);
                     toastr.error(message);
                 }
             });
