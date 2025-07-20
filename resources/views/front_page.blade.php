@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="{{asset('favicon.png')}}"/>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
     <style>
         * {
             margin: 0;
@@ -726,6 +726,7 @@
             left: 15%;
             transform: translateX(-50%);
         }
+
         .country-point:nth-child(2) {
             top: -30px;
             left: 50%;
@@ -981,6 +982,7 @@
             .hamburger {
                 display: flex;
             }
+
             .hero {
                 padding: 750px 1rem 650px 1rem;
             }
@@ -1020,14 +1022,16 @@
                 width: 250px;
                 height: 250px;
             }
+
             .country-hub {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-            margin: 0px 0px;
-        }
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 400px;
+                margin: 0px 0px;
+            }
+
             .footer-content {
                 flex-direction: column;
                 text-align: center;
@@ -1036,11 +1040,12 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
             .country-point {
-            position: absolute;
-            width: 70px;
-            height: 40px;
-        }
+                position: absolute;
+                width: 70px;
+                height: 40px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1061,19 +1066,21 @@
             .graph-container {
                 padding: 1.5rem;
             }
+
             .country-point {
-            position: absolute;
-            width: 70px;
-            height: 40px;
-        }
-        .country-hub {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-            margin: 0px 0px;
-        }
+                position: absolute;
+                width: 70px;
+                height: 40px;
+            }
+
+            .country-hub {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 400px;
+                margin: 0px 0px;
+            }
         }
 
         /* WhatsApp Floating Button */
@@ -1156,10 +1163,21 @@
                     <li><a href="#how-it-works">How It Works</a></li>
                     <li><a href="#products">Products</a></li>
                     <li><a href="#contact">Contact Us</a></li>
-                    <li class="auth-buttons">
-                        <a href="/login"class="login-btn">Login</a>
-                        <a href="/user-register" class="register-btn">Register</a>
-                    </li>
+                    @guest
+                        <li class="auth-buttons">
+                            <a href="/login" class="login-btn">Login</a>
+                            <a href="/user-register" class="register-btn">Register</a>
+                        </li>
+                    @endguest
+                    @auth
+                        <li class="auth-buttons">
+                            <a href="/login" class="login-btn">Dashboard</a>
+                            <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="register-btn">Logout</button>
+                            </form>
+                        </li>
+                    @endauth
                 </ul>
                 <div class="hamburger" id="hamburger">
                     <span></span>
@@ -1372,12 +1390,18 @@
 
             <div class="country-hub">
                 <div class="country-orbit">
-                    <img class="country-point" src="countries/Bangladesh.png" alt="Bangladesh flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/Sri-Lanka.png"  alt="Sri Lanka flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/pakistan.png"  alt="Pakistan flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/india.png"  alt="India flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/Afghanistan.png" alt="Afghanistan flag" style="object-fit: cover; object-position: center;">
-                    <img class="country-point" src="countries/iran.png" alt="Iran flag" style="object-fit: cover; object-position:center;">
+                    <img class="country-point" src="countries/Bangladesh.png" alt="Bangladesh flag"
+                        style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/Sri-Lanka.png" alt="Sri Lanka flag"
+                        style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/pakistan.png" alt="Pakistan flag"
+                        style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/india.png" alt="India flag"
+                        style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/Afghanistan.png" alt="Afghanistan flag"
+                        style="object-fit: cover; object-position: center;">
+                    <img class="country-point" src="countries/iran.png" alt="Iran flag"
+                        style="object-fit: cover; object-position:center;">
                 </div>
                 <div class="uae-center">
                     <img src="countries/uae-flag.png" width="130">
@@ -1766,4 +1790,5 @@
         });
     </script>
 </body>
+
 </html>

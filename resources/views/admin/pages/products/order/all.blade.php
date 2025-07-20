@@ -1068,11 +1068,17 @@
                 success: function() {
                     $('#updateStatusModal').modal('hide');
                     $('#table').DataTable().ajax.reload(null,
-                        false); // Reload without resetting pagination
+                    false); // Reload without resetting pagination
                     toastr.success('Status updated successfully.');
                 },
-                error: function() {
-                    toastr.error('Failed to update status.');
+                error: function(xhr) {
+                    // CURRENT: toastr.error('Failed to update status.');
+                    // IMPROVE TO SHOW ACTUAL MESSAGE FROM BACKEND:
+                    let message = 'Failed to update status.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    toastr.error(message);
                 }
             });
         });

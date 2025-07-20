@@ -1413,18 +1413,49 @@ class OrderController extends Controller
         }
     }
 
-
     public function updateStatus(Request $request)
     {
+        // Step 1: Check if user has permission
+        if (!ActivityLogger::hasPermission('orders', 'status')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Permission denied: You are not authorized to change order status.'
+            ], 403);
+        }
+
+        // Step 2: Validate input
         $request->validate([
             'id' => 'required|exists:orders,id',
             'status' => 'required|string'
         ]);
 
-        $order = Order::find($request->id);
-        $order->status = $request->status;
-        $order->save();
+        try {
+            // Step 3: Find order
+            $order = Order::find($request->id);
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found.'
+                ], 404);
+            }
 
-        return response()->json(['success' => true]);
+            // Step 4: Update status
+            $oldStatus = $order->status;
+            $order->status = $request->status;
+            $order->save();
+
+            // Step 5: Log status change
+            ActivityLogger::UserLog("Order #{$order->id} status changed from {$oldStatus} to {$request->status}");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order status updated successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
