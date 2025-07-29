@@ -1156,10 +1156,21 @@
                     <li><a href="#how-it-works">How It Works</a></li>
                     <li><a href="#products">Products</a></li>
                     <li><a href="#contact">Contact Us</a></li>
+                    @guest
                     <li class="auth-buttons">
-                        <a href="/login"class="login-btn">Login</a>
+                        <a href="/login" class="login-btn">Login</a>
                         <a href="/user-register" class="register-btn">Register</a>
                     </li>
+                @endguest
+                @auth
+                    <li class="auth-buttons">
+                        <a href="/login" class="dashboard-btn">Dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </li>
+                @endauth
                 </ul>
                 <div class="hamburger" id="hamburger">
                     <span></span>
