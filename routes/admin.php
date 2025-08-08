@@ -23,7 +23,6 @@ Route::middleware(['auth', 'module:user_logs,view'])->group(function () {
 //user log
 Route::get('/all-user-logs', [UserLogController::class, 'all_user_logs'])->name('all_user_logs');
 });
-//settings
 Route::middleware(['auth', 'module:settings,smtp'])->group(function () {
 Route::get('/smtp', [ProfileSetting::class, 'smtp'])->name('smtp');
 Route::post('/smtp-update', [ProfileSetting::class, 'smtp_update'])->name('smtp_update');
@@ -238,3 +237,4 @@ Route::middleware(['auth', 'module:orders,edit'])->group(function () {
 Route::middleware(['auth', 'module:orders,status'])->group(function () {
     Route::get('/status-order', [OrderController::class, 'status_order'])->name('status_order');
 });
+Route::get('/admin/dashboard', [App\Http\Controllers\admin\DashboardController::class, 'index'])->name('admin.dashboard');

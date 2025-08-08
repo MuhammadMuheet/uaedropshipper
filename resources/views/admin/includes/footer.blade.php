@@ -2,9 +2,10 @@
     <!--begin::Container-->
     <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
         <!--begin::Copyright-->
-        <div class="text-dark order-2 order-md-1">
+        <div class="text-dark order-2 order-md-1 pt-2 text-center">
             Copyright © <span class="dynamic-year"><script> document.write(new Date().getFullYear());</script></span> {{env('APP_NAME')}}, All rights reserved.
-        </div>
+            <span class="d-block d-md-inline">Developed By <a href="https://pitgtech.com/" target="_blank">Prime Information Technology Group | PITG</a></span>
+                </div>
         <!--end::Copyright-->
         <!--begin::Menu-->
         <ul class="menu menu-gray-600 menu-hover-primary fw-bold order-1">
