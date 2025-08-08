@@ -11,7 +11,7 @@
                             {{ \Illuminate\Support\Str::limit($product->product_name, 20, '....') }}
                         </h3>
                         <div class="row">
-                            <div class="col-6"> 
+                            <div class="col-6">
                                 <p class="text-danger" style="font-weight: 900 !important; font-size: 14px !important;">
                             @if($product->fifo_price)
                                 {{ number_format($product->fifo_price, 2) }} AED
@@ -20,31 +20,29 @@
                             @endif
                         </p>
                     </div>
-                          
+
                             @if($product->quantity <= 10 && !$product->quantity <= 0)
-                            <div class="col-12"> 
+                            <div class="col-12">
                             <p  style="font-weight: 900 !important; font-size: 14px !important;">
                             <span class="text-warning">Product Stock nearly ends Remaining is: {{ $product->quantity }} Qty </span>
                             </p>
                     </div>
                             @elseif($product->quantity <= 0)
-                            <div class="col-6"> 
+                            <div class="col-6">
                             <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
                             <span class="text-danger"> Out of stock </span>
                             </p>
                             </div>
                             @else
-                            <div class="col-6"> 
+                            <div class="col-6">
                             <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
                             {{ $product->quantity }} Qty
                             </p>
                             </div>
                             @endif
-                        
+
                         </div>
                         <!-- FIFO Price Display -->
-                       
-
                         {{-- Removed batch/variation info --}}
 
                         <div class="row">

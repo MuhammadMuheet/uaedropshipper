@@ -12,23 +12,242 @@ use App\Models\Contract;
 use App\Models\Renter;
 use App\Models\Reservation;
 use App\Models\Invoice;
+use App\Models\Order;
+use App\Models\Transaction;
+use App\Models\Product;
+use App\Models\ProductStockBatch;
+use App\Models\productVariation;
+use App\Models\Area;
+use App\Models\State;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
-
 class DashboardController extends Controller
 {
-
-
-
-    public function index()
+    public function index(Request $request)
     {
-        ActivityLogger::UserLog('Logged in User '.Auth::user()->name);
-        return view('admin.dashboard');
+        // Log user activity
+        ActivityLogger::UserLog('Logged in User ' . Auth::user()->name);
+
+        // Validate and parse start and end dates
+        try {
+            $startDate = $request->input('start_date')
+                ? Carbon::parse($request->input('start_date'))->startOfDay()
+                : Carbon::now()->startOfMonth();
+            $endDate = $request->input('end_date')
+                ? Carbon::parse($request->input('end_date'))->endOfDay()
+                : Carbon::now()->endOfMonth();
+        } catch (\Exception $e) {
+            // Handle invalid date input
+            return redirect()->route('admin.dashboard')->withErrors(['date' => 'Invalid date format provided.']);
+        }
+
+        // Ensure startDate is not after endDate
+        if ($startDate->gt($endDate)) {
+            return redirect()->route('admin.dashboard')->withErrors(['date' => 'Start date cannot be after end date.']);
+        }
+
+        // Calculate previous period for trends
+        $previousStartDate = $startDate->copy()->subDays($endDate->diffInDays($startDate))->startOfDay();
+        $previousEndDate = $startDate->copy()->subDay()->endOfDay();
+
+        // Initialize queries with proper date boundaries
+        $ordersQuery = Order::whereBetween('created_at', [$startDate, $endDate]);
+        $previousOrdersQuery = Order::whereBetween('created_at', [$previousStartDate, $previousEndDate]);
+        $transactionsQuery = Transaction::whereBetween('created_at', [$startDate, $endDate]);
+        $topAreasQuery = Area::with('state')
+                            ->join('orders', 'areas.id', '=', 'orders.area_id')
+                            ->whereBetween('orders.created_at', [$startDate, $endDate])
+                            ->groupBy('areas.id', 'areas.area', 'areas.state_id')
+                            ->select(
+                                'areas.id',
+                                'areas.area',
+                                'areas.state_id',
+                                \DB::raw('COUNT(orders.id) as order_count'),
+                                \DB::raw('SUM(CASE WHEN orders.status = "Delivered" THEN 1 ELSE 0 END) as delivered_count'),
+                                \DB::raw('SUM(CASE WHEN orders.status = "Cancelled" THEN 1 ELSE 0 END) as cancelled_count')
+                            );
+        $topStatesQuery = State::join('areas', 'states.id', '=', 'areas.state_id')
+                            ->join('orders', 'areas.id', '=', 'orders.area_id')
+                            ->whereBetween('orders.created_at', [$startDate, $endDate])
+                            ->groupBy('states.id', 'states.state')
+                            ->select(
+                                'states.id',
+                                'states.state',
+                                \DB::raw('COUNT(orders.id) as order_count'),
+                                \DB::raw('SUM(CASE WHEN orders.status = "Delivered" THEN 1 ELSE 0 END) as delivered_count'),
+                                \DB::raw('SUM(CASE WHEN orders.status = "Cancelled" THEN 1 ELSE 0 END) as cancelled_count')
+                            );
+
+        // Debug: Check if orders exist in the date range
+        $orderCount = $ordersQuery->count();
+        if ($orderCount === 0) {
+            \Log::info("No orders found for range: {$startDate} to {$endDate}");
+        }
+
+        // Fetch data
+        $currentOrders = $ordersQuery->get();
+        $previousOrders = $previousOrdersQuery->get();
+        $transactions = $transactionsQuery->get();
+        $topAreas = $topAreasQuery->orderBy('order_count', 'DESC')->take(3)->get();
+        $topTenAreas = $topAreasQuery->orderBy('order_count', 'DESC')->take(10)->get();
+        $topStates = $topStatesQuery->orderBy('order_count', 'DESC')->take(3)->get();
+        $topTenStates = $topStatesQuery->orderBy('order_count', 'DESC')->take(10)->get();
+
+        // Calculate metrics for current period
+        $totalCod = 0;
+        $totalProfit = 0;
+        $totalPendingCount = 0;
+        $totalProcessingCount = 0;
+        $totalShippedCount = 0;
+        $totalDeliveredCount = 0;
+        $totalCancelledCount = 0;
+        $totalOutForDeliveryCount = 0;
+        $totalFutureCount = 0;
+
+        foreach ($currentOrders as $order) {
+            $totalCod += $order->cod_amount;
+            $totalProfit += $order->profit ?? 0;
+            switch ($order->status) {
+                case 'Pending':
+                    $totalPendingCount++;
+                    break;
+                case 'Processing':
+                    $totalProcessingCount++;
+                    break;
+                case 'Shipped':
+                    $totalShippedCount++;
+                    break;
+                case 'Delivered':
+                    $totalDeliveredCount++;
+                    break;
+                case 'Cancelled':
+                    $totalCancelledCount++;
+                    break;
+                case 'Out_for_delivery':
+                    $totalOutForDeliveryCount++;
+                    break;
+                case 'Future':
+                    $totalFutureCount++;
+                    break;
+            }
+        }
+
+        // Total Orders
+        $totalOrders = $totalPendingCount + $totalProcessingCount + $totalShippedCount +
+                       $totalDeliveredCount + $totalCancelledCount + $totalOutForDeliveryCount +
+                       $totalFutureCount;
+
+        // Total Revenue
+        $totalRevenue = $totalCod;
+
+        // Total Earnings
+        $totalEarnings = $totalProfit;
+
+        // Active Customers
+        $activeCustomers = $ordersQuery->distinct('phone')->count();
+
+        // Previous period's data
+        $previousTotalCod = $previousOrders->sum('cod_amount');
+        $previousTotalProfit = $previousOrders->sum('profit') ?? 0;
+        $previousTotalOrders = $previousOrders->count();
+        $previousActiveCustomers = $previousOrdersQuery->distinct('phone')->count();
+
+        // Calculate trends
+        $revenueTrend = $previousTotalCod > 0 ? (($totalRevenue - $previousTotalCod) / $previousTotalCod) * 100 : 0;
+        $ordersTrend = $previousTotalOrders > 0 ? (($totalOrders - $previousTotalOrders) / $previousTotalOrders) * 100 : 0;
+        $customersTrend = $previousActiveCustomers > 0 ? (($activeCustomers - $previousActiveCustomers) / $previousActiveCustomers) * 100 : 0;
+        $earningsGrowth = $previousTotalProfit > 0 ? (($totalEarnings - $previousTotalProfit) / $previousTotalProfit) * 100 : 0;
+
+        // Delivery Ratio
+        $deliveryRatio = $totalOrders > 0 ? ($totalDeliveredCount / $totalOrders) * 100 : 0;
+
+        // Previous period's delivery ratio
+        $previousTotalDeliveredCount = $previousOrders->where('status', 'Delivered')->count();
+        $previousDeliveryRatio = $previousTotalOrders > 0 ? ($previousTotalDeliveredCount / $previousTotalOrders) * 100 : 0;
+
+        // Delivery trend
+        $deliveryTrend = $deliveryRatio - $previousDeliveryRatio;
+
+        // Sales Growth
+        $salesGrowth = $ordersTrend;
+
+        // Transaction calculations
+        $totalWallet = 0;
+        $totalAmountIn = 0;
+        $totalAmountOut = 0;
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->amount_type == 'in') {
+                $totalAmountIn += $transaction->amount;
+            } elseif ($transaction->amount_type == 'out') {
+                $totalAmountOut += $transaction->amount;
+            }
+        }
+        $totalWallet = $totalAmountIn - $totalAmountOut;
+
+        // Inventory Stocks Calculations
+        $totalProducts = Product::count();
+
+        // Low Stock Products
+        $lowStockQuery = ProductStockBatch::join('products as p', 'product_stock_batches.product_id', '=', 'p.id')
+            ->leftJoin('product_variations as pv', 'product_stock_batches.product_variation_id', '=', 'pv.id')
+            ->select(
+                'p.product_name',
+                'p.product_sku',
+                'pv.variation_name',
+                'pv.variation_value',
+                'product_stock_batches.quantity'
+            )
+            ->where('product_stock_batches.quantity', '>', 0)
+            ->where('product_stock_batches.quantity', '<=', 10);
+
+        $lowStock = $lowStockQuery->count();
+        $lowStockProducts = $lowStockQuery->get();
+
+        // Out of Stock Products
+        $outOfStockQuery = ProductStockBatch::join('products as p', 'product_stock_batches.product_id', '=', 'p.id')
+            ->leftJoin('product_variations as pv', 'product_stock_batches.product_variation_id', '=', 'pv.id')
+            ->select(
+                'p.product_name',
+                'p.product_sku',
+                'pv.variation_name',
+                'pv.variation_value',
+                'product_stock_batches.quantity'
+            )
+            ->where('product_stock_batches.quantity', '=', 0);
+
+        $outOfStock = $outOfStockQuery->count();
+        $outOfStockProducts = $outOfStockQuery->get();
+
+        // Pass data to the view
+        return view('admin.dashboard', [
+            'totalRevenue' => $totalRevenue,
+            'totalOrders' => $totalOrders,
+            'activeCustomers' => $activeCustomers,
+            'deliveryRatio' => $deliveryRatio,
+            'salesGrowth' => $salesGrowth,
+            'totalEarnings' => $totalEarnings,
+            'revenueTrend' => $revenueTrend,
+            'ordersTrend' => $ordersTrend,
+            'customersTrend' => $customersTrend,
+            'deliveryTrend' => $deliveryTrend,
+            'earningsGrowth' => $earningsGrowth,
+            'totalWallet' => $totalWallet,
+            'totalAmountIn' => $totalAmountIn,
+            'totalAmountOut' => $totalAmountOut,
+            'totalProducts' => $totalProducts,
+            'lowStock' => $lowStock,
+            'outOfStock' => $outOfStock,
+            'lowStockProducts' => $lowStockProducts,
+            'outOfStockProducts' => $outOfStockProducts,
+            'topAreas' => $topAreas,
+            'topTenAreas' => $topTenAreas,
+            'topStates' => $topStates,
+            'topTenStates' => $topTenStates,
+            'startDate' => $startDate->toDateString(),
+            'endDate' => $endDate->toDateString()
+        ]);
     }
-
-
-
-
 }
