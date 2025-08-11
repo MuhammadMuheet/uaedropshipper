@@ -138,7 +138,7 @@
                                                         <td class="text-start"><h3>Total</h3></td>
                                                         <td class="text-end fw-bold" id="total">0 AED</td>
                                                     </tr>
-                                                    
+
                                                      </tbody>
                                                  </table>
                                              </div>
@@ -196,11 +196,11 @@ $(document).ready(function() {
         if(savedData.state) {
             setTimeout(() => {
                 $('#areas').val(savedData.areas).trigger('change');
-                
+
             }, 500);
             get_area_shipping(savedData.areas)
         }
-        
+
         $('#instructions').val(savedData.instructions || '');
         $('#address').val(savedData.address || '');
         $('#map_url').val(savedData.map_url || '');
@@ -284,7 +284,7 @@ function clearCheckoutFormData() {
         var shipping = parseFloat($('#shipping_input').val()) || 0;
         var subtotal = parseFloat($('#subtotal_input').val()) || 0;
         var service_charge = parseFloat($('#service_charge_input').val()) || 0;
-        
+
       var total = shipping + subtotal + service_charge;
         if(!isNaN(total) && total != ''){
             $('#total').html(total.toFixed(2)+ ' AED');
@@ -390,7 +390,7 @@ function clearCheckoutFormData() {
     }
     function calculate_profit (){
         cod_amount = $('#cod_amount').val();
-      
+
 $.ajax({
         url: "{{ route('get_seller_service_charges') }}",
         type: "GET",
@@ -401,8 +401,8 @@ $.ajax({
             console.log(res);
 
             if (res.status == true) {
-                
-                
+
+
                 $('#PlaceOrder').empty();
      var shipping = parseFloat($('#shipping_input').val()) || 0;
         var subtotal = parseFloat($('#subtotal_input').val()) || 0;
@@ -412,14 +412,14 @@ $.ajax({
                         $('#service_charge').html('0 AED');
                     $('#service_charge_input').val(0);
                     $('#service_charge_input_id').val('');
-                    var profit = parseFloat(cod) - shipping - subtotal; 
+                    var profit = parseFloat(cod) - shipping - subtotal;
                  }else{
                     $('#service_charge').html(res.details.amount + ' AED');
                  $('#service_charge_input').val(res.details.amount);
                  $('#service_charge_input_id').val(res.details.id);
                  var profit = parseFloat(cod) - shipping - subtotal - parseFloat(res.details.amount);
                   }
-              
+
         $('#profit_input').val(profit);
      if(profit < 0){
          $('#profit').html(`<h3 class="float-end text-danger">${profit.toFixed(2)} AED</h3>`);
@@ -522,7 +522,7 @@ get_total()
         service_charge_input_id: $('#service_charge_input_id').val(),
         _token: "{{ csrf_token() }}"
     };
-    
+
     $.ajax({
         url: "{{ route('place_order') }}",
         type: "POST",
@@ -534,7 +534,7 @@ get_total()
             document.getElementById('kt_modal_new_target_submit').disabled = false;
             if (dataResult == 1) {
                 // Clear the saved form data
-        
+
                 toastr.success('Order Placed Successfully.');
                 setTimeout(function () {
                     window.location.href = '{{route('all_orders')}}';
