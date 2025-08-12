@@ -299,23 +299,24 @@
     </div>
 
     <!-- Modal -->
+    <!-- Approve Modal -->
     <div class="modal fade" id="paymentRequestsModal" tabindex="-1" aria-labelledby="paymentRequestsModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="paymentRequestsModalLabel">Payment Requests</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table id="requestsTable" class="table table-bordered table-hover">
+                    <table id="requestsTable" class="table table-bordered table-striped" style="width:100%">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Seller</th>
+                                <th>Seller Name</th>
                                 <th>Amount</th>
                                 <th>Status</th>
-                                <th>Date</th>
+                                <th>Created At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -325,6 +326,46 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+    <!-- Approve Modal -->
+    <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="approveForm" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="request_id" id="approve_request_id">
+                <input type="hidden" name="user_id" id="approve_user_id">
+                <input type="hidden" name="amount" id="approve_amount">
+                <input type="hidden" name="action" value="approve">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Approve Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="proof" class="form-label">Upload Payment Proof (jpg, png, jpeg)</label>
+                            <input type="file" class="form-control" id="proof" name="proof" accept="image/*"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
 
 
 @endsection
@@ -514,10 +555,17 @@
         }
 
         function openPaymentRequestsModal() {
-            const modal = new bootstrap.Modal(document.getElementById('paymentRequestsModal'));
+            const modalEl = document.getElementById('paymentRequestsModal');
+            if (!modalEl) {
+                console.error("Modal element with ID 'paymentRequestsModal' not found!");
+                return;
+            }
+
+            const modal = new bootstrap.Modal(modalEl);
             modal.show();
             loadRequestsTable();
         }
+
 
         let requestsTable = null;
 
@@ -552,12 +600,17 @@
                         searchable: false
                     }
                 ],
-                createdRow: function(row, data, dataIndex) {
-                    $('td:eq(0)', row).html(dataIndex + 1);
-                }
+
             });
         }
 
+        function openApproveModal(requestId, amount, userId) {
+            $('#approve_request_id').val(requestId);
+            $('#approve_user_id').val(userId);
+            $('#approve_amount').val(amount);
+            $('#proof').val(''); // clear any previous file
+            $('#approveModal').modal('show');
+        }
 
 
         function handlePaymentAction(requestId, action, amount = null, userId = null) {
@@ -572,13 +625,38 @@
                     amount: amount
                 },
                 success: function(response) {
-                    alert(response.message);
+                    toastr.success(response.message); // ✅ Use Toastr
                     $('#requestsTable').DataTable().ajax.reload(); // reload table
                 },
                 error: function(xhr) {
-                    alert("Error: " + xhr.responseJSON?.message || "Something went wrong.");
+                    const errorMsg = xhr.responseJSON?.message || "Something went wrong.";
+                    toastr.error(errorMsg); // ✅ Use Toastr
                 }
             });
         }
+
+
+        $('#approveForm').on('submit', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{{ route('payment_request_action') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    toastr.success(response.message); // ✅ Use Toastr
+                    $('#approveModal').modal('hide');
+                    $('#requestsTable').DataTable().ajax.reload();
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON?.message || "Something went wrong.";
+                    toastr.error(errorMsg); // ✅ Use Toastr
+                }
+            });
+        });
     </script>
 @endpush

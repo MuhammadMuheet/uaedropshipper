@@ -240,6 +240,9 @@ Route::middleware(['auth', 'module:orders,edit'])->group(function () {
     Route::get('/get-product-variations', [OrderController::class, 'getProductVariations'])->name('admin_get_product_variations');
     Route::get('/get-seller-service-charges-admin', [OrderController::class, 'get_seller_service_charges'])->name('get_seller_service_charges_admin');
 });
+
+Route::get('/admin/payments/{id}/invoice/download', [PaymentController::class, 'downloadInvoice'])->name('admin.payments.invoice.download');
+
 Route::middleware(['auth', 'module:orders,status'])->group(function () {
     Route::get('/status-order', [OrderController::class, 'status_order'])->name('status_order');
 });

@@ -12,6 +12,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class PaymentController extends Controller
 {
@@ -103,12 +106,12 @@ class PaymentController extends Controller
                     </a>';
                         return $action;
                     })
-                    ->with('totalTransactions', $totalTransactions)
-                    ->with('totalWallet', $totalWallet)
-                    ->with('totalAmountIn', $totalAmountIn)
-                    ->with('totalAmountOut', $totalAmountOut)
-                    ->with('totalSellerTransactions', $totalSellerTransactions)
-                    ->with('totalCompanyTransactions', $totalCompanyTransactions)
+                    ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
+                    ->with('totalWallet',   number_format($totalWallet, 2, '.', ''))
+                    ->with('totalAmountIn',   number_format($totalAmountIn, 2, '.', ''))
+                    ->with('totalAmountOut',   number_format($totalAmountOut, 2, '.', ''))
+                    ->with('totalSellerTransactions',   number_format($totalSellerTransactions, 2, '.', ''))
+                    ->with('totalCompanyTransactions',   number_format($totalCompanyTransactions, 2, '.', ''))
                     ->rawColumns(['UserName', 'Date', 'UserType', 'AmountType', 'Amount', 'action'])
                     ->make(true);
             }
@@ -232,9 +235,9 @@ class PaymentController extends Controller
                 'status' => ucfirst($req->status),
                 'created_at' => $req->created_at->format('Y-m-d H:i'),
                 'action' => '
-                <button class="btn btn-sm btn-success" onclick="handlePaymentAction(' . $req->id . ', \'approve\', ' . $req->amount . ', ' . $req->seller_id . ')">Approve</button>
-                <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
-            ',
+    <button class="btn btn-sm btn-success" onclick="openApproveModal(' . $req->id . ', ' . $req->amount . ', ' . $req->seller_id . ')">Approve</button>
+    <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
+',
             ];
         }
 
@@ -246,6 +249,7 @@ class PaymentController extends Controller
 
     public function handlePaymentAction(Request $request)
     {
+        // Common validation
         $request->validate([
             'request_id' => 'required|exists:payment_requests,id',
             'action' => 'required|in:approve,reject',
@@ -254,13 +258,16 @@ class PaymentController extends Controller
         $paymentRequest = PaymentRequest::find($request->request_id);
 
         if ($paymentRequest->status !== 'pending') {
-            return response()->json(['message' => 'Already processed.'], 400);
+            return response()->json(['message' => 'This request is already processed.'], 400);
         }
 
         if ($request->action === 'approve') {
-            if (empty($request->user_id) || empty($request->amount)) {
-                return response()->json(['message' => 'Missing user or amount'], 400);
-            }
+            // Validate additional fields
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'amount' => 'required|numeric|min:1',
+                'proof' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
 
             $user = User::find($request->user_id);
 
@@ -268,23 +275,27 @@ class PaymentController extends Controller
                 return response()->json(['message' => 'Insufficient balance or user not found'], 400);
             }
 
-            // Deduct from wallet
+            // Upload proof image
+            $proofPath = $request->file('proof')->store('proofs', 'public');
+
+            // Deduct wallet amount
             $user->wallet -= $request->amount;
             $user->save();
 
-            // Create transaction
+            // Create transaction record
             Transaction::create([
-                'user_id' => $request->user_id,
+                'user_id' => $user->id,
                 'user_type' => 'seller',
                 'amount_type' => 'out',
                 'amount' => $request->amount,
             ]);
 
-            // Update payment request status
+            // Update payment request
             $paymentRequest->status = 'approved';
+            $paymentRequest->proof = $proofPath;
             $paymentRequest->save();
 
-            // Log activity (optional)
+            // Log activity
             ActivityLogger::UserLog('Approved payment of ' . $request->amount . ' to ' . $user->name);
 
             return response()->json(['message' => 'Payment approved successfully.']);
@@ -293,7 +304,29 @@ class PaymentController extends Controller
         if ($request->action === 'reject') {
             $paymentRequest->status = 'rejected';
             $paymentRequest->save();
+
             return response()->json(['message' => 'Payment request rejected.']);
         }
+
+        return response()->json(['message' => 'Invalid action'], 400);
+    }
+
+
+
+
+
+
+
+
+    public function downloadInvoice($id)
+    {
+        $payment_id = decrypt($id); // 🔐 Decrypt the encrypted ID
+
+        $paymentData = Transaction::findOrFail($payment_id);
+        $userData = User::findOrFail($paymentData->user_id);
+
+        $pdf = Pdf::loadView('admin.pages.invoice', compact('paymentData', 'userData'));
+
+        return $pdf->download('invoice_' . $paymentData->id . '.pdf');
     }
 }

@@ -79,10 +79,10 @@ class PaymentController extends Controller
                     // </a>';
                     //     return $action;
                     // })
-                    ->with('totalTransactions', $totalTransactions)
-                    ->with('totalWallet', $totalWallet)
-                    ->with('totalAmountIn', $totalAmountIn)
-                    ->with('totalAmountOut', $totalAmountOut)
+                    ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
+                    ->with('totalWallet',  number_format($totalWallet, 2, '.', ''))
+                    ->with('totalAmountIn',  number_format($totalAmountIn, 2, '.', ''))
+                    ->with('totalAmountOut',  number_format($totalAmountOut, 2, '.', ''))
                     ->rawColumns(['Date', 'AmountType', 'Amount'])
                     ->make(true);
             }
