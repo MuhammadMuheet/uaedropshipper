@@ -569,15 +569,24 @@
                         <div class="mb-3">
                             <label for="order_status" class="form-label">Select New Status</label>
                             <select id="order_status" class="form-select">
-                                <option value="Pending">Pending</option>
                                 <option value="Processing">Processing</option>
-                                <option value="Shipped">Shipped</option>
                                 <option value="Delivered">Delivered</option>
                                 <option value="Cancelled">Cancelled</option>
-                                <option value="Future">Future</option>
-                                <option value="Out_for_delivery">Out For Delivery</option>
                             </select>
                         </div>
+
+                        <div id="deliveredFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="proof_image" class="form-label">Upload Delivery Proof</label>
+                                <input type="file" id="proof_image" name="proof_image" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="delivery_date" class="form-label">Delivery Date</label>
+                                <input type="date" id="delivery_date" name="delivery_date" class="form-control">
+                            </div>
+                        </div>
+
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">Update</button>
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -587,6 +596,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @push('js')
     <script type="text/javascript">
@@ -937,21 +947,74 @@
             });
         }
 
+        // function insert_item() {
+        //     var form_Data = new FormData(document.getElementById("InsertForm"));
+
+        //     // Collect selected order IDs
+        //     var selectedOrders = [];
+        //     $("input[name='bulk_action[]']:checked").each(function() {
+        //         selectedOrders.push($(this).val());
+        //     });
+
+        //     if (selectedOrders.length === 0) {
+        //         toastr.error("Please select at least one order.");
+        //         return;
+        //     }
+        //     form_Data.append("selected_orders", JSON.stringify(selectedOrders));
+        //     $("#kt_modal_new_target_submit").text("Loading").prop("disabled", true);
+        //     $.ajax({
+        //         url: "{{ route('assign_orders') }}",
+        //         type: "POST",
+        //         data: form_Data,
+        //         contentType: false,
+        //         cache: false,
+        //         processData: false,
+        //         success: function(dataResult) {
+        //             console.log(dataResult);
+        //             $("#kt_modal_new_target_submit").text("Add").prop("disabled", false);
+
+        //             if (dataResult == 1) {
+        //                 $('#table').DataTable().ajax.reload(null, false);
+        //                 $('#kt_modal_new_target').modal('hide');
+        //                 toastr.success('Orders assigned successfully.');
+        //                 $("#InsertForm")[0].reset();
+        //                 $('#assignOrdersBtn').hide();
+        //             } else if (dataResult == 2) {
+        //                 toastr.error('Select a logistic company.');
+        //             } else {
+        //                 toastr.error('Something went wrong.');
+        //             }
+        //         }
+        //     });
+        // }
+
+
         function insert_item() {
             var form_Data = new FormData(document.getElementById("InsertForm"));
 
-            // Collect selected order IDs
             var selectedOrders = [];
+
+            // Get all bulk_action checkboxes selected
             $("input[name='bulk_action[]']:checked").each(function() {
                 selectedOrders.push($(this).val());
             });
 
+            // If no bulk_action[] selected, check if single order_id hidden input exists
             if (selectedOrders.length === 0) {
-                toastr.error("Please select at least one order.");
-                return;
+                var singleOrderId = $("input[name='order_id']").val();
+                if (singleOrderId) {
+                    selectedOrders.push(singleOrderId);
+                } else {
+                    toastr.error("Please select at least one order.");
+                    return;
+                }
             }
+
+            // Append the selected orders as JSON string
             form_Data.append("selected_orders", JSON.stringify(selectedOrders));
+
             $("#kt_modal_new_target_submit").text("Loading").prop("disabled", true);
+
             $.ajax({
                 url: "{{ route('assign_orders') }}",
                 type: "POST",
@@ -977,8 +1040,6 @@
                 }
             });
         }
-
-
 
 
 
@@ -1040,44 +1101,119 @@
         });
 
 
-        // Show modal when clicking on status badge
-        $(document).on('click', '.change-status', function() {
-            var orderId = $(this).data('id');
-            var currentStatus = $(this).data('status');
 
+
+
+
+
+
+
+        // ✅ When the "Change Status" badge is clicked
+        $(document).on('click', '.change-status', function() {
+            const orderId = $(this).data('id');
+            const currentStatus = $(this).data('status');
+
+            console.log('Clicked order ID:', orderId);
+            console.log('Current status:', currentStatus);
+
+            $('#updateStatusForm')[0].reset();
             $('#update_order_id').val(orderId);
-            $('#order_status').val(currentStatus);
+            $('#order_status').val(currentStatus).trigger('change');
+            $('#deliveredFields').hide();
             $('#updateStatusModal').modal('show');
         });
 
-        // Handle status form submission
+        // ✅ When status is changed
+        $('#order_status').on('change', function() {
+            const selectedStatus = $(this).val();
+            const orderId = $('#update_order_id').val();
+
+            console.log('Status changed to:', selectedStatus);
+            console.log('Order ID:', orderId);
+
+            if (selectedStatus === 'Delivered') {
+                $('#deliveredFields').slideDown();
+            } else {
+                $('#deliveredFields').slideUp();
+                $('#proof_image').val('');
+                $('#delivery_date').val('');
+            }
+
+            if (selectedStatus === 'Processing') {
+                console.log('Processing selected, preparing to show logistic modal...');
+
+                $('#updateStatusModal').one('hidden.bs.modal', function() {
+                    console.log('UpdateStatusModal closed — injecting order ID:', orderId);
+
+                    $('#InsertForm').find('input[name="order_id"]').remove();
+
+                    // ✅ Confirm orderId is NOT empty
+                    if (!orderId) {
+                        console.warn('⚠️ orderId is empty. Logistic modal may not receive correct value.');
+                    }
+
+                    $('#InsertForm').append(`<input type="hidden" name="order_id" value="${orderId}">`);
+                    $('#kt_modal_new_target').modal('show');
+                });
+
+                $('#updateStatusModal').modal('hide');
+            }
+        });
+
+        // ✅ Reset modal on close
+        $('#updateStatusModal').on('hidden.bs.modal', function() {
+            console.log('Resetting updateStatusModal...');
+            $('#updateStatusForm')[0].reset();
+            $('#update_order_id').val('');
+            $('#deliveredFields').hide();
+            $('#proof_image').val('');
+            $('#delivery_date').val('');
+        });
+
+        // ✅ Form submit with validation
         $('#updateStatusForm').on('submit', function(e) {
             e.preventDefault();
 
-            var orderId = $('#update_order_id').val();
-            var newStatus = $('#order_status').val();
+            const status = $('#order_status').val();
+            const proofImage = $('#proof_image').val();
+            const deliveryDate = $('#delivery_date').val();
+            const orderId = $('#update_order_id').val();
+
+            console.log('Submitting form for status:', status, 'Order ID:', orderId);
+
+            if (status === 'Delivered') {
+                if (!proofImage) {
+                    toastr.error('Please upload a delivery proof image.');
+                    return;
+                }
+                if (!deliveryDate) {
+                    toastr.error('Please select a delivery date.');
+                    return;
+                }
+            }
+
+            const formData = new FormData(this);
+            formData.append('id', orderId);
+            formData.append('status', status);
 
             $.ajax({
                 url: '{{ route('orders.update.status') }}',
                 type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: orderId,
-                    status: newStatus
-                },
-                success: function() {
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    console.log('Status updated successfully:', response);
                     $('#updateStatusModal').modal('hide');
-                    $('#table').DataTable().ajax.reload(null,
-                    false); // Reload without resetting pagination
-                    toastr.success('Status updated successfully.');
+                    $('#table').DataTable().ajax.reload(null, false);
+                    toastr.success(response.message);
                 },
                 error: function(xhr) {
-                    // CURRENT: toastr.error('Failed to update status.');
-                    // IMPROVE TO SHOW ACTUAL MESSAGE FROM BACKEND:
                     let message = 'Failed to update status.';
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         message = xhr.responseJSON.message;
                     }
+                    console.error('Error updating status:', message);
                     toastr.error(message);
                 }
             });

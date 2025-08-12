@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\seller;
+
 use App\Helpers\ActivityLogger;
 use App\Http\Controllers\Controller;
+use App\Models\PaymentRequest;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\User;
@@ -10,13 +12,15 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+
 class PaymentController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         if (ActivityLogger::hasSellerPermission('payments', 'view')) {
             if ($request->ajax()) {
                 $query = Transaction::query();
-            
+
                 if (!empty($request->current_date)) {
                     $query->whereDate('created_at', '=', $request->current_date);
                 }
@@ -38,20 +42,20 @@ class PaymentController extends Controller
                 $totalWallet = 0;
                 foreach ($data as $item) {
                     $totalTransactions += $item->amount;
-                    if($item->amount_type == 'in'){
+                    if ($item->amount_type == 'in') {
                         $totalAmountIn += $item->amount;
-                    }elseif($item->amount_type == 'out'){
+                    } elseif ($item->amount_type == 'out') {
                         $totalAmountOut += $item->amount;
                     }
-                    if($item->user_type == 'seller'){
+                    if ($item->user_type == 'seller') {
                         $totalSellerTransactions += $item->amount;
-                    }elseif($item->user_type == 'logistic_company'){
+                    } elseif ($item->user_type == 'logistic_company') {
                         $totalCompanyTransactions += $item->amount;
                     }
                     $totalWallet = @$totalAmountIn - @$totalAmountOut;
                 }
                 return Datatables::of($data)
-                    ->addColumn('AmountType', function($data) {
+                    ->addColumn('AmountType', function ($data) {
                         $AmountTypeLabels = [
                             'in' => ['class' => 'bg-success', 'text' => 'Amount In'],
                             'out' => ['class' => 'bg-danger', 'text' => 'Amount Out'],
@@ -61,12 +65,12 @@ class PaymentController extends Controller
                         }
                         return "<div class='badge bg-secondary'>Unknown</div>";
                     })
-                    ->addColumn('Amount', function($data) {
-                     return $data->amount.' AED';
+                    ->addColumn('Amount', function ($data) {
+                        return $data->amount . ' AED';
                     })
-                    ->addColumn('Date', function($data) {
+                    ->addColumn('Date', function ($data) {
                         return Carbon::parse($data->created_at)->format('d/m/Y');
-                       })
+                    })
                     // ->addColumn('action', function($data) {
                     //         $action ='';
                     //     $action .=
@@ -75,15 +79,41 @@ class PaymentController extends Controller
                     // </a>';
                     //     return $action;
                     // })
-                    ->with('totalTransactions', $totalTransactions)
-                    ->with('totalWallet', $totalWallet)
-                    ->with('totalAmountIn', $totalAmountIn)
-                    ->with('totalAmountOut', $totalAmountOut)
-                    ->rawColumns(['Date','AmountType','Amount'])
+                    ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
+                    ->with('totalWallet',  number_format($totalWallet, 2, '.', ''))
+                    ->with('totalAmountIn',  number_format($totalAmountIn, 2, '.', ''))
+                    ->with('totalAmountOut',  number_format($totalAmountOut, 2, '.', ''))
+                    ->rawColumns(['Date', 'AmountType', 'Amount'])
                     ->make(true);
             }
             ActivityLogger::UserLog('Open Seller Payments Page');
             return view('seller.pages.payments');
         }
+    }
+
+
+
+    public function sendPaymentRequest(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1'
+        ]);
+
+        $seller = auth()->user(); // logged-in seller
+
+        // Check if requested amount is <= wallet balance
+        if ($request->amount > $seller->wallet) {
+            return response()->json([
+                'error' => 'Requested amount exceeds your wallet balance.'
+            ], 422);
+        }
+
+        PaymentRequest::create([
+            'seller_id' => $seller->id,
+            'amount' => $request->amount,
+            'status' => 'pending'
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }
