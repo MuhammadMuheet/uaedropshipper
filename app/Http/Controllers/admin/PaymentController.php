@@ -324,4 +324,23 @@ class PaymentController extends Controller
 
         return $pdf->download('invoice_' . $paymentData->id . '.pdf');
     }
+
+
+
+
+
+
+
+
+    public function downloadInvoice($id)
+    {
+        $payment_id = decrypt($id); // 🔐 Decrypt the encrypted ID
+
+        $paymentData = Transaction::findOrFail($payment_id);
+        $userData = User::findOrFail($paymentData->user_id);
+
+        $pdf = Pdf::loadView('admin.pages.invoice', compact('paymentData', 'userData'));
+
+        return $pdf->download('invoice_' . $paymentData->id . '.pdf');
+    }
 }
