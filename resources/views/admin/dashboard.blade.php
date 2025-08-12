@@ -437,6 +437,158 @@
         </div>
 
 
+
+        <!--Top Ordered products-->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="management-card card shadow-sm">
+                <h5 class="mb-3 card-title text-primary fw-bold">
+                    <i class="fas fa-box text-primary me-2"></i> Top Ordered Products (Delivered)
+                </h5>
+                @forelse($topProducts as $index => $product)
+                    <div class="management-item d-flex justify-content-between align-items-center p-3 mb-3 rounded @if($index == 0) bg-warning-light @elseif($index == 1) bg-success-light @else bg-purple-light @endif">
+                        <span class="fw-medium" style="color: var(--text-primary); font-size: 0.875rem;">
+                            {{ ucfirst($product->product_name) }}
+                            @if($product->variation_name)
+                                ({{ $product->variation_name }}: {{ $product->variation_value }})
+                            @endif
+                            - Qty: {{ $product->delivered_quantity }}
+                        </span>
+                        <span class="badge @if($index == 0) bg-warning @elseif($index == 1) bg-success @else bg-purple @endif fw-bold" style="color: black">
+                            {{ number_format(($product->delivered_quantity / ($totalDeliveredQuantity ?: 1)) * 100, 1) }}%
+                        </span>
+                    </div>
+                @empty
+                    <div class="management-item alert alert-info text-center mb-0">
+                        No products delivered in this period.
+                    </div>
+                @endforelse
+                @if($topProducts->count() > 0)
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#topProductsModal">
+                            View All
+                        </button>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Modal for Top 10 Ordered Products -->
+        <div class="modal fade" id="topProductsModal" tabindex="-1" aria-labelledby="topProductsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="topProductsModalLabel">Top 10 Delivered Products</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Name</th>
+                                        <th>Variation</th>
+                                        <th>Price</th>
+                                        <th>Total Quantity</th>
+                                        <th>Delivered Quantity</th>
+                                        <th>Cancelled Quantity</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($topTenProducts as $index => $product)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ ucfirst($product->product_name) }}</td>
+                                            <td>
+                                                @if($product->variation_name)
+                                                    {{ $product->variation_name }}: {{ $product->variation_value }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ number_format($product->regular_price, 2) }} AED</td>
+                                            <td>{{ $product->total_quantity }}</td>
+                                            <td>{{ $product->delivered_quantity }} ({{ number_format(($product->delivered_quantity / ($product->total_quantity ?: 1)) * 100, 1) }}%)</td>
+                                            <td>{{ $product->cancelled_quantity }} ({{ number_format(($product->cancelled_quantity / ($product->total_quantity ?: 1)) * 100, 1) }}%)</td>
+                                            <td>{{ number_format(($product->delivered_quantity / ($totalDeliveredQuantity ?: 1)) * 100, 1) }}%</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center">No products delivered in this period.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Top 10 Ordered Products -->
+        <div class="modal fade" id="topProductsModal" tabindex="-1" aria-labelledby="topProductsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="topProductsModalLabel">Top 10 Ordered Products</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Name</th>
+                                        <th>SKU</th>
+                                        <th>Variation</th>
+                                        <th>Price</th>
+                                        <th>Total Quantity</th>
+                                        <th>Delivered Quantity</th>
+                                        <th>Cancelled Quantity</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($topTenProducts as $index => $product)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ ucfirst($product->product_name) }}</td>
+                                            <td>{{ $product->product_sku }}</td>
+                                            <td>
+                                                @if($product->variation_name)
+                                                    {{ $product->variation_name }}: {{ $product->variation_value }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ number_format($product->regular_price, 2) }} AED</td>
+                                            <td>{{ $product->total_quantity }}</td>
+                                            <td>{{ $product->delivered_quantity }} ({{ number_format(($product->delivered_quantity / ($product->total_quantity ?: 1)) * 100, 1) }}%)</td>
+                                            <td>{{ $product->cancelled_quantity }} ({{ number_format(($product->cancelled_quantity / ($product->total_quantity ?: 1)) * 100, 1) }}%)</td>
+                                            <td>{{ number_format(($product->total_quantity / ($totalOrders ?: 1)) * 100, 1) }}%</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="9" class="text-center">No products ordered in this period.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <!-- Recent Orders -->
