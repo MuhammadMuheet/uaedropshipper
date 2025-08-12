@@ -1413,9 +1413,58 @@ class OrderController extends Controller
         }
     }
 
+    // public function updateStatus(Request $request)
+    // {
+    //     // Step 1: Check if user has permission
+    //     if (!ActivityLogger::hasPermission('orders', 'status')) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Permission denied: You are not authorized to change order status.'
+    //         ], 403);
+    //     }
+
+    //     // Step 2: Validate input
+    //     $request->validate([
+    //         'id' => 'required|exists:orders,id',
+    //         'status' => 'required|string'
+    //     ]);
+
+    //     try {
+    //         // Step 3: Find order
+    //         $order = Order::find($request->id);
+    //         if (!$order) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Order not found.'
+    //             ], 404);
+    //         }
+
+    //         // Step 4: Update status
+    //         $oldStatus = $order->status;
+    //         $order->status = $request->status;
+    //         $order->save();
+
+    //         // Step 5: Log status change
+    //         ActivityLogger::UserLog("Order #{$order->id} status changed from {$oldStatus} to {$request->status}");
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Order status updated successfully.'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'An unexpected error occurred: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+
+
+
     public function updateStatus(Request $request)
     {
-        // Step 1: Check if user has permission
+        // Step 1: Permission Check
         if (!ActivityLogger::hasPermission('orders', 'status')) {
             return response()->json([
                 'success' => false,
@@ -1424,28 +1473,94 @@ class OrderController extends Controller
         }
 
         // Step 2: Validate input
-        $request->validate([
+        $rules = [
             'id' => 'required|exists:orders,id',
-            'status' => 'required|string'
-        ]);
+            'status' => 'required|string',
+        ];
+
+        if ($request->status === 'Delivered') {
+            $rules['proof_image'] = 'required|image|max:2048';
+            $rules['delivery_date'] = 'required|date';
+        } else {
+            $rules['proof_image'] = 'nullable|image|max:2048';
+            $rules['delivery_date'] = 'nullable|date';
+        }
+
+        $request->validate($rules);
 
         try {
             // Step 3: Find order
-            $order = Order::find($request->id);
-            if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order not found.'
-                ], 404);
+            $order = Order::with('orderItems')->findOrFail($request->id);
+
+            $oldStatus = $order->status;
+            $newStatus = $request->status;
+            $order->status = $newStatus;
+
+            // ✅ Step 4a: If Delivered → transfer funds
+            if ($newStatus === 'Delivered') {
+                if ($request->hasFile('proof_image')) {
+                    $proofPath = $request->file('proof_image')->store('products/order_proofs', 'public');
+                    $order->proof_image = $proofPath;
+                }
+
+                $order->delivery_date = $request->delivery_date ?? now();
+
+                // Transfer seller funds
+                $seller = User::find($order->seller_id);
+                if ($seller) {
+                    $seller->wallet += $order->profit;
+                    $seller->save();
+
+                    Transaction::create([
+                        'user_id' => $seller->id,
+                        'user_type' => 'seller',
+                        'amount_type' => 'in',
+                        'amount' => $order->profit,
+                        'order_id' => $order->id,
+                    ]);
+                }
+
+                // Transfer logistic funds
+                $logistic = User::find($order->company_id);
+                if ($logistic) {
+                    $logistic->wallet += $order->shipping_fee;
+                    $logistic->save();
+
+                    Transaction::create([
+                        'user_id' => $logistic->id,
+                        'user_type' => 'logistic_company',
+                        'amount_type' => 'in',
+                        'amount' => $order->shipping_fee,
+                        'order_id' => $order->id,
+                    ]);
+                }
             }
 
-            // Step 4: Update status
-            $oldStatus = $order->status;
-            $order->status = $request->status;
+            // ✅ Step 4b: If Cancelled and Previously Delivered → REVERT transactions
+            if ($newStatus === 'Cancelled' && $oldStatus === 'Delivered') {
+                // Revert seller funds
+                $seller = User::find($order->seller_id);
+                if ($seller) {
+                    $seller->wallet -= $order->profit;
+                    $seller->save();
+                }
+
+                // Revert logistic funds
+                $logistic = User::find($order->company_id);
+                if ($logistic) {
+                    $logistic->wallet -= $order->shipping_fee;
+                    $logistic->save();
+                }
+
+                // ❌ Delete all transactions related to this order
+                Transaction::where('order_id', $order->id)->delete();
+            }
+
+            // Save the order
             $order->save();
 
-            // Step 5: Log status change
-            ActivityLogger::UserLog("Order #{$order->id} status changed from {$oldStatus} to {$request->status}");
+            // Step 5: Log activity
+            ActivityLogger::UserLog("Order #{$order->id} status changed from {$oldStatus} to {$newStatus}");
 
             return response()->json([
                 'success' => true,
