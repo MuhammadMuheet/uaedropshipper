@@ -16,24 +16,25 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\ProfileSetting;
 use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\PaymentController;
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin_dashboard');
 // Types
 
 Route::middleware(['auth', 'module:user_logs,view'])->group(function () {
-//user log
-Route::get('/all-user-logs', [UserLogController::class, 'all_user_logs'])->name('all_user_logs');
+    //user log
+    Route::get('/all-user-logs', [UserLogController::class, 'all_user_logs'])->name('all_user_logs');
 });
 Route::middleware(['auth', 'module:settings,smtp'])->group(function () {
-Route::get('/smtp', [ProfileSetting::class, 'smtp'])->name('smtp');
-Route::post('/smtp-update', [ProfileSetting::class, 'smtp_update'])->name('smtp_update');
-Route::get('/get_smtp', [ProfileSetting::class, 'get_smtp'])->name('get_smtp');
+    Route::get('/smtp', [ProfileSetting::class, 'smtp'])->name('smtp');
+    Route::post('/smtp-update', [ProfileSetting::class, 'smtp_update'])->name('smtp_update');
+    Route::get('/get_smtp', [ProfileSetting::class, 'get_smtp'])->name('get_smtp');
 });
 Route::middleware(['auth', 'module:settings,profile'])->group(function () {
-Route::get('/profile', [ProfileSetting::class, 'profile'])->name('profile');
-Route::post('/profile-update', [ProfileSetting::class, 'profile_update'])->name('profile_update');
-Route::get('/get_profile', [ProfileSetting::class, 'get_profile'])->name('get_profile');
-Route::get('/security', [ProfileSetting::class, 'security'])->name('security');
-Route::post('/security-update', [ProfileSetting::class, 'security_update'])->name('security_update');
+    Route::get('/profile', [ProfileSetting::class, 'profile'])->name('profile');
+    Route::post('/profile-update', [ProfileSetting::class, 'profile_update'])->name('profile_update');
+    Route::get('/get_profile', [ProfileSetting::class, 'get_profile'])->name('get_profile');
+    Route::get('/security', [ProfileSetting::class, 'security'])->name('security');
+    Route::post('/security-update', [ProfileSetting::class, 'security_update'])->name('security_update');
 });
 Route::middleware(['auth', 'module:settings,smtp'])->group(function () {
     Route::get('/smtp', [ProfileSetting::class, 'smtp'])->name('smtp');
@@ -42,38 +43,38 @@ Route::middleware(['auth', 'module:settings,smtp'])->group(function () {
 });
 //Types
 Route::middleware(['auth', 'module:user_role,view'])->group(function () {
-Route::get('/role', [RoleController::class, 'index'])->name('role');
+    Route::get('/role', [RoleController::class, 'index'])->name('role');
 });
 Route::middleware(['auth', 'module:user_role,add'])->group(function () {
-Route::post('/role', [RoleController::class, 'add_role'])->name('add_role');
+    Route::post('/role', [RoleController::class, 'add_role'])->name('add_role');
 });
 Route::middleware(['auth', 'module:user_role,delete'])->group(function () {
-Route::get('/role-delete', [RoleController::class, 'delete_role'])->name('delete_role');
+    Route::get('/role-delete', [RoleController::class, 'delete_role'])->name('delete_role');
 });
 Route::middleware(['auth', 'module:user_role,edit'])->group(function () {
-Route::get('/get-role', [RoleController::class, 'get_role'])->name('get_role');
-Route::post('/update-role', [RoleController::class, 'update_role'])->name('update_role');
+    Route::get('/get-role', [RoleController::class, 'get_role'])->name('get_role');
+    Route::post('/update-role', [RoleController::class, 'update_role'])->name('update_role');
 });
 Route::middleware(['auth', 'module:user_role,permissions'])->group(function () {
-Route::get('/get-permission-update/{role_id}', [RoleController::class, 'permission_update'])->name('permission_update');
-Route::post('/update-permission', [RoleController::class, 'update_permission'])->name('update_permission');
+    Route::get('/get-permission-update/{role_id}', [RoleController::class, 'permission_update'])->name('permission_update');
+    Route::post('/update-permission', [RoleController::class, 'update_permission'])->name('update_permission');
 });
 Route::middleware(['auth', 'module:users,view'])->group(function () {
-//users
-Route::get('/all-users', [UsersController::class, 'index'])->name('all-users');
+    //users
+    Route::get('/all-users', [UsersController::class, 'index'])->name('all-users');
 });
 Route::middleware(['auth', 'module:users,add'])->group(function () {
-Route::post('/add_users', [UsersController::class, 'add_users'])->name('add_users');
+    Route::post('/add_users', [UsersController::class, 'add_users'])->name('add_users');
 });
 Route::middleware(['auth', 'module:users,delete'])->group(function () {
-Route::get('/delete-user', [UsersController::class, 'delete_user'])->name('delete_user');
+    Route::get('/delete-user', [UsersController::class, 'delete_user'])->name('delete_user');
 });
 Route::middleware(['auth', 'module:users,status'])->group(function () {
-Route::get('/status-user', [UsersController::class, 'status_user'])->name('status_user');
+    Route::get('/status-user', [UsersController::class, 'status_user'])->name('status_user');
 });
 Route::middleware(['auth', 'module:users,edit'])->group(function () {
-Route::get('/get-user', [UsersController::class, 'get_user'])->name('get_user');
-Route::post('/update-user', [UsersController::class, 'update_user'])->name('update_user');
+    Route::get('/get-user', [UsersController::class, 'get_user'])->name('get_user');
+    Route::post('/update-user', [UsersController::class, 'update_user'])->name('update_user');
 });
 Route::middleware(['auth', 'module:sellers,view'])->group(function () {
     Route::get('/all-sellers', [SellerController::class, 'index'])->name('all-sellers');
@@ -82,6 +83,7 @@ Route::middleware(['auth', 'module:sellers,view'])->group(function () {
     Route::get('/get-seller-order', [SellerController::class, 'get_order'])->name('get_seller_order_admin');
     Route::get('/get-seller-areas', [SellerController::class, 'get_areas'])->name('get_seller_areas_admin');
     Route::get('/all-sub-sellers/{id}', [SellerController::class, 'sub_sellers'])->name('sub_sellers');
+    Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])->name('orders.update.status');
 });
 Route::middleware(['auth', 'module:sellers,add'])->group(function () {
     Route::post('/add_sellers', [SellerController::class, 'add_sellers'])->name('add_sellers');
@@ -101,7 +103,7 @@ Route::middleware(['auth', 'module:sellers,edit'])->group(function () {
     Route::post('/update-sub-sellers', [SellerController::class, 'update_sub_sellers'])->name('update_sub_sellers');
 });
 Route::middleware(['auth', 'module:logistic_companies,view'])->group(function () {
-//users
+    //users
     Route::get('/all_logistic_companies', [LogisticCompaniesController::class, 'index'])->name('all_logistic_companies');
     Route::get('/all_admin_driver/{id}', [LogisticCompaniesController::class, 'all_driver'])->name('all_admin_driver');
     Route::get('/all-company-orders/{id}', [LogisticCompaniesController::class, 'all_company_order'])->name('all_company_orders_admin');
@@ -215,14 +217,17 @@ Route::middleware(['auth', 'module:orders,view'])->group(function () {
     Route::get('/all-rto-orders', [OrderController::class, 'rto_orders'])->name('all_rto_orders');
     Route::get('/receive-rto', [OrderController::class, 'receive_rto'])->name('receive_rto');
     Route::get('orders/bulk-print', [OrderController::class, 'bulkPrint'])->name('admin.orders.bulk.print');
-        Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin_orders.destroy');
-
+    Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin_orders.destroy');
 });
 Route::middleware(['auth', 'module:payments,view'])->group(function () {
     Route::get('/all-payments', [PaymentController::class, 'index'])->name('all_admin_payments');
     Route::get('/get-admin-transaction-user-type', [PaymentController::class, 'get_transaction_user_type'])->name('get_admin_transaction_user_type');
     Route::post('/give-payment', [PaymentController::class, 'give_payment'])->name('admin_give_payment');
-        Route::get('/admin-invoice/{id}', [PaymentController::class, 'invoice'])->name('admin_invoice');
+    Route::get('/admin-invoice/{id}', [PaymentController::class, 'invoice'])->name('admin_invoice');
+
+    Route::get('/admin/payment-requests', [PaymentController::class, 'paymentRequestsPage'])->name('payment_requests.page');
+    Route::get('/admin/payment-requests/list', [PaymentController::class, 'listPaymentRequests'])->name('payment_requests.list');
+    Route::post('/admin/payment-requests/action', [PaymentController::class, 'handlePaymentAction'])->name('payment_request_action');
 });
 Route::middleware(['auth', 'module:orders,edit'])->group(function () {
     Route::get('/get-areas-shipping', [OrderController::class, 'get_areas_shipping'])->name('admin_get_areas_shipping');
@@ -234,6 +239,9 @@ Route::middleware(['auth', 'module:orders,edit'])->group(function () {
     Route::get('/get-product-variations', [OrderController::class, 'getProductVariations'])->name('admin_get_product_variations');
     Route::get('/get-seller-service-charges-admin', [OrderController::class, 'get_seller_service_charges'])->name('get_seller_service_charges_admin');
 });
+
+Route::get('/admin/payments/{id}/invoice/download', [PaymentController::class, 'downloadInvoice'])->name('admin.payments.invoice.download');
+
 Route::middleware(['auth', 'module:orders,status'])->group(function () {
     Route::get('/status-order', [OrderController::class, 'status_order'])->name('status_order');
 });
