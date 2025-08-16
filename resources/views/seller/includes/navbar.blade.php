@@ -116,7 +116,7 @@
                         @endif
                         @if(ActivityLogger::hasSellerPermission('orders','checkout'))
                         <div class="menu-item">
-                        
+
                             <a class="menu-link @if(Request::url() == route('checkout')) active @endif "
                                href="{{ route('checkout') }}">
 										<span class="menu-icon">

@@ -16,14 +16,14 @@ class PaymentController extends Controller
         if (ActivityLogger::hasPermission('payments', 'view')) {
             if ($request->ajax()) {
                 $query = Transaction::query();
-         
+
                 if (!empty($request->usertype)) {
                     $query->where('user_type', $request->usertype);
                 }
                 if (!empty($request->logistic_company)) {
                     $query->where('user_id', $request->logistic_company);
                 }
-               
+
                 if (!empty($request->seller)) {
                     $query->where('user_id', $request->seller);
                 }
@@ -99,12 +99,12 @@ class PaymentController extends Controller
                     </a>';
                         return $action;
                     })
-                    ->with('totalTransactions', $totalTransactions)
-                    ->with('totalWallet', $totalWallet)
-                    ->with('totalAmountIn', $totalAmountIn)
-                    ->with('totalAmountOut', $totalAmountOut)
-                    ->with('totalSellerTransactions', $totalSellerTransactions)
-                    ->with('totalCompanyTransactions', $totalCompanyTransactions)
+                    ->with('totalTransactions', number_format($totalTransactions, 2))
+                    ->with('totalWallet', number_format($totalWallet, 2))
+                    ->with('totalAmountIn', number_format($totalAmountIn, 2))
+                    ->with('totalAmountOut', number_format($totalAmountOut, 2))
+                    ->with('totalSellerTransactions', number_format($totalSellerTransactions, 2))
+                    ->with('totalCompanyTransactions', number_format($totalCompanyTransactions, 2))
                     ->rawColumns(['UserName','Date','UserType','AmountType','Amount','action'])
                     ->make(true);
             }
@@ -114,7 +114,7 @@ class PaymentController extends Controller
             return view('admin.pages.payments',compact('sellerData','LogisticCompanyData'));
         }
     }
-    
+
       public function invoice(Request $request , $id) {
         if (ActivityLogger::hasPermission('payments', 'view')) {
               $payment_id = decrypt($id);
@@ -123,27 +123,27 @@ class PaymentController extends Controller
             return view('admin.pages.invoice',compact('paymentData','id'));
         }
     }
-    
+
     public function get_transaction_user_type(Request $request)
     {
         if (ActivityLogger::hasPermission('payments', 'view')) {
-        
+
            if($request->user_type == 'logistic_company'){
-          
+
                 $users = User::where('role', '=', 'logistic_company')->where('status', '=', 'active')->get();
-                $options = '<option value="" disabled selected>Choose Logistic Company</option>'; 
-               
+                $options = '<option value="" disabled selected>Choose Logistic Company</option>';
+
                 foreach ($users as $user) {
                     $options .= '<option value="' . $user->id . '">' . $user->name . ' [Wallet Amount: ' . ($user->wallet ?? '0') . ']</option>';
-                } 
+                }
                 }elseif($request->user_type == 'seller'){
                 $users = User::where('role', '=', 'seller')->where('status', '=', 'active')->get();
                 $options = '<option value="" disabled selected>Choose Seller</option>';
                 foreach ($users as $user) {
                     $options .= '<option value="' . $user->id . '">' . $user->name . ' [Wallet Amount: ' . ($user->wallet ?? '0') . ']</option>';
-                }  
-            
-           
+                }
+
+
         }
          return response()->json(['options' => $options]);
     }
@@ -177,7 +177,7 @@ class PaymentController extends Controller
                 } else {
                     return response()->json(3);
                 }
-               
+
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Something went wrong'], 500);
             }
