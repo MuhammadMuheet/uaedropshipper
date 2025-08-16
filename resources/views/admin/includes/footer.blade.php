@@ -5,7 +5,7 @@
         <div class="text-dark order-2 order-md-1 pt-2 text-center">
             Copyright © <span class="dynamic-year"><script> document.write(new Date().getFullYear());</script></span> {{env('APP_NAME')}}, All rights reserved.
             <span class="d-block d-md-inline">Developed By <a href="https://pitgtech.com/" target="_blank">Prime Information Technology Group | PITG</a></span>
-                </div>
+        </div>
         <!--end::Copyright-->
         <!--begin::Menu-->
         <ul class="menu menu-gray-600 menu-hover-primary fw-bold order-1">

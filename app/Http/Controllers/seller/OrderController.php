@@ -655,6 +655,8 @@ class OrderController extends Controller
             if (empty($request->cus_name) || empty($request->phone) || empty($request->state) || empty($request->areas) || empty($request->address) || empty($request->total) || empty($request->profit)) {
                 return response()->json(2);
             }
+            // Normalize WhatsApp number by removing spaces
+        $whatsappNumber = preg_replace('/\s+/', '', $request->whatsapp);
             if (Auth::user()->role == 'seller') {
                 $seller_id = Auth::user()->id;
                 $sub_seller_id = Auth::user()->id;
@@ -667,7 +669,7 @@ class OrderController extends Controller
                 'sub_seller_id'  => $sub_seller_id,
                 'customer_name' => $request->cus_name,
                 'phone'         => $request->phone,
-                'whatsapp'      => $request->whatsapp,
+                'whatsapp'      => $whatsappNumber, // Use normalized number
                 'state_id'      => $request->state,
                 'area_id'       => $request->areas,
                 'instructions'  => $request->instructions,

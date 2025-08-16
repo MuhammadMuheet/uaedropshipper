@@ -106,13 +106,13 @@ class PaymentController extends Controller
                     </a>';
                         return $action;
                     })
-                    ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
-                    ->with('totalWallet',   number_format($totalWallet, 2, '.', ''))
-                    ->with('totalAmountIn',   number_format($totalAmountIn, 2, '.', ''))
-                    ->with('totalAmountOut',   number_format($totalAmountOut, 2, '.', ''))
-                    ->with('totalSellerTransactions',   number_format($totalSellerTransactions, 2, '.', ''))
-                    ->with('totalCompanyTransactions',   number_format($totalCompanyTransactions, 2, '.', ''))
-                    ->rawColumns(['UserName', 'Date', 'UserType', 'AmountType', 'Amount', 'action'])
+                    ->with('totalTransactions', number_format($totalTransactions, 2))
+                    ->with('totalWallet', number_format($totalWallet, 2))
+                    ->with('totalAmountIn', number_format($totalAmountIn, 2))
+                    ->with('totalAmountOut', number_format($totalAmountOut, 2))
+                    ->with('totalSellerTransactions', number_format($totalSellerTransactions, 2))
+                    ->with('totalCompanyTransactions', number_format($totalCompanyTransactions, 2))
+                    ->rawColumns(['UserName','Date','UserType','AmountType','Amount','action'])
                     ->make(true);
             }
             ActivityLogger::UserLog('Open Payments Page');
@@ -121,9 +121,7 @@ class PaymentController extends Controller
             return view('admin.pages.payments', compact('sellerData', 'LogisticCompanyData'));
         }
     }
-
-    public function invoice(Request $request, $id)
-    {
+      public function invoice(Request $request , $id) {
         if (ActivityLogger::hasPermission('payments', 'view')) {
             $payment_id = decrypt($id);
             ActivityLogger::UserLog('Open Payments invoice');
@@ -150,6 +148,7 @@ class PaymentController extends Controller
                 foreach ($users as $user) {
                     $options .= '<option value="' . $user->id . '">' . $user->name . ' [Wallet Amount: ' . ($user->wallet ?? '0') . ']</option>';
                 }
+
             }
             return response()->json(['options' => $options]);
         }

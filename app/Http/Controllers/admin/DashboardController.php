@@ -79,6 +79,23 @@ class DashboardController extends Controller
                                 \DB::raw('SUM(CASE WHEN orders.status = "Delivered" THEN 1 ELSE 0 END) as delivered_count'),
                                 \DB::raw('SUM(CASE WHEN orders.status = "Cancelled" THEN 1 ELSE 0 END) as cancelled_count')
                             );
+        $topProductsQuery = Product::join('order_items', 'products.id', '=', 'order_items.product_id')
+                            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                            ->leftJoin('product_variations', 'order_items.product_variation_id', '=', 'product_variations.id')
+                            ->leftJoin('product_stock_batches', 'order_items.batch_id', '=', 'product_stock_batches.id')
+                            ->whereBetween('orders.created_at', [$startDate, $endDate])
+                            ->groupBy('products.id', 'products.product_name', 'product_variations.id', 'product_variations.variation_name', 'product_variations.variation_value', 'product_stock_batches.regular_price')
+                            ->select(
+                                'products.id',
+                                'products.product_name',
+                                'product_variations.id as variation_id',
+                                'product_variations.variation_name',
+                                'product_variations.variation_value',
+                                'product_stock_batches.regular_price',
+                                \DB::raw('SUM(CASE WHEN orders.status = "Delivered" THEN order_items.quantity ELSE 0 END) as delivered_quantity'),
+                                \DB::raw('SUM(order_items.quantity) as total_quantity'),
+                                \DB::raw('SUM(CASE WHEN orders.status = "Cancelled" THEN order_items.quantity ELSE 0 END) as cancelled_quantity')
+                            );
 
         // Debug: Check if orders exist in the date range
         $orderCount = $ordersQuery->count();
@@ -94,6 +111,11 @@ class DashboardController extends Controller
         $topTenAreas = $topAreasQuery->orderBy('order_count', 'DESC')->take(10)->get();
         $topStates = $topStatesQuery->orderBy('order_count', 'DESC')->take(3)->get();
         $topTenStates = $topStatesQuery->orderBy('order_count', 'DESC')->take(10)->get();
+        $topProducts = $topProductsQuery->orderBy('delivered_quantity', 'DESC')->take(3)->get();
+        $topTenProducts = $topProductsQuery->orderBy('delivered_quantity', 'DESC')->take(10)->get();
+
+        // Calculate total delivered quantity for percentage normalization
+        $totalDeliveredQuantity = $topTenProducts->sum('delivered_quantity');
 
         // Calculate metrics for current period
         $totalCod = 0;
@@ -108,7 +130,9 @@ class DashboardController extends Controller
 
         foreach ($currentOrders as $order) {
             $totalCod += $order->cod_amount;
-            $totalProfit += $order->profit ?? 0;
+            if ($order->status === 'Delivered') {
+                $totalProfit += $order->profit ?? 0;
+            }
             switch ($order->status) {
                 case 'Pending':
                     $totalPendingCount++;
@@ -150,7 +174,7 @@ class DashboardController extends Controller
 
         // Previous period's data
         $previousTotalCod = $previousOrders->sum('cod_amount');
-        $previousTotalProfit = $previousOrders->sum('profit') ?? 0;
+        $previousTotalProfit = $previousOrders->where('status', 'Delivered')->sum('profit') ?? 0;
         $previousTotalOrders = $previousOrders->count();
         $previousActiveCustomers = $previousOrdersQuery->distinct('phone')->count();
 
@@ -246,6 +270,9 @@ class DashboardController extends Controller
             'topTenAreas' => $topTenAreas,
             'topStates' => $topStates,
             'topTenStates' => $topTenStates,
+            'topProducts' => $topProducts,
+            'topTenProducts' => $topTenProducts,
+            'totalDeliveredQuantity' => $totalDeliveredQuantity,
             'startDate' => $startDate->toDateString(),
             'endDate' => $endDate->toDateString()
         ]);
