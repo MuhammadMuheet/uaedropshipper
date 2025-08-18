@@ -100,12 +100,22 @@ class PaymentController extends Controller
                     })
                     ->addColumn('action', function ($data) {
                         $action = '';
-                        $action .=
-                            '<a href="' . route('admin_invoice', encrypt($data->id)) . '" class=" btn btn-sm btn-dark" >
-                        <i style="font-size: 16px; padding: 0;" class="fa-solid fa-credit-card"></i>
-                    </a>';
+
+                        // View Invoice Button
+                        $action .= '<a href="' . route('admin_invoice', encrypt($data->id)) . '"
+                   class="btn btn-sm btn-dark me-1" title="View Invoice">
+                   <i style="font-size:16px; padding:0;" class="fa-solid fa-credit-card"></i>
+                </a>';
+
+                        // Download PDF Button
+                        $action .= '<a href="' . route('admin.payments.invoice.download', encrypt($data->id)) . '"
+                   class="btn btn-sm btn-success" title="Download PDF">
+                   <i style="font-size:16px;" class="fa-solid fa-print"></i>
+                </a>';
+
                         return $action;
                     })
+
                     ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
                     ->with('totalWallet',   number_format($totalWallet, 2, '.', ''))
                     ->with('totalAmountIn',   number_format($totalAmountIn, 2, '.', ''))
@@ -127,7 +137,9 @@ class PaymentController extends Controller
         if (ActivityLogger::hasPermission('payments', 'view')) {
             $payment_id = decrypt($id);
             ActivityLogger::UserLog('Open Payments invoice');
-            $paymentData = Transaction::where('id', $payment_id)->first();
+
+
+            $paymentData = Transaction::with('paymentRequest')->findOrFail($payment_id);
             return view('admin.pages.invoice', compact('paymentData', 'id'));
         }
     }
@@ -154,6 +166,8 @@ class PaymentController extends Controller
             return response()->json(['options' => $options]);
         }
     }
+
+
     public function give_payment(Request $request)
     {
         if (ActivityLogger::hasPermission('payments', 'view')) {
@@ -177,6 +191,7 @@ class PaymentController extends Controller
                         'user_type' => $request->user_type,
                         'amount_type' => 'out',
                         'amount' => $request->amount,
+
                     ]);
                     ActivityLogger::UserLog('Give Payment ' . $request->amount . ' AED to ' . $data->name);
                     return response()->json(1);
@@ -191,29 +206,6 @@ class PaymentController extends Controller
 
 
 
-    //     public function listPaymentRequests()
-    //     {
-    //         $requests = PaymentRequest::with('seller')->latest()->get();
-
-    //         $data = [];
-
-    //         foreach ($requests as $index => $req) {
-    //             $data[] = [
-    //                 'id' => $index + 1,
-    //                 'seller_name' => $req->seller ? $req->seller->name : 'N/A',
-    //                 'amount' => $req->amount,
-    //                 'status' => ucfirst($req->status),
-    //                 'created_at' => $req->created_at->format('Y-m-d H:i'),
-    //                 'action' => '
-    //     <button class="btn btn-sm btn-success" onclick="handlePaymentAction(' . $req->id . ', \'approve\', ' . $req->amount . ', ' . $req->seller_id . ')">Approve</button>
-    //     <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
-    // ',
-
-    //             ];
-    //         }
-
-    //         return response()->json(['data' => $data]);
-    //     }
 
 
 
@@ -288,6 +280,8 @@ class PaymentController extends Controller
                 'user_type' => 'seller',
                 'amount_type' => 'out',
                 'amount' => $request->amount,
+                'payment_request_id' => $paymentRequest->id,
+
             ]);
 
             // Update payment request

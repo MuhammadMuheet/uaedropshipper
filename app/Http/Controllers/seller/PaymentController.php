@@ -92,7 +92,6 @@ class PaymentController extends Controller
     }
 
 
-
     public function sendPaymentRequest(Request $request)
     {
         $request->validate([
@@ -100,6 +99,17 @@ class PaymentController extends Controller
         ]);
 
         $seller = auth()->user(); // logged-in seller
+
+        // Check if there's already a pending request
+        $pendingRequest = PaymentRequest::where('seller_id', $seller->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($pendingRequest) {
+            return response()->json([
+                'error' => 'You already have a pending payment request. Please wait until it is approved or rejected.'
+            ], 422);
+        }
 
         // Check if requested amount is <= wallet balance
         if ($request->amount > $seller->wallet) {

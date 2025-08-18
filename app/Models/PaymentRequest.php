@@ -22,4 +22,10 @@ class PaymentRequest extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'payment_request_id');
+    }
 }
