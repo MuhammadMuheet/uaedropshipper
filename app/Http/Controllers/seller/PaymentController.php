@@ -83,7 +83,7 @@ class PaymentController extends Controller
                     ->with('totalWallet', number_format($totalWallet, 2))
                     ->with('totalAmountIn', number_format($totalAmountIn, 2))
                     ->with('totalAmountOut', number_format($totalAmountOut, 2))
-                    ->rawColumns(['Date','AmountType','Amount'])
+                    ->rawColumns(['Date', 'AmountType', 'Amount'])
                     ->make(true);
             }
             ActivityLogger::UserLog('Open Seller Payments Page');
@@ -98,10 +98,10 @@ class PaymentController extends Controller
             'amount' => 'required|numeric|min:1'
         ]);
 
-        $seller = auth()->user(); // logged-in seller
+        $logistic = auth()->user(); // logged-in seller
 
         // Check if there's already a pending request
-        $pendingRequest = PaymentRequest::where('user_id', $seller->id)
+        $pendingRequest = PaymentRequest::where('user_id', $logistic->id)
             ->where('status', 'pending')
             ->first();
 
@@ -112,14 +112,14 @@ class PaymentController extends Controller
         }
 
         // Check if requested amount is <= wallet balance
-        if ($request->amount > $seller->wallet) {
+        if ($request->amount > $logistic->wallet) {
             return response()->json([
                 'error' => 'Requested amount exceeds your wallet balance.'
             ], 422);
         }
 
         PaymentRequest::create([
-            'user_id' => $seller->id,
+            'user_id' => $logistic->id,
             'amount' => $request->amount,
             'status' => 'pending'
         ]);
