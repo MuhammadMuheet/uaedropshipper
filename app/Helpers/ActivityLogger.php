@@ -11,7 +11,6 @@ class ActivityLogger
 {
     public static function UserLog($activity)
     {
-
         $user = Auth::user();
         $ip = Request::ip();
 
@@ -22,7 +21,9 @@ class ActivityLogger
         ]);
         return true;
     }
-    public static function hasPermission($module, $action) {
+
+    public static function hasPermission($module, $action)
+    {
         $user = Auth::user();
 
         // Super admin bypass
@@ -36,18 +37,24 @@ class ActivityLogger
 
         return $permissions && in_array($action, explode(',', $permissions));
     }
-    public static function hasSellerPermission($module, $action) {
+
+    public static function hasSellerPermission($module, $action)
+    {
         $user = Auth::user();
 
-        // Super admin bypass
-        if ($user->type === 'seller') {
+        // Seller or sub-seller bypass for dashboard
+        if ($user->role === 'seller' || ($user->role === 'sub_seller' && $module === 'dashboard' && $action === 'view')) {
             return true;
         }
+
         if ($user->role === 'sub_seller') {
-        $permissions = DB::table('seller_permissions')
-            ->where('role_id', $user->type)
-            ->value($module);
-        return $permissions && in_array($action, explode(',', $permissions));
-    }
+            $permissions = DB::table('seller_permissions')
+                ->where('role_id', $user->type)
+                ->value($module);
+
+            return $permissions && in_array($action, explode(',', $permissions));
+        }
+
+        return false;
     }
 }

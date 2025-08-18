@@ -79,11 +79,11 @@ class PaymentController extends Controller
                     // </a>';
                     //     return $action;
                     // })
-                    ->with('totalTransactions',  number_format($totalTransactions, 2, '.', ''))
-                    ->with('totalWallet',  number_format($totalWallet, 2, '.', ''))
-                    ->with('totalAmountIn',  number_format($totalAmountIn, 2, '.', ''))
-                    ->with('totalAmountOut',  number_format($totalAmountOut, 2, '.', ''))
-                    ->rawColumns(['Date', 'AmountType', 'Amount'])
+                    ->with('totalTransactions', number_format($totalTransactions, 2))
+                    ->with('totalWallet', number_format($totalWallet, 2))
+                    ->with('totalAmountIn', number_format($totalAmountIn, 2))
+                    ->with('totalAmountOut', number_format($totalAmountOut, 2))
+                    ->rawColumns(['Date','AmountType','Amount'])
                     ->make(true);
             }
             ActivityLogger::UserLog('Open Seller Payments Page');
