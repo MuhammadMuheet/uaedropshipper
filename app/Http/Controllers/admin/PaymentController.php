@@ -212,8 +212,8 @@ class PaymentController extends Controller
     public function listPaymentRequests()
     {
         // Sirf pending status wali requests fetch karo
-        $requests = PaymentRequest::with('seller')
-            ->where('status', 'pending') // Add this line
+        $requests = PaymentRequest::with('user')
+            ->where('status', 'pending')
             ->latest()
             ->get();
 
@@ -221,20 +221,28 @@ class PaymentController extends Controller
 
         foreach ($requests as $index => $req) {
             $data[] = [
-                'id' => $index + 1,
-                'seller_name' => $req->seller ? $req->seller->name : 'N/A',
+                'id' => $req->id, // real ID instead of index
+                'user_name' => $req->user ? $req->user->name : 'N/A',
+                'user_role' => $req->user ? $req->user->role : 'N/A',
                 'amount' => $req->amount,
                 'status' => ucfirst($req->status),
                 'created_at' => $req->created_at->format('Y-m-d H:i'),
                 'action' => '
-    <button class="btn btn-sm btn-success" onclick="openApproveModal(' . $req->id . ', ' . $req->amount . ', ' . $req->seller_id . ')">Approve</button>
-    <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
-',
+                <button class="btn btn-sm btn-success" onclick="openApproveModal(' . $req->id . ', ' . $req->amount . ', ' . $req->user_id . ')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
+            ',
             ];
         }
 
-        return response()->json(['data' => $data]);
+        // 👇 Disable DataTables pagination, return plain JSON
+        return response()->json([
+            'data' => $data,
+            'recordsTotal' => count($data),
+            'recordsFiltered' => count($data),
+            'draw' => request()->get('draw'),
+        ]);
     }
+
 
 
 

@@ -10,7 +10,7 @@ class PaymentRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'seller_id',
+        'user_id',
         'amount',
         'status',
     ];
@@ -18,9 +18,9 @@ class PaymentRequest extends Model
     /**
      * Relationship: A payment request belongs to a seller (user)
      */
-    public function seller()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 

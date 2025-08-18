@@ -300,35 +300,7 @@
 
     <!-- Modal -->
     <!-- Approve Modal -->
-    <div class="modal fade" id="paymentRequestsModal" tabindex="-1" aria-labelledby="paymentRequestsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="paymentRequestsModalLabel">Payment Requests</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table id="requestsTable" class="table table-bordered table-striped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Seller Name</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Created At</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
+    cc
 
 
     <!-- Approve Modal -->
@@ -583,7 +555,10 @@
                         data: 'id'
                     },
                     {
-                        data: 'seller_name'
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'user_role'
                     },
                     {
                         data: 'amount'

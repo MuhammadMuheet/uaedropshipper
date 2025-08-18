@@ -101,7 +101,7 @@ class PaymentController extends Controller
         $seller = auth()->user(); // logged-in seller
 
         // Check if there's already a pending request
-        $pendingRequest = PaymentRequest::where('seller_id', $seller->id)
+        $pendingRequest = PaymentRequest::where('user_id', $seller->id)
             ->where('status', 'pending')
             ->first();
 
@@ -119,7 +119,7 @@ class PaymentController extends Controller
         }
 
         PaymentRequest::create([
-            'seller_id' => $seller->id,
+            'user_id' => $seller->id,
             'amount' => $request->amount,
             'status' => 'pending'
         ]);
