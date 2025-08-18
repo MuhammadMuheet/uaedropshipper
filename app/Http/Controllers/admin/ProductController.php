@@ -174,7 +174,7 @@ class ProductController extends Controller
                         $name = ucfirst($row->product_name);
                         return $row->variation_name ? "$name [{$row->variation_name}]" : $name;
                     })
-                   
+
                     ->addColumn('productType', function ($row) {
                         return ucfirst($row->product_type ?? 'N/A');
                     })
@@ -199,7 +199,7 @@ class ProductController extends Controller
                     ->rawColumns([ 'productName', 'productType', 'totalPurchase', 'totalSale'])
                     ->make(true);
             }
-    
+
             ActivityLogger::UserLog('Open All product Stocks page');
             $products = Product::where('status', 'active')->get();
             return view('admin.pages.products.stock',compact('products'));
@@ -249,7 +249,7 @@ class ProductController extends Controller
         if (!ActivityLogger::hasPermission('products', 'add')) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
-    
+
         // Basic validation
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -259,17 +259,17 @@ class ProductController extends Controller
             'product_short_des' => 'required',
             'product_type' => 'required|in:simple,variable',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => 'Please fill all required fields']);
         }
-    
+
         try {
             DB::beginTransaction();
-    
+
             // Handle main product image
             $imagePath = $request->file('product_img')->store('products', 'public');
-            
+
             // Handle gallery images
             $galleryPaths = [];
             if ($request->hasFile('files')) {
@@ -277,7 +277,7 @@ class ProductController extends Controller
                     $galleryPaths[] = $image->store('products/gallery', 'public');
                 }
             }
-    
+
             // Create the main product
             $product = Product::create([
                 'product_name' => $request->name,
@@ -290,24 +290,24 @@ class ProductController extends Controller
                 'product_gallery' => json_encode($galleryPaths),
                 'product_type' => $request->product_type,
             ]);
-    
+
             if ($request->product_type === 'simple') {
                 // Handle simple product batches
                 if (empty($request->simple_batch_name)) {
                     throw new \Exception('At least one stock batch is required for simple products');
                 }
-    
+
                 $totalStock = 0;
                 $totalValue = 0;
                 $regularPrices = [];
-    
+
                 foreach ($request->simple_batch_name as $index => $batchName) {
                     // Handle receipt image if exists
                     $receiptPath = null;
                     if (isset($request->file('simple_batch_receipt')[$index])) {
                         $receiptPath = $request->file('simple_batch_receipt')[$index]->store('batch_receipts', 'public');
                     }
-    
+
                     // Create batch (product_variation_id will be null for simple products)
                     ProductStockBatch::create([
                         'product_id' => $product->id,
@@ -319,30 +319,30 @@ class ProductController extends Controller
                         'purchase_date' => $request->simple_batch_date[$index],
                         'receipt_image' => $receiptPath,
                     ]);
-    
+
                     // Calculate totals
                     $totalStock += $request->simple_batch_quantity[$index];
                     $totalValue += $request->simple_batch_quantity[$index] * $request->simple_batch_price[$index];
-                    
+
                     // Collect regular prices
                     if (!empty($request->reg_batch_price[$index])) {
                         $regularPrices[] = $request->reg_batch_price[$index];
                     }
                 }
-    
+
             } elseif ($request->product_type === 'variable') {
                 // Handle variable products and their batches
                 if (empty($request->variation_product)) {
                     throw new \Exception('At least one variation is required for variable products');
                 }
-    
+
                 foreach ($request->variation_product as $varIndex => $variationName) {
                     // Handle variation image
                     $variationImagePath = null;
                     if (isset($request->file('variation_img')[$varIndex])) {
                         $variationImagePath = $request->file('variation_img')[$varIndex]->store('products/variations', 'public');
                     }
-    
+
                     // Create variation
                     $variation = productVariation::create([
                         'product_id' => $product->id,
@@ -351,24 +351,24 @@ class ProductController extends Controller
                         'variation_image' => $variationImagePath,
                         'variation_sku' => $request->variation_product_sku[$varIndex] ?? null,
                     ]);
-    
+
                     // Handle variation batches
                     $batchNames = $request->input("variation_{$varIndex}_batch_name", []);
                     if (empty($batchNames)) {
                         throw new \Exception('At least one stock batch is required for each variation');
                     }
-    
+
                     $varTotalStock = 0;
                     $varTotalValue = 0;
                     $varRegularPrices = [];
-    
+
                     foreach ($batchNames as $batchIndex => $batchName) {
                         // Handle receipt image if exists
                         $receiptPath = null;
                         if (isset($request->file("variation_{$varIndex}_batch_receipt")[$batchIndex])) {
                             $receiptPath = $request->file("variation_{$varIndex}_batch_receipt")[$batchIndex]->store('batch_receipts', 'public');
                         }
-    
+
                         // Create variation batch (with product_variation_id)
                         ProductStockBatch::create([
                             'product_id' => $product->id,
@@ -380,12 +380,12 @@ class ProductController extends Controller
                             'purchase_date' => $request->input("variation_{$varIndex}_batch_date")[$batchIndex],
                             'receipt_image' => $receiptPath,
                         ]);
-    
+
                         // Calculate variation totals
                         $varTotalStock += $request->input("variation_{$varIndex}_batch_quantity")[$batchIndex];
-                        $varTotalValue += $request->input("variation_{$varIndex}_batch_quantity")[$batchIndex] * 
+                        $varTotalValue += $request->input("variation_{$varIndex}_batch_quantity")[$batchIndex] *
                                          $request->input("variation_{$varIndex}_batch_price")[$batchIndex];
-                        
+
                         // Collect regular prices
                         if (!empty($request->input("variation_{$varIndex}_batch_reg_price")[$batchIndex])) {
                             $varRegularPrices[] = $request->input("variation_{$varIndex}_batch_reg_price")[$batchIndex];
@@ -394,16 +394,16 @@ class ProductController extends Controller
 
                 }
             }
-    
+
             DB::commit();
             ActivityLogger::UserLog('Added product: ' . $request->name);
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Product added successfully',
                 'redirect' => route('all_products')
             ]);
-    
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -471,7 +471,7 @@ public function update_product_store(Request $request)
             if ($product->product_image) {
                 Storage::delete($product->product_image);
             }
-            
+
             $imagePath = $request->file('product_img')->store('products', 'public');
             $product->product_image = $imagePath;
         }
@@ -490,10 +490,10 @@ public function update_product_store(Request $request)
         $product->save();
         // Handle product type specific data
         if ($request->product_type == 'simple') {
-         
+
             $this->handleSimpleProduct($request, $product);
         } else {
-         
+
             $this->handleVariableProduct($request, $product);
         }
 
@@ -506,7 +506,7 @@ public function update_product_store(Request $request)
 
     } catch (\Exception $e) {
         DB::rollBack();
-      
+
         return response()->json([
             'status' => 'error',
             'message' => 'Something went wrong: ' . $e->getMessage()
@@ -570,7 +570,7 @@ private function handleVariableProduct(Request $request, Product $product)
 
     // Get existing variation IDs to track which ones are being updated
     $existingVariationIds = $product->variations()->pluck('id')->toArray();
-    
+
     $updatedVariationIds = [];
 
     if ($request->has('variation_id')) {
@@ -593,7 +593,7 @@ private function handleVariableProduct(Request $request, Product $product)
                 if ($variation) {
                     $variation->update($variationData);
                     $updatedVariationIds[] = $variationId;
-                    
+
                     // Process batches for this variation
                     $this->handleVariationBatches($request, $variation, $varIndex);
                 }
@@ -601,7 +601,7 @@ private function handleVariableProduct(Request $request, Product $product)
                 // Create new variation
                 $variation = $product->variations()->create($variationData);
                 $updatedVariationIds[] = $variation->id;
-                
+
                 // Process batches for this variation
                 $this->handleVariationBatches($request, $variation, $varIndex);
             }

@@ -1,0 +1,269 @@
+    :root {
+        --primary-color: #096cff;
+        --primary-light: rgba(9, 108, 255, 0.1);
+        --primary-medium: rgba(9, 108, 255, 0.2);
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        --purple-color: #8b5cf6;
+        --muted-color: #6b7280;
+        --card-bg: #ffffff;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border-color: rgba(229, 231, 235, 0.5);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    [data-bs-theme="dark"] {
+        --card-bg: #1f2937;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --border-color: rgba(55, 65, 81, 0.5);
+    }
+
+    body {
+        background-color: #f8fafc;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    [data-bs-theme="dark"] body {
+        background-color: #0f172a;
+    }
+
+    .dashboard-container {
+        width: 95%;
+        margin: 0 auto;
+        padding: 1.5rem 0;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+    }
+
+    .stat-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+
+    .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        background: var(--primary-light);
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .stat-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .trend-up {
+        color: var(--success-color);
+    }
+
+    .trend-down {
+        color: var(--danger-color);
+    }
+
+    .chart-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+
+    .analytics-box {
+        height: 16rem;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sales-analytics {
+        background: linear-gradient(90deg,
+            rgba(9, 108, 255, 0.1) 0%,
+            rgba(9, 108, 255, 0.2) 25%,
+            rgba(9, 108, 255, 0.15) 50%,
+            rgba(9, 108, 255, 0.25) 75%,
+            rgba(9, 108, 255, 0.1) 100%);
+    }
+
+    .earnings-analytics {
+        background: linear-gradient(135deg,
+            rgba(16, 185, 129, 0.1) 0%,
+            rgba(16, 185, 129, 0.2) 100%);
+    }
+
+    .analytics-icon {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .sales-icon {
+        background: var(--primary-color);
+    }
+
+    .earnings-icon {
+        background: var(--success-color);
+    }
+
+    .management-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+    }
+
+    .management-card:hover {
+        box-shadow: var(--shadow-lg);
+    }
+
+    .management-item {
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bg-primary-light { background: var(--primary-light); }
+    .bg-success-light { background: rgba(16, 185, 129, 0.1); }
+    .bg-warning-light { background: rgba(245, 158, 11, 0.1); }
+    .bg-danger-light { background: rgba(239, 68, 68, 0.1); }
+    .bg-info-light { background: rgba(59, 130, 246, 0.1); }
+    .bg-purple-light { background: rgba(139, 92, 246, 0.1); }
+
+    .text-primary-custom { color: var(--primary-color); }
+    .text-success { color: var(--success-color); }
+    .text-warning { color: var(--warning-color); }
+    .text-danger { color: var(--danger-color); }
+    .text-info { color: var(--info-color); }
+    .text-purple { color: var(--purple-color); }
+
+    .orders-table {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .table {
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .table th {
+        background: var(--primary-light);
+        color: var(--text-primary);
+        border: none;
+        font-weight: 600;
+        padding: 1rem;
+    }
+
+    .table td {
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .status-badge {
+    padding: 5px 10px; /* Makes the badge look nice */
+    border-radius: 5px; /* Rounds the corners */
+    color: white; /* Text is white */
+    font-size: 0.9rem; /* Text size */
+    display: inline-block; /* Keeps badges in line */
+}
+.status-pending {
+    background-color: #ffc703
+    ; /* Red for Pending */
+}
+.status-processing {
+    background-color: #096cff
+    ; /* Yellow for Processing */
+}
+.status-shipped {
+    background-color: #17a2b8; /* Cyan (blue-green) for Shipped */
+}
+.status-delivered {
+    background-color: #28a745; /* Green for Delivered */
+}
+.status-completed {
+    background-color: #28a745; /* Green for Completed (same as Delivered) */
+}
+.status-cancelled {
+    background-color: #f1426c
+    ; /* Gray for Cancelled */
+}
+.status-future {
+    background-color: #007bff; /* Blue for Future */
+}
+.status-returnrto {
+    background-color: #ff6f61; /* Coral (pinkish) for ReturnRTO */
+}
+
+    .header-avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: var(--primary-medium);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 1rem 0;
+        }
+
+        .stat-card {
+            padding: 1rem;
+        }
+
+        .analytics-box {
+            /*height: 12rem;*/
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+        }
+    }
