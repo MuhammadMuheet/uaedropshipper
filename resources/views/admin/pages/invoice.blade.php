@@ -230,7 +230,7 @@
                 <tr>
                     <td>
 
-                        {{ dd($paymentData) }}
+
                         @if ($paymentData->user_type == 'seller')
                             <span class="badge bg-primary">Seller</span>
                         @else
