@@ -66,19 +66,31 @@ class PaymentController extends Controller
                 ->addColumn('Date', function ($data) {
                     return Carbon::parse($data->created_at)->format('d/m/Y');
                 })
-                // ->addColumn('action', function($data) {
-                //         $action ='';
-                //     $action .=
-                //         '<a href="#" class=" edit btn btn-sm btn-dark" data-id="'.$data->id.'" data-bs-toggle="modal" data-bs-target="#edit_kt_modal_new_target">
-                //     <i style="font-size: 16px; padding: 0;" class="fa-solid fa-credit-card"></i>
-                // </a>';
-                //     return $action;
-                // })
+                ->addColumn('action', function ($data) {
+                    $action = '';
+
+                    // Only add buttons if amount_type is 'out'
+                    if ($data->amount_type === 'out') {
+                        // View Invoice Button
+                        //             $action .= '<a href="' . route('admin_invoice', encrypt($data->id)) . '"
+                        //    class="btn btn-sm btn-dark me-1" title="View Invoice">
+                        //    <i style="font-size:16px; padding:0;" class="fa-solid fa-credit-card"></i>
+                        // </a>';
+
+                        // Download PDF Button
+                        $action .= '<a href="' . route('admin.payments.invoice.download', encrypt($data->id)) . '"
+                   class="btn btn-sm btn-success" title="Download PDF">
+                   <i style="font-size:16px;" class="fa-solid fa-print"></i>
+                </a>';
+                    }
+
+                    return $action;
+                })
                 ->with('totalTransactions', number_format($totalTransactions, 2))
                 ->with('totalWallet', number_format($totalWallet, 2))
                 ->with('totalAmountIn', number_format($totalAmountIn, 2))
                 ->with('totalAmountOut', number_format($totalAmountOut, 2))
-                ->rawColumns(['Date', 'AmountType', 'Amount'])
+                ->rawColumns(['Date', 'AmountType', 'Amount', 'action'])
                 ->make(true);
         }
         return view('logistic_company.payments');

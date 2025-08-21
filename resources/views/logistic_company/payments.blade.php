@@ -145,6 +145,8 @@
                                                         <th class="min-w-125px">Amount Type</th>
                                                         <th class="min-w-125px">Amount</th>
                                                         <th class="min-w-125px">Date</th>
+                                                        <th class="min-w-125px">Action</th>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -240,6 +242,12 @@
                     {
                         data: 'Date',
                         name: 'Date'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
                     },
                 ],
                 "createdRow": function(row, data, dataIndex) {

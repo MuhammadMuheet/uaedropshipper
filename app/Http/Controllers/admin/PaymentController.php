@@ -133,7 +133,8 @@ class PaymentController extends Controller
             return view('admin.pages.payments', compact('sellerData', 'LogisticCompanyData'));
         }
     }
-      public function invoice(Request $request , $id) {
+    public function invoice(Request $request, $id)
+    {
         if (ActivityLogger::hasPermission('payments', 'view')) {
             $payment_id = decrypt($id);
             ActivityLogger::UserLog('Open Payments invoice');
@@ -162,7 +163,6 @@ class PaymentController extends Controller
                 foreach ($users as $user) {
                     $options .= '<option value="' . $user->id . '">' . $user->name . ' [Wallet Amount: ' . ($user->wallet ?? '0') . ']</option>';
                 }
-
             }
             return response()->json(['options' => $options]);
         }
@@ -286,7 +286,7 @@ class PaymentController extends Controller
             // Create transaction record
             Transaction::create([
                 'user_id' => $user->id,
-                'user_type' => 'seller',
+                'user_type' => $user->role,
                 'amount_type' => 'out',
                 'amount' => $request->amount,
                 'payment_request_id' => $paymentRequest->id,

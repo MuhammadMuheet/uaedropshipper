@@ -315,7 +315,6 @@
                                 <th>#</th>
                                 <th>User Name</th>
                                 <th>Role</th>
-
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Created At</th>
