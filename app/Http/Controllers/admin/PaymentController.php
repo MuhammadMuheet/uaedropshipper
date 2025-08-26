@@ -133,7 +133,8 @@ class PaymentController extends Controller
             return view('admin.pages.payments', compact('sellerData', 'LogisticCompanyData'));
         }
     }
-      public function invoice(Request $request , $id) {
+    public function invoice(Request $request, $id)
+    {
         if (ActivityLogger::hasPermission('payments', 'view')) {
             $payment_id = decrypt($id);
             ActivityLogger::UserLog('Open Payments invoice');
@@ -162,7 +163,6 @@ class PaymentController extends Controller
                 foreach ($users as $user) {
                     $options .= '<option value="' . $user->id . '">' . $user->name . ' [Wallet Amount: ' . ($user->wallet ?? '0') . ']</option>';
                 }
-
             }
             return response()->json(['options' => $options]);
         }
@@ -213,8 +213,8 @@ class PaymentController extends Controller
     public function listPaymentRequests()
     {
         // Sirf pending status wali requests fetch karo
-        $requests = PaymentRequest::with('seller')
-            ->where('status', 'pending') // Add this line
+        $requests = PaymentRequest::with('user')
+            ->where('status', 'pending')
             ->latest()
             ->get();
 
@@ -222,20 +222,28 @@ class PaymentController extends Controller
 
         foreach ($requests as $index => $req) {
             $data[] = [
-                'id' => $index + 1,
-                'seller_name' => $req->seller ? $req->seller->name : 'N/A',
+                'id' => $req->id, // real ID instead of index
+                'user_name' => $req->user ? $req->user->name : 'N/A',
+                'user_role' => $req->user ? $req->user->role : 'N/A',
                 'amount' => $req->amount,
                 'status' => ucfirst($req->status),
                 'created_at' => $req->created_at->format('Y-m-d H:i'),
                 'action' => '
-    <button class="btn btn-sm btn-success" onclick="openApproveModal(' . $req->id . ', ' . $req->amount . ', ' . $req->seller_id . ')">Approve</button>
-    <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
-',
+                <button class="btn btn-sm btn-success" onclick="openApproveModal(' . $req->id . ', ' . $req->amount . ', ' . $req->user_id . ')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="handlePaymentAction(' . $req->id . ', \'reject\')">Reject</button>
+            ',
             ];
         }
 
-        return response()->json(['data' => $data]);
+        // 👇 Disable DataTables pagination, return plain JSON
+        return response()->json([
+            'data' => $data,
+            'recordsTotal' => count($data),
+            'recordsFiltered' => count($data),
+            'draw' => request()->get('draw'),
+        ]);
     }
+
 
 
 
@@ -278,7 +286,7 @@ class PaymentController extends Controller
             // Create transaction record
             Transaction::create([
                 'user_id' => $user->id,
-                'user_type' => 'seller',
+                'user_type' => $user->role,
                 'amount_type' => 'out',
                 'amount' => $request->amount,
                 'payment_request_id' => $paymentRequest->id,

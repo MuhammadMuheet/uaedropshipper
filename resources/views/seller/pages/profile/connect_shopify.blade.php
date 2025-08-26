@@ -1,5 +1,5 @@
 @extends('seller.layouts.app')
-@section('title', 'connect_shopify')
+@section('title', 'Security')
 @section('content')
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <div class="toolbar" id="kt_toolbar">
@@ -228,49 +228,28 @@
                                 <!--begin::Edit-->
                                 <div id="kt_signin_password_edit" class="flex-row-fluid ">
                                     <!--begin::Form-->
-                                    <form id="kt_signin_change_password" method="post"
-                                        class="form fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
-                                        @csrf
-                                        <div class="row mb-1">
-                                            <div class="col-lg-4">
-                                                <div class="fv-row mb-0 fv-plugins-icon-container">
-                                                    <label for="currentpassword"
-                                                        class="form-label fs-6 fw-bolder mb-3">Current Password</label>
-                                                    <input type="password"
-                                                        class="form-control form-control-lg form-control-solid @error('currentpassword') is-invalid @enderror"
-                                                        name="currentpassword" id="currentpassword">
-                                                    <div class="fv-plugins-message-container invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="fv-row mb-0 fv-plugins-icon-container">
-                                                    <label for="newpassword" class="form-label fs-6 fw-bolder mb-3">New
-                                                        Password</label>
-                                                    <input type="password"
-                                                        class="form-control form-control-lg form-control-solid @error('newpassword') is-invalid @enderror "
-                                                        name="newpassword" id="newpassword">
-                                                    <div class="fv-plugins-message-container invalid-feedback"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="fv-row mb-0 fv-plugins-icon-container">
-                                                    <label for="confirmpassword"
-                                                        class="form-label fs-6 fw-bolder mb-3">Confirm New Password</label>
-                                                    <input type="password"
-                                                        class="form-control form-control-lg form-control-solid"
-                                                        name="confirmpassword" id="confirmpassword">
-                                                    <div class="fv-plugins-message-container invalid-feedback"></div>
-                                                </div>
-                                            </div>
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">Shopify Store URL</label>
+                                        <div class="col-lg-8 fv-row">
+                                            <input type="text" name="shopify_store_url" id="shopify_store_url"
+                                                class="form-control form-control-lg form-control-solid"
+                                                placeholder="yourstore.myshopify.com">
+                                            <div class="form-text">Enter your Shopify store URL (e.g.,
+                                                yourstore.myshopify.com)</div>
                                         </div>
-                                        <div class="form-text mb-5">Password must be at least 8 character and contain
-                                            symbols</div>
-                                        <div class="d-flex">
-                                            <button id="kt_password_submit" onclick="update_tool()" type="button"
-                                                class="btn btn-primary me-2 px-6">Update Password</button>
-                                        </div>
+                                    </div>
 
-                                    </form>
+
+                                    <div class="row mb-6">
+                                        <label class="col-lg-4 col-form-label fw-bold fs-6">Connect to Shopify</label>
+                                        <div class="col-lg-8">
+                                            <a href="javascript:void(0);" onclick="connectShopify()"
+                                                class="btn btn-light-primary">Connect with Shopify</a>
+                                            <div class="form-text text-muted">After entering your store URL, click to
+                                                initiate connection</div>
+                                        </div>
+                                    </div>
+
                                     <!--end::Form-->
                                 </div>
                                 <!--end::Edit-->
@@ -323,6 +302,17 @@
 
                 }
             });
+        }
+
+
+
+        function connectShopify() {
+            const storeUrl = document.getElementById('shopify_store_url').value;
+            if (!storeUrl) {
+                toastr.error('Please enter your Shopify store URL.');
+                return;
+            }
+            window.location.href = `{{ route('shopify.connect') }}?store=${storeUrl}`;
         }
     </script>
 @endpush

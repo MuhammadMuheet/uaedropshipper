@@ -11,12 +11,12 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    CONST SELLER = 'seller';
-    CONST SUB_SELLER = 'sub_seller';
-    CONST ADMIN = 'admin';
-    CONST SUB_ADMIN = 'sub_admin';
-    CONST LOGISTIC_COMPANY = 'logistic_company';
-    CONST DRIVER = 'driver';
+    const SELLER = 'seller';
+    const SUB_SELLER = 'sub_seller';
+    const ADMIN = 'admin';
+    const SUB_ADMIN = 'sub_admin';
+    const LOGISTIC_COMPANY = 'logistic_company';
+    const DRIVER = 'driver';
     /**
      * The attributes that are mass assignable.
      *
@@ -45,6 +45,9 @@ class User extends Authenticatable
         'show_password',
         'status',
         'wallet',
+        'shopify_domain',
+        'shopify_token',
+        'shopify_store_data'
     ];
     protected $guarded = ['id'];
     /**

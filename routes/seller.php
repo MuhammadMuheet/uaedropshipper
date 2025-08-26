@@ -8,6 +8,7 @@ use App\Http\Controllers\seller\DashboardController;
 use App\Http\Controllers\seller\SellerRoleController;
 use App\Http\Controllers\seller\SubSellerController;
 use App\Http\Controllers\seller\PaymentController;
+use App\Http\Controllers\seller\ShopifyController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,9 @@ Route::middleware(['auth', 'seller_module:settings,profile'])->group(function ()
     Route::get('/seller-security', [ProfileController::class, 'security'])->name('seller_security');
     Route::get('/seller_get_profile', [ProfileController::class, 'get_profile'])->name('seller_get_profile');
     Route::post('/seller-security-update', [ProfileController::class, 'security_update'])->name('seller_security_update');
+    Route::get('/seller-connect_shopify', [ProfileController::class, 'connect_shopify'])->name('connect_shopify');
+    Route::get('/shopify/connect', [ShopifyController::class, 'redirectToShopify'])->name('shopify.connect');
+    Route::get('/shopify/callback', [ShopifyController::class, 'handleCallback'])->name('shopify.callback');
 });
 //Types
 Route::middleware(['auth', 'seller_module:seller_role,view'])->group(function () {

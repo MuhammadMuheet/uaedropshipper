@@ -892,7 +892,7 @@ class OrderController extends Controller
         try {
             // First handle Pending orders
             Order::whereIn('id', $orderIds)
-                ->where('status', 'Pending')
+                ->whereIn('status', ['Pending', 'Cancelled'])
                 ->update([
                     'company_id' => $request->assign_logistic_company,
                     'status' => 'Processing',
