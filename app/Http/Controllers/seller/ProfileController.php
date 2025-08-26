@@ -14,26 +14,28 @@ use Illuminate\Support\Facades\Log;
 class ProfileController extends Controller
 {
     use imageUploadTrait;
-    public function profile(){
-        if (ActivityLogger::hasPermission('settings', 'profile')) {
+    public function profile()
+    {
+        if (ActivityLogger::hasSellerPermission('settings', 'profile')) {
             ActivityLogger::UserLog('open profile ' . Auth::user()->name);
             return view('seller.pages.profile.profile');
-        }else{
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
-    public function get_profile(Request $request){
+    public function get_profile(Request $request)
+    {
         if (ActivityLogger::hasPermission('settings', 'profile')) {
-            $id=$request->id;
-            $Data=User::find($id);
+            $id = $request->id;
+            $Data = User::find($id);
             return response()->json($Data);
-        }else{
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
     public function profile_update(Request $request)
     {
-        if (ActivityLogger::hasPermission('settings', 'profile')) {
+        if (ActivityLogger::hasSellerPermission('settings', 'profile')) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
@@ -59,28 +61,42 @@ class ProfileController extends Controller
                     $user->image = $section_one_image;
                 }
                 $user->save();
-                ActivityLogger::UserLog('Update profile '.Auth::user()->name);
+                ActivityLogger::UserLog('Update profile ' . Auth::user()->name);
                 return response()->json(1);
             } catch (\Exception $e) {
-                \Log::error('Profile Update Error: '.$e->getMessage());
+                \Log::error('Profile Update Error: ' . $e->getMessage());
                 return response()->json(0);
             }
-        }else{
+        } else {
             abort(403, 'Unauthorized action.');
         }
-
     }
-    public function security(){
-        if (ActivityLogger::hasPermission('settings', 'profile')) {
-            ActivityLogger::UserLog('Open profile Security '.Auth::user()->name);
+    public function security()
+    {
+        if (ActivityLogger::hasSellerPermission('settings', 'profile')) {
+            ActivityLogger::UserLog('Open profile Security ' . Auth::user()->name);
             return view('seller.pages.profile.security');
-        }else{
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+
+
+
+
+    public function connect_shopify()
+    {
+        if (ActivityLogger::hasSellerPermission('settings', 'profile')) {
+            ActivityLogger::UserLog('Open connect shopify  ' . Auth::user()->name);
+            return view('seller.pages.profile.connect_shopify');
+        } else {
             abort(403, 'Unauthorized action.');
         }
     }
     public function security_update(Request $request)
     {
-        if (ActivityLogger::hasPermission('settings', 'profile')) {
+        if (ActivityLogger::hasSellerPermission('settings', 'profile')) {
             $user = Auth::user();
             if (!Hash::check($request->currentpassword, $user->password)) {
                 return response()->json(3);
@@ -91,15 +107,14 @@ class ProfileController extends Controller
             try {
                 $user->password = Hash::make($request->newpassword);
                 $user->save();
-                ActivityLogger::UserLog('Update profile Security '.Auth::user()->name);
+                ActivityLogger::UserLog('Update profile Security ' . Auth::user()->name);
                 return response()->json(1);
             } catch (\Exception $e) {
                 Log::error('Profile Update Error: ' . $e->getMessage());
                 return response()->json(0);
             }
-        }else{
+        } else {
             abort(403, 'Unauthorized action.');
         }
-        }
-
+    }
 }
