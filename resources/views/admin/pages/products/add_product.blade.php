@@ -128,7 +128,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Simple Product Section -->
                                 <div id="simple_product" style="display: none;">
                                     <!-- Simple Product Stock Batches -->
@@ -137,7 +137,7 @@
                                             <h4>Stock Batches</h4>
                                             <p class="text-muted">Add different stock batches with purchase prices</p>
                                         </div>
-                                        
+
                                         <div id="simple_batches_container">
                                             <div class="row batch-item mb-3">
                                                 <div class="col-md-12 mt-3">
@@ -169,13 +169,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row mt-3">
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary" id="add_simple_batch">Add Batch</button>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row mt-3">
                                             <div class="col-md-4">
                                                 <div class="stock-summary">
@@ -187,7 +187,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Variable Product Section -->
                                 <div id="variable_product" style="display: none;">
                                     <div id="variable_product_container">
@@ -211,14 +211,14 @@
                                                 <label class="form-label">Product Variation SKU</label>
                                                 <input type="text" class="form-control form-control-solid w-100" name="variation_product_sku[]" placeholder="Enter Product Variation SKU">
                                             </div>
-                                            
+
                                             <!-- Variation Batches -->
                                             <div class="col-12 mt-4 variation-batches" id="variation_0_batches">
                                                 <div class="batch-section">
                                                     <div class="batch-header">
                                                         <h5>Stock Batches for this Variation</h5>
                                                     </div>
-                                                    
+
                                                     <div id="variation_0_batches_container">
                                                         <div class="row batch-item mb-3">
                                                             <div class="col-md-12 mt-3">
@@ -250,13 +250,13 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="row mt-3">
                                                         <div class="col-12">
                                                             <button type="button" class="btn btn-primary add-variation-batch" data-variation-index="0">Add Batch</button>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="row mt-3">
                                                         <div class="col-md-4">
                                                             <div class="stock-summary">
@@ -294,9 +294,9 @@
         $(document).ready(function() {
             $('.js-example-basic-single').select2();
             $('.js-example-basic-single1').select2();
-            
+
             // Initialize with first simple product batch
-         
+
         });
 
         function get_sub_category(selectedValue) {
@@ -332,7 +332,7 @@
             const productName = $('#name').val() || 'Product';
             const firstWord = productName.split(' ')[0].substring(0, 3).toUpperCase();
             const batchName = `${firstWord}-BATCH-${index+1}`;
-            
+
             $(`#simple_batches_container .batch-item:eq(${index}) .batch-name`).val(batchName);
         }
 
@@ -341,7 +341,7 @@
             const productName = $('#name').val() || 'Product';
             const firstWord = productName.split(' ')[0].substring(0, 3).toUpperCase();
             const batchName = `${firstWord}-VAR${variationIndex+1}-BATCH-${batchIndex+1}`;
-            
+
             $(`#variation_${variationIndex}_batches_container .batch-item:eq(${batchIndex}) .batch-name`).val(batchName);
         }
 
@@ -349,14 +349,14 @@
         function calculateStockSummary(containerId) {
             let totalStock = 0;
             let totalValue = 0;
-            
+
             $(`#${containerId} .batch-item`).each(function(index) {
                 const quantity = parseFloat($(this).find('.batch-quantity').val()) || 0;
                 const price = parseFloat($(this).find('.batch-price').val()) || 0;
-                
+
                 totalStock += quantity;
                 totalValue += quantity * price;
-                
+
                 // Enable remove button if there are multiple batches
                 if ($(`#${containerId} .batch-item`).length > 1) {
                     $(this).find('.remove-batch').prop('disabled', false);
@@ -364,9 +364,9 @@
                     $(this).find('.remove-batch').prop('disabled', true);
                 }
             });
-            
+
             const avgPrice = totalStock > 0 ? (totalValue / totalStock).toFixed(2) : 0;
-            
+
             // Update summary display
             if (containerId.includes('variation')) {
                 const variationIndex = containerId.match(/\d+/)[0];
@@ -412,7 +412,7 @@
                     </div>
                 </div>
             `);
-            
+
             $('#simple_batches_container').append(newBatch);
             generateSimpleBatchName(batchIndex);
             calculateStockSummary('simple_batches_container');
@@ -426,7 +426,7 @@
         // Add variation
         $('#add_variation').click(function() {
             const variationIndex = $('.variation_item').length;
-            
+
             const newVariation = $(`
                 <div class="row mt-3 variation_item">
                     <div class="col-sm-12 mt-3">
@@ -448,13 +448,13 @@
                                                     <label class="form-label">Product Variation SKU</label>
                                                     <input type="text" class="form-control form-control-solid w-100" name="variation_product_sku[]" placeholder="Enter Product Variation SKU">
                                                 </div>
-                    
+
                     <div class="col-12 mt-4 variation-batches" id="variation_${variationIndex}_batches">
                         <div class="batch-section">
                             <div class="batch-header">
                                 <h5>Stock Batches for this Variation</h5>
                             </div>
-                            
+
                             <div id="variation_${variationIndex}_batches_container">
                                 <div class="row batch-item mb-3">
                                     <div class="col-md-12 mt-3">
@@ -486,13 +486,13 @@
                                     </div>
                                 </div>
                             </div>
-                        
+
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <button type="button" class="btn btn-primary add-variation-batch" data-variation-index="${variationIndex}">Add Batch</button>
                                 </div>
                             </div>
-                            
+
                             <div class="row mt-3">
                                 <div class="col-md-4">
                                     <div class="stock-summary">
@@ -502,7 +502,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                               <div class="col-sm-12 mt-3">
                         <button type="button" class="btn btn-danger remove_variation float-end">Remove Variation</button>
@@ -510,14 +510,14 @@
                     </div>
                 </div>
             `);
-            
+
             $('#variable_product_container').append(newVariation);
-           
+
             // Generate name for first batch in this variation
             generateVariationBatchName(variationIndex, 0);
-        
-                    
-               
+
+
+
             // Auto-fill date with today's date
             $(`#variation_${variationIndex}_batches_container .batch-item:eq(0) input[type="date"]`).val(new Date().toISOString().slice(0, 10));
         });
@@ -526,7 +526,7 @@
         $(document).on('click', '.add-variation-batch', function() {
             const variationIndex = $(this).data('variation-index');
             const batchIndex = $(`#variation_${variationIndex}_batches_container .batch-item`).length;
-            
+
             const newBatch = $(`
                 <div class="row batch-item mb-3">
                     <div class="col-md-12 mt-3">
@@ -558,7 +558,7 @@
                     </div>
                 </div>
             `);
-            
+
             $(`#variation_${variationIndex}_batches_container`).append(newBatch);
             generateVariationBatchName(variationIndex, batchIndex);
             calculateStockSummary(`variation_${variationIndex}_batches_container`);
@@ -584,26 +584,26 @@
         $(document).on('click', '.remove_variation', function() {
             if ($('.variation_item').length > 1) {
                 $(this).closest('.variation_item').remove();
-                
+
                 // Renumber remaining variations
                 $('.variation_item').each(function(index) {
                     $(this).find('h4').text(`Variation #${index+1}`);
                     const newIndex = index;
                     const oldIndex = $(this).index();
-                    
+
                     // Update all names and IDs
                     $(this).find('[id^="variation_"]').each(function() {
                         const oldId = $(this).attr('id');
                         const newId = oldId.replace(/variation_\d+/, `variation_${newIndex}`);
                         $(this).attr('id', newId);
                     });
-                    
+
                     $(this).find('[name^="variation_"]').each(function() {
                         const oldName = $(this).attr('name');
                         const newName = oldName.replace(/variation_\d+/, `variation_${newIndex}`);
                         $(this).attr('name', newName);
                     });
-                    
+
                     // Update data-variation-index on add batch buttons
                     $(this).find('.add-variation-batch').data('variation-index', newIndex);
                 });
@@ -617,15 +617,15 @@
             const containerId = $(this).closest('[id$="_container"]').attr('id');
             calculateStockSummary(containerId);
         });
-        $('#name').on('input change', function() 
+        $('#name').on('input change', function()
         {
             generateVariationBatchName(0, 0);
             generateSimpleBatchName(0);
         });
 
-      
+
         // Form validation
-     
+
         function validateInputs() {
             let isValid = true;
             const requiredInputs = document.querySelectorAll('.required-input');
@@ -670,7 +670,7 @@
                         input.classList.remove('is-invalid');
                     }
                 }
-                
+
             });
 
             return isValid;
@@ -687,24 +687,24 @@
                 maxFiles: 25,
                 labelIdle: 'Drag & Drop your image or <span class="filepond--label-action">Browse</span>',
                 maxFileSize: '500MB',
-                
+
             });
         window.add_product = function() {
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
             }
-            
+
             if (validateInputs()) {
                 const formData = new FormData(document.getElementById("add_product"));
                 const pondFile = pond.getFiles();
-                
+
                 pondFile.forEach(files => {
                     formData.append('files[]', files.file);
                 });
-                
+
                 const submitButton = $('#btn-template');
                 submitButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
-                
+
                 $.ajax({
                     url: '{{ route("add_product_store") }}',
                     type: 'POST',
@@ -713,7 +713,7 @@
                     contentType: false,
                     success: function(response) {
                         submitButton.prop('disabled', false).html('ADD PRODUCT');
-                        
+
                         if (response.status === 'success') {
                             toastr.success(response.message);
                             setTimeout(function() {
@@ -802,7 +802,7 @@
 
         });
     </script>
-    
+
     <script>
         CKEDITOR.replace('product_short_des', {
             filebrowserUploadMethod: 'form'

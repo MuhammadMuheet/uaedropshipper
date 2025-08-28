@@ -116,4 +116,9 @@ class PaymentController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+
+    public function index_Product(){
+       return view('seller.pages.products.detailsss');
+    }
 }

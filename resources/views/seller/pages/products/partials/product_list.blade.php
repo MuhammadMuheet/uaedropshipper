@@ -13,34 +13,33 @@
                         <div class="row">
                             <div class="col-6">
                                 <p class="text-danger" style="font-weight: 900 !important; font-size: 14px !important;">
-                            @if($product->fifo_price)
-                                {{ number_format($product->fifo_price, 2) }} AED
-                                @else
-                                <span class="text-danger"> 0.00 AED</span>
-                            @endif
-                        </p>
-                    </div>
+                                    @if($product->fifo_price)
+                                        {{ number_format($product->fifo_price, 2) }} AED
+                                    @else
+                                        <span class="text-danger"> 0.00 AED</span>
+                                    @endif
+                                </p>
+                            </div>
 
                             @if($product->quantity <= 10 && !$product->quantity <= 0)
-                            <div class="col-12">
-                            <p  style="font-weight: 900 !important; font-size: 14px !important;">
-                            <span class="text-warning">Product Stock nearly ends Remaining is: {{ $product->quantity }} Qty </span>
-                            </p>
-                    </div>
+                                <div class="col-12">
+                                    <p style="font-weight: 900 !important; font-size: 14px !important;">
+                                        <span class="text-warning">Product Stock nearly ends Remaining is: {{ $product->quantity }} Qty </span>
+                                    </p>
+                                </div>
                             @elseif($product->quantity <= 0)
-                            <div class="col-6">
-                            <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
-                            <span class="text-danger"> Out of stock </span>
-                            </p>
-                            </div>
+                                <div class="col-6">
+                                    <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
+                                        <span class="text-danger"> Out of stock </span>
+                                    </p>
+                                </div>
                             @else
-                            <div class="col-6">
-                            <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
-                            {{ $product->quantity }} Qty
-                            </p>
-                            </div>
+                                <div class="col-6">
+                                    <p class="text-end" style="font-weight: 900 !important; font-size: 14px !important;">
+                                        {{ $product->quantity }} Qty
+                                    </p>
+                                </div>
                             @endif
-
                         </div>
                         <!-- FIFO Price Display -->
                         {{-- Removed batch/variation info --}}
@@ -56,7 +55,7 @@
                                 </a>
                             </div>
                             <div class="col-md-6 text-end">
-                                <a href="#" class="btn btn-primary mt-3 w-100">
+                                <a href="{{ route('product.show', $product->id) }}" class="btn btn-primary mt-3 w-100">
                                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <polyline points="12 16 16 12 12 8"></polyline>
