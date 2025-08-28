@@ -107,4 +107,3 @@ Route::middleware(['auth', 'seller_module:payments,view'])->group(function () {
     Route::get('/all-payments', [PaymentController::class, 'index'])->name('all_seller_payments');
     Route::post('/seller/payment-request', [PaymentController::class, 'sendPaymentRequest'])->name('send_payment_request');
 });
-});
