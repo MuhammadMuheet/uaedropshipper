@@ -35,6 +35,9 @@ return new class extends Migration
             $table->string('password', 255);
             $table->enum('status', ['active', 'block', 'pending'])->default('pending');
             $table->string('remember_token', 100)->nullable();
+            $table->string('shopify_domain')->nullable(); // e.g., store-name.myshopify.com
+            $table->string('shopify_token')->nullable();  // Shopify access token (OAuth)
+            $table->text('shopify_store_data')->nullable(); // optional: store JSON response
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

@@ -313,7 +313,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Seller Name</th>
+                                <th>User Name</th>
+                                <th>Role</th>
                                 <th>Amount</th>
                                 <th>Status</th>
                                 <th>Created At</th>
@@ -583,7 +584,10 @@
                         data: 'id'
                     },
                     {
-                        data: 'seller_name'
+                        data: 'user_name'
+                    },
+                    {
+                        data: 'user_role'
                     },
                     {
                         data: 'amount'

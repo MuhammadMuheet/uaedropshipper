@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('payment_request_id')->nullable()->after('id');
+            $table->foreign('payment_request_id')->references('id')->on('payment_requests');
             $table->timestamps();
         });
     }
