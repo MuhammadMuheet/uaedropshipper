@@ -224,7 +224,6 @@ Route::middleware(['auth', 'module:payments,view'])->group(function () {
     Route::get('/get-admin-transaction-user-type', [PaymentController::class, 'get_transaction_user_type'])->name('get_admin_transaction_user_type');
     Route::post('/give-payment', [PaymentController::class, 'give_payment'])->name('admin_give_payment');
     Route::get('/admin-invoice/{id}', [PaymentController::class, 'invoice'])->name('admin_invoice');
-
     Route::get('/admin/payment-requests', [PaymentController::class, 'paymentRequestsPage'])->name('payment_requests.page');
     Route::get('/admin/payment-requests/list', [PaymentController::class, 'listPaymentRequests'])->name('payment_requests.list');
     Route::post('/admin/payment-requests/action', [PaymentController::class, 'handlePaymentAction'])->name('payment_request_action');

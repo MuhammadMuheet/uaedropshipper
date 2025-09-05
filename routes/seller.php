@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('seller_dashboard');
 Route::middleware(['auth', 'seller_module:products,view'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('products');
+    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show'); // New route for product detail
     Route::get('/get-seller-product-data', [ProductController::class, 'get_seller_product_data'])->name('get_seller_product_data');
     Route::get('/get-seller-product-variation-price', [ProductController::class, 'get_seller_product_variation_price'])->name('get_seller_product_variation_price');
 });
