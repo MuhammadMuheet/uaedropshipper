@@ -5,7 +5,9 @@
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
+                    data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
+                    class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
                     <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Edit Order #{{ $order->id }}</h1>
                 </div>
             </div>
@@ -26,15 +28,18 @@
                                     <h4>Customer Information</h4>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Customer Name</label>
-                                        <input type="text" class="form-control form-control-solid" name="customer_name" value="{{ $order->customer_name }}" required>
+                                        <input type="text" class="form-control form-control-solid" name="customer_name"
+                                            value="{{ $order->customer_name }}" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Phone</label>
-                                        <input type="text" class="form-control form-control-solid" name="phone" value="{{ $order->phone }}" required>
+                                        <input type="text" class="form-control form-control-solid" name="phone"
+                                            value="{{ $order->phone }}" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">WhatsApp</label>
-                                        <input type="text" class="form-control form-control-solid" name="whatsapp" value="{{ $order->whatsapp }}">
+                                        <input type="text" class="form-control form-control-solid" name="whatsapp"
+                                            value="{{ $order->whatsapp }}">
                                     </div>
                                 </div>
 
@@ -42,19 +47,25 @@
                                     <h4>Shipping Information</h4>
                                     <div class="form-group mb-3">
                                         <label class="form-label">State</label>
-                                        <select class="form-select form-select-solid js-example-basic-single" name="state" id="stateSelect" required>
+                                        <select class="form-select form-select-solid js-example-basic-single" name="state"
+                                            id="stateSelect" required>
                                             <option value="">Select State</option>
-                                            @foreach($states as $state)
-                                                <option value="{{ $state->id }}" {{ $order->state_id == $state->id ? 'selected' : '' }}>{{ $state->state }}</option>
+                                            @foreach ($states as $state)
+                                                <option value="{{ $state->id }}"
+                                                    {{ $order->state_id == $state->id ? 'selected' : '' }}>
+                                                    {{ $state->state }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Area</label>
-                                        <select class="form-select form-select-solid js-example-basic-single" name="areas" id="areaSelect" required>
+                                        <select class="form-select form-select-solid js-example-basic-single" name="areas"
+                                            id="areaSelect" required>
                                             <option value="">Select Area</option>
-                                            @foreach($areas as $area)
-                                                <option value="{{ $area->id }}" {{ $order->area_id == $area->id ? 'selected' : '' }}>{{ $area->area }}</option>
+                                            @foreach ($areas as $area)
+                                                <option value="{{ $area->id }}"
+                                                    {{ $order->area_id == $area->id ? 'selected' : '' }}>
+                                                    {{ $area->area }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -64,7 +75,8 @@
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Map URL</label>
-                                        <input type="text" class="form-control form-control-solid" name="map_url" value="{{ $order->map_url }}">
+                                        <input type="text" class="form-control form-control-solid" name="map_url"
+                                            value="{{ $order->map_url }}">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Instructions</label>
@@ -79,49 +91,62 @@
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Stock</th>
-                                                <th>Total</th>
-                                                <th>Actions</th>
-                                            </tr>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Stock</th>
+                                                    <th>Total</th>
+                                                    <th>Actions</th>
+                                                </tr>
                                             </thead>
                                             <tbody id="orderItemsTable">
-                                            @foreach($order->orderItems as $item)
-                                                <tr data-item-id="{{ $item->id }}">
-                                                    <td>
-                                                        @if($item->productVariation)
-                                                            <img src="{{ asset('storage/'.$item->productVariation->variation_image) }}" width="50">
-                                                            {{ $item->product->product_name }} - {{ $item->productVariation->variation_name }}: {{ $item->productVariation->variation_value }}
-                                                        @else
-                                                            <img src="{{ asset('storage/'.$item->product->product_image) }}" width="50">
-                                                            {{ $item->product->product_name }}
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                    
-                                                         <p class="mt-3">{{ number_format($item->productStockBatch->regular_price, 2) }} AED</p>
-                                                    
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control form-control-solid item-quantity" value="{{ $item->quantity }}" min="1" style="width: 80px;">
-                                                    </td>
-                                                    <td class="stock-display">
-                                                    
-                                                            <p class="mt-3">    Stock: {{ $item->productStockBatch->quantity }}</p>
-                                                     
-                                                    </td>
-                                                    <td>
-                                                            <p class="mt-3">   {{ number_format($item->productStockBatch->regular_price * $item->quantity, 2) }} AED</p>
-                                                    
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-danger remove-item">Remove</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                @foreach ($order->orderItems as $item)
+                                                    <tr data-item-id="{{ $item->id }}">
+                                                        <td>
+                                                            @if ($item->productVariation)
+                                                                <img src="{{ asset('storage/' . $item->productVariation->variation_image) }}"
+                                                                    width="50">
+                                                                {{ $item->product->product_name }} -
+                                                                {{ $item->productVariation->variation_name }}:
+                                                                {{ $item->productVariation->variation_value }}
+                                                            @else
+                                                                <img src="{{ asset('storage/' . $item->product->product_image) }}"
+                                                                    width="50">
+                                                                {{ $item->product->product_name }}
+                                                            @endif
+                                                        </td>
+                                                        <td>
+
+                                                            <p class="mt-3">
+                                                                {{ number_format($item->productStockBatch->regular_price, 2) }}
+                                                                AED</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <input type="number"
+                                                                class="form-control form-control-solid item-quantity"
+                                                                value="{{ $item->quantity }}" min="1"
+                                                                style="width: 80px;">
+                                                        </td>
+                                                        <td class="stock-display">
+
+                                                            <p class="mt-3"> Stock:
+                                                                {{ $item->productStockBatch->quantity }}</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <p class="mt-3">
+                                                                {{ number_format($item->productStockBatch->regular_price * $item->quantity, 2) }}
+                                                                AED</p>
+
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                class="btn btn-sm btn-danger remove-item">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                         </table>
@@ -134,22 +159,27 @@
                                     <h4>Add New Product</h4>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Product</label>
-                                        <select class="form-select form-select-solid js-example-basic-single" id="productSelect">
+                                        <select class="form-select form-select-solid js-example-basic-single"
+                                            id="productSelect">
                                             <option value="">Select Product</option>
-                                            @foreach($products as $product)
-                                                <option value="{{ $product->id }}" data-type="{{ $product->product_type }}">{{ $product->product_name }}</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}"
+                                                    data-type="{{ $product->product_type }}">{{ $product->product_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group mb-3" id="variationContainer" style="display: none;">
                                         <label class="form-label">Variation</label>
-                                        <select class="form-select form-select-solid js-example-basic-single" id="variationSelect">
+                                        <select class="form-select form-select-solid js-example-basic-single"
+                                            id="variationSelect">
                                             <option value="">Select Variation</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Quantity</label>
-                                        <input type="number" class="form-control form-control-solid" id="newItemQuantity" min="1" value="1">
+                                        <input type="number" class="form-control form-control-solid"
+                                            id="newItemQuantity" min="1" value="1">
                                     </div>
                                     <button type="button" class="btn btn-primary" id="addItemBtn">Add Product</button>
                                 </div>
@@ -159,31 +189,42 @@
                                     <table class="table">
                                         <tr>
                                             <td>Subtotal:</td>
-                                            <td class="text-end" id="subtotalDisplay">{{ number_format($order->subtotal, 2) }} AED</td>
+                                            <td class="text-end" id="subtotalDisplay">
+                                                {{ number_format($order->subtotal, 2) }} AED</td>
                                         </tr>
                                         <tr>
                                             <td>Shipping Fee:</td>
-                                            <td class="text-end" id="shippingDisplay">{{ number_format($order->shipping_fee, 2) }} AED</td>
+                                            <td class="text-end" id="shippingDisplay">
+                                                {{ number_format($order->shipping_fee, 2) }} AED</td>
                                         </tr>
                                         <tr>
                                             <td>Service Charges:</td>
-                                            <td class="text-end" id="service_charge">{{ number_format($order->service_charges, 2) }} AED</td>
+                                            <td class="text-end" id="service_charge">
+                                                {{ number_format($order->service_charges, 2) }} AED</td>
+                                            <!-- Hidden inputs to carry service charge data -->
+                                            <input type="hidden" name="service_charge" id="service_charge_input"
+                                                value="{{ $order->service_charge }}">
+                                            <input type="hidden" name="service_charges_id" id="service_charge_input_id"
+                                                value="{{ $order->service_charges_id }}">
+
                                         </tr>
                                         <tr>
                                             <td>Total:</td>
-                                            <td class="text-end" id="totalDisplay">{{ number_format($order->total, 2) }} AED</td>
+                                            <td class="text-end" id="totalDisplay">{{ number_format($order->total, 2) }}
+                                                AED</td>
                                         </tr>
                                         <tr>
                                             <td>COD Amount:</td>
                                             <td class="text-end">
-                                                <input type="number" class="form-control form-control-solid" id="cod_amount" name="cod_amount"
-                                                       value="{{ $order->cod_amount }}" min="0" step="0.01">
+                                                <input type="number" class="form-control form-control-solid"
+                                                    id="cod_amount" name="cod_amount" value="{{ $order->cod_amount }}"
+                                                    min="0" step="0.01">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Profit (COD - Total):</td>
                                             <td class="text-end fw-bold
-                @if($order->profit < 0) text-danger @else text-success @endif"
+                @if ($order->profit < 0) text-danger @else text-success @endif"
                                                 id="profitDisplay">
                                                 {{ number_format($order->profit, 2) }} AED
                                             </td>
@@ -216,7 +257,9 @@
                     $.ajax({
                         url: "{{ route('admin_get_areas_shipping') }}",
                         type: "GET",
-                        data: { state_id: stateId },
+                        data: {
+                            state_id: stateId
+                        },
                         success: function(data) {
                             $('#areaSelect').html(data.options);
                         }
@@ -226,7 +269,7 @@
                 }
             });
 
-           
+
             // Update item quantity with inventory feedback
             $(document).on('change', '.item-quantity', function() {
                 const row = $(this).closest('tr');
@@ -269,62 +312,67 @@
                 });
             });
 
-            $('#productSelect').change(function () {
-    const productId = $(this).val();
-    const productType = $(this).find(':selected').data('type');
+            $('#productSelect').change(function() {
+                const productId = $(this).val();
+                const productType = $(this).find(':selected').data('type');
 
-    if (productType === 'variable') {
-        $.ajax({
-            url: "{{ route('admin_get_product_variations') }}",
-            type: "GET",
-            data: { product_id: productId },
-            success: function (data) {
-                $('#variationContainer').show();
-                $('#variationSelect').html(data.options);
-            }
-        });
-    } else {
-        $('#variationContainer').hide();
-        $('#variationSelect').html('<option value="">Select Variation</option>');
-    }
-});
+                if (productType === 'variable') {
+                    $.ajax({
+                        url: "{{ route('admin_get_product_variations') }}",
+                        type: "GET",
+                        data: {
+                            product_id: productId
+                        },
+                        success: function(data) {
+                            $('#variationContainer').show();
+                            $('#variationSelect').html(data.options);
+                        }
+                    });
+                } else {
+                    $('#variationContainer').hide();
+                    $('#variationSelect').html('<option value="">Select Variation</option>');
+                }
+            });
 
-$('#addItemBtn').click(function () {
-    const productId = $('#productSelect').val();
-    const variationId = $('#variationSelect').val();
-    const quantity = $('#newItemQuantity').val();
-    const productType = $('#productSelect').find(':selected').data('type');
+            $('#addItemBtn').click(function() {
+                const productId = $('#productSelect').val();
+                const variationId = $('#variationSelect').val();
+                const quantity = $('#newItemQuantity').val();
+                const productType = $('#productSelect').find(':selected').data('type');
 
-    if (!productId) return toastr.error('Please select a product');
-    if (productType === 'variable' && !variationId) return toastr.error('Please select a variation');
+                if (!productId) return toastr.error('Please select a product');
+                if (productType === 'variable' && !variationId) return toastr.error(
+                    'Please select a variation');
 
-    $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Adding...');
+                $(this).prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm"></span> Adding...');
 
-    $.ajax({
-        url: "{{ route('admin_orders.add_item', $order->id) }}",
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            product_id: productId,
-            variation_id: variationId,
-            quantity: quantity
-        },
-        success: function (response) {
-            toastr.success(response.message);
-            location.reload();
-        },
-        error: function (xhr) {
-            toastr.error(xhr.responseJSON.message || 'Something went wrong');
-        },
-        complete: function () {
-            $('#addItemBtn').prop('disabled', false).text('Add Product');
-        }
-    });
-});
+                $.ajax({
+                    url: "{{ route('admin_orders.add_item', $order->id) }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        product_id: productId,
+                        variation_id: variationId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        toastr.success(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        toastr.error(xhr.responseJSON.message || 'Something went wrong');
+                    },
+                    complete: function() {
+                        $('#addItemBtn').prop('disabled', false).text('Add Product');
+                    }
+                });
+            });
 
-// Remove item with inventory feedback
+            // Remove item with inventory feedback
             $(document).on('click', '.remove-item', function() {
-                if (!confirm('Are you sure you want to remove this item? The stock will be restored.')) return;
+                if (!confirm('Are you sure you want to remove this item? The stock will be restored.'))
+                    return;
 
                 const row = $(this).closest('tr');
                 const itemId = row.data('item-id');
@@ -360,6 +408,7 @@ $('#addItemBtn').click(function () {
             });
 
         });
+
         function updateOrderSummary(totals) {
             $('#subtotalDisplay').text(totals.subtotal.toFixed(2) + ' AED');
             $('#shippingDisplay').text(totals.shipping);
@@ -384,7 +433,9 @@ $('#addItemBtn').click(function () {
                 $.ajax({
                     url: "{{ route('admin_get_areas_shipping') }}",
                     type: "GET",
-                    data: { id: areaId },
+                    data: {
+                        id: areaId
+                    },
                     success: function(response) {
                         // Update shipping fee in the form
                         $('#shippingDisplay').text(response.shipping);
@@ -398,63 +449,65 @@ $('#addItemBtn').click(function () {
 
         // Handle COD amount change
         $('input[name="cod_amount"]').on('input', function() {
-           var cod_amount = $('#cod_amount').val();
-           var seller_id = {{ $order->seller_id }};
+            var cod_amount = $('#cod_amount').val();
+            var seller_id = {{ $order->seller_id }};
             $.ajax({
-        url: "{{ route('get_seller_service_charges_admin') }}",
-        type: "GET",
-        data: { 
-            cod_amount: cod_amount,
-            seller_id: seller_id
-         },
-        dataType: "json",
-        success: function(res) {
-            console.log(res);
-            if (res.status == true) {
-           
-                 $('#service_charge').html(res.details.amount + ' AED');
-                 $('#service_charge_input').val(res.details.amount);
-                 $('#service_charge_input_id').val(res.details.id);
-                $('#PlaceOrder').empty();
-          var subtotal = {{ $order->subtotal }};
-         var shipping = {{ $order->shipping_fee }};
-     var cod = parseFloat($('#cod_amount').val()) || 0;
+                url: "{{ route('get_seller_service_charges_admin') }}",
+                type: "GET",
+                data: {
+                    cod_amount: cod_amount,
+                    seller_id: seller_id
+                },
+                dataType: "json",
+                success: function(res) {
+                    console.log(res);
+                    if (res.status == true) {
 
-      var profit = cod - subtotal - shipping - res.details.amount;
-        $('#profit_input').val(profit);
-     if(profit < 0){
-         $('#profit').html(`<h3 class="float-end text-danger">${profit.toFixed(2)} AED</h3>`);
-     }else{
-         $('#profit').html(`<h3 class="float-end text-success">${profit.toFixed(2)} AED</h3>`);
-     }
-if(profit > 0){
-    $('#PlaceOrder').append(`
+                        $('#service_charge').html(res.details.amount + ' AED');
+                        $('#service_charge_input').val(res.details.amount);
+                        $('#service_charge_input_id').val(res.details.id);
+                        $('#PlaceOrder').empty();
+                        var subtotal = {{ $order->subtotal }};
+                        var shipping = {{ $order->shipping_fee }};
+                        var cod = parseFloat($('#cod_amount').val()) || 0;
+
+                        var profit = cod - subtotal - shipping - res.details.amount;
+                        $('#profit_input').val(profit);
+                        if (profit < 0) {
+                            $('#profit').html(
+                                `<h3 class="float-end text-danger">${profit.toFixed(2)} AED</h3>`);
+                        } else {
+                            $('#profit').html(
+                                `<h3 class="float-end text-success">${profit.toFixed(2)} AED</h3>`);
+                        }
+                        if (profit > 0) {
+                            $('#PlaceOrder').append(`
                   <div class="card-footer ">
                                     <button type="button" class="btn btn-primary submitBtn float-end" id="kt_modal_new_target_submit" onclick="placeOrder()">Place Order</button>
                                 </div>
                 `);
-}else{
-    $('#PlaceOrder').append(`
+                        } else {
+                            $('#PlaceOrder').append(`
                   <div class="card-footer text-center">
                                     <h4 class="text-danger">You Cannot Place Order If Profit is Negative.</h4>
                                 </div>
                 `);
-}
-$('#orderForm').submit();
-            }else{
+                        }
+                        $('#orderForm').submit();
+                    } else {
 
-            }
-        },
-        error: function(xhr) {
-            let errors = xhr.responseJSON.errors;
-            let errorMessage = "Please fix the following errors:\n";
-            for (let key in errors) {
-                errorMessage += errors[key][0] + "\n";
-            }
-            alert(errorMessage);
-        }
-    });
-         
+                    }
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "Please fix the following errors:\n";
+                    for (let key in errors) {
+                        errorMessage += errors[key][0] + "\n";
+                    }
+                    alert(errorMessage);
+                }
+            });
+
         });
 
         // AJAX form submission for order updates
@@ -466,7 +519,9 @@ $('#orderForm').submit();
 
             // Save original button text
             const originalText = submitBtn.text();
-            submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...');
+            submitBtn.prop('disabled', true).html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
+            );
 
             $.ajax({
                 url: form.attr('action'),
@@ -490,7 +545,5 @@ $('#orderForm').submit();
                 }
             });
         });
-
-
     </script>
 @endpush

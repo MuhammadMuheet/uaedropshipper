@@ -950,6 +950,8 @@ class OrderController extends Controller
             return view('admin.pages.products.order.edit', compact('order', 'states', 'areas', 'products'));
         }
     }
+
+
     // public function update(Request $request, $id)
     // {
     //     if (ActivityLogger::hasPermission('orders', 'edit')) {
@@ -961,14 +963,17 @@ class OrderController extends Controller
     //             'state' => 'required',
     //             'areas' => 'required',
     //             'address' => 'required',
-    //             'cod_amount' => 'required|numeric|min:0'
+    //             'cod_amount' => 'required|numeric|min:0',
+    //             'service_charge'  => 'nullable|numeric|min:0', // ✅ only this
+
     //         ]);
 
-    //         // Begin transaction
     //         DB::beginTransaction();
 
     //         try {
-    //             // Update basic order info
+    //             $originalCodAmount = $order->cod_amount;
+
+    //             // Step 1: Update order
     //             $order->update([
     //                 'customer_name' => $request->customer_name,
     //                 'phone' => $request->phone,
@@ -979,14 +984,34 @@ class OrderController extends Controller
     //                 'address' => $request->address,
     //                 'map_url' => $request->map_url,
     //                 'cod_amount' => $request->cod_amount,
+    //                 'service_charge'  => $request->service_charge, // ✅ saving charge amount
+
     //             ]);
 
-    //             // Recalculate all totals
-    //             $totals = $this->recalculateOrderTotals($order);
+    //             // Step 2: Recalculate totals (includes profit)
+    //             $totals = $this->recalculateOrderTotals($order); // Updates DB and returns values
+
+    //             // Step 3: If cod_amount changed, update transactions
+    //             if ($originalCodAmount != $request->cod_amount) {
+    //                 $transactions = Transaction::where('order_id', $order->id)->get();
+
+    //                 foreach ($transactions as $transaction) {
+    //                     if ($transaction->user_type === 'seller') {
+    //                         $transaction->amount = $totals['profit']; // Use recalculated profit
+    //                         $transaction->save();
+    //                     }
+
+    //                     if ($transaction->user_type === 'logistic_company') {
+    //                         $transaction->amount = $totals['shipping']; // Use recalculated shipping
+    //                         $transaction->save();
+    //                     }
+    //                 }
+    //             }
 
     //             DB::commit();
 
     //             ActivityLogger::UserLog(Auth::user()->name . ' Updated order: ' . $id);
+
     //             return response()->json([
     //                 'success' => true,
     //                 'message' => 'Order updated successfully',
@@ -994,6 +1019,7 @@ class OrderController extends Controller
     //             ]);
     //         } catch (\Exception $e) {
     //             DB::rollBack();
+
     //             return response()->json([
     //                 'success' => false,
     //                 'message' => $e->getMessage()
@@ -1004,16 +1030,21 @@ class OrderController extends Controller
 
     public function update(Request $request, $id)
     {
+
+
         if (ActivityLogger::hasPermission('orders', 'edit')) {
             $order = Order::findOrFail($id);
 
             $request->validate([
-                'customer_name' => 'required',
-                'phone' => 'required',
-                'state' => 'required',
-                'areas' => 'required',
-                'address' => 'required',
-                'cod_amount' => 'required|numeric|min:0'
+                'customer_name'   => 'required',
+                'phone'           => 'required',
+                'state'           => 'required',
+                'areas'           => 'required',
+                'address'         => 'required',
+                'cod_amount'      => 'required|numeric|min:0',
+                // optional but good practice
+                'service_charges'  => 'nullable|numeric|min:0',
+                'service_charges_id' => 'nullable|integer'
             ]);
 
             DB::beginTransaction();
@@ -1023,15 +1054,17 @@ class OrderController extends Controller
 
                 // Step 1: Update order
                 $order->update([
-                    'customer_name' => $request->customer_name,
-                    'phone' => $request->phone,
-                    'whatsapp' => $request->whatsapp,
-                    'state_id' => $request->state,
-                    'area_id' => $request->areas,
-                    'instructions' => $request->instructions,
-                    'address' => $request->address,
-                    'map_url' => $request->map_url,
-                    'cod_amount' => $request->cod_amount,
+                    'customer_name'     => $request->customer_name,
+                    'phone'             => $request->phone,
+                    'whatsapp'          => $request->whatsapp,
+                    'state_id'          => $request->state,
+                    'area_id'           => $request->areas,
+                    'instructions'      => $request->instructions,
+                    'address'           => $request->address,
+                    'map_url'           => $request->map_url,
+                    'cod_amount'        => $request->cod_amount,
+                    'service_charges'    => $request->service_charge,     // ✅ added
+                    'service_charges_id' => $request->service_charge_id,  // ✅ added
                 ]);
 
                 // Step 2: Recalculate totals (includes profit)
@@ -1061,7 +1094,7 @@ class OrderController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Order updated successfully',
-                    'totals' => $totals
+                    'totals'  => $totals
                 ]);
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -1073,7 +1106,6 @@ class OrderController extends Controller
             }
         }
     }
-
 
     public function addItemToOrder(Request $request, $orderId)
     {
