@@ -9,9 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Arrbaab" />
+    <meta property="og:title" content="UAE Dropshipper" />
     <meta property="og:url" content="" />
-    <meta property="og:site_name" content="Arrbaab" />
+    <meta property="og:site_name" content="UAE Dropshipper" />
     <link rel="canonical" href="/" />
     <link rel="icon" type="image/x-icon" href="{{asset('favicon.png')}}"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -32,14 +32,14 @@
 background-repeat: no-repeat;
 background-size: cover; ">
             <!--begin::Wrapper-->
-            <div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y" style="background: linear-gradient(to bottom, #2563eb, #000000); ">
+            <div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y" style="background: linear-gradient(to bottom, #388707, #000000); ">
                 <!--begin::Content-->
                 <div class="d-flex flex-column text-center mt-20 p-10 pt-lg-20">
                     <!--begin::Logo-->
                     <a href="/" class="py-9 mb-5">
                         <img alt="Logo" src="{{asset('logo-white.png')}}" class="h-100px" />
                     </a>
-                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to Arrbaab</h1>
+                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to UAE Dropshipper</h1>
 
                     <p class="fw-bold" style="color: #fff;">
                         Your trusted partner for dropshipping success in the UAE and beyond. We provide comprehensive solutions for modern e-commerce entrepreneurs.

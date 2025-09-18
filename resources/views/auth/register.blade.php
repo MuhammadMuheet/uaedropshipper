@@ -39,7 +39,7 @@ background-size: cover; ">
                     <a href="/" class="py-9 mb-5">
                         <img alt="Logo" src="{{asset('logo.png')}}" class="h-100px" />
                     </a>
-                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to Arrbaab!</h1>
+                    <h1 class="fw-bolder fs-2qx pb-5 pb-md-10" style="color: #fff;">Welcome to UAE Dropshipper!</h1>
 
                     <p class="fw-bold" style="color: #fff;">
                         Register to discover exclusive properties, manage your favorites, and stay updated on the latest real estate opportunities.</p>

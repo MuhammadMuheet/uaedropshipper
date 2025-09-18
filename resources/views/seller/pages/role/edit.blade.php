@@ -76,7 +76,7 @@
                                         <div class="row">
                                             <div class="col-xl-6 col-lg-6 mt-5">
                                                 <div class="card card-bx">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" > Sub Sellers</h3>
                                                     </div>
                                                     <div class="card-body">
@@ -133,7 +133,7 @@
                                             </div>
                                             <div class="col-xl-6 col-lg-6 mt-5">
                                                 <div class="card card-bx">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" > Seller Role</h3>
                                                     </div>
                                                     <div class="card-body">
@@ -191,7 +191,7 @@
 
                                             <div class="col-xl-6 col-lg-6 mt-5">
                                                 <div class="card card-bx">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" > Cart</h3>
                                                     </div>
                                                     <div class="card-body">
@@ -238,7 +238,7 @@
 
                                             <div class="col-xl-6 col-lg-6 mt-5">
                                                 <div class="card card-bx">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" >Orders</h3>
                                                     </div>
                                                     <div class="card-body">
@@ -254,7 +254,7 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                        
+
                                                             <div class="col-md-12 mb-3">
                                                                 <div class="form-check">
                                                                     <input class="form-check-input" type="checkbox" name="orders[]" id="orders_add" value="add" @if(in_array('add', $orders)) checked @endif>
@@ -280,7 +280,7 @@
 
                                             <div class="col-xl-6 col-lg-6">
                                                 <div class="card card-bx mt-5">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" >Products</h3>
                                                     </div>
                                                     <div class="card-body">
@@ -303,7 +303,7 @@
 
                                             <div class="col-xl-6 col-lg-6">
                                                 <div class="card card-bx mt-5">
-                                                    <div class="card-header" style="min-height: 56px !important;background-color: #096cff;">
+                                                    <div class="card-header" style="min-height: 56px !important;background-color: #388707;">
                                                         <h3 class="title mt-5 text-white" > Settings</h3>
                                                     </div>
                                                     <div class="card-body">
