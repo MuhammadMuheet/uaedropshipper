@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="row align-items-center mb-4">
         <div class="col-md-8 dashboard-mobile-responsiveness">
-            <h1 class="mb-1" style="color: var(--text-primary); font-weight: 700; font-size: 2rem;">Arrbaab Dashboard</h1>
+            <h1 class="mb-1" style="color: var(--text-primary); font-weight: 700; font-size: 2rem;">UAE Dropshipper Dashboard</h1>
             <p style="color: var(--text-secondary); margin: 0;">Welcome back! Here's what's happening with your store today.</p>
         </div>
         <div class="col-md-4 text-end">

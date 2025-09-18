@@ -185,8 +185,8 @@
 
             <div class="col">
                 <h6>Issued By:</h6>
-                <div class="fw-bold">Arrbaab</div>
-                <div class="fw-semibold">admin@arrbaab.com</div>
+                <div class="fw-bold">UAE Dropshipper</div>
+                <div class="fw-semibold">admin@UAE Dropshipper.com</div>
             </div>
         </div>
 

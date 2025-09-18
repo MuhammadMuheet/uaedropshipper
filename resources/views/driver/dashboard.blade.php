@@ -29,7 +29,7 @@
                     <!--begin::Lists Widget 19-->
                     <div class="card card-flush h-xl-100">
                         <!--begin::Heading-->
-                        <div class="card-header rounded bgi-no-repeat bgi-size-cover bgi-position-y-top bgi-position-x-center align-items-start h-250px" style="background-color:#096cff">
+                        <div class="card-header rounded bgi-no-repeat bgi-size-cover bgi-position-y-top bgi-position-x-center align-items-start h-250px" style="background-color:#388707">
                             <!--begin::Title-->
                             <h3 class="card-title align-items-start flex-column text-white pt-15">
                                 <span class="fw-bolder fs-2x mb-3">All Orders</span>

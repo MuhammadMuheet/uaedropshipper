@@ -1,5 +1,5 @@
     :root {
-        --primary-color: #096cff;
+        --primary-color: #388707;
         --primary-light: rgba(9, 108, 255, 0.1);
         --primary-medium: rgba(9, 108, 255, 0.2);
         --success-color: #10b981;
@@ -214,7 +214,7 @@
     ; /* Red for Pending */
 }
 .status-processing {
-    background-color: #096cff
+    background-color: #388707
     ; /* Yellow for Processing */
 }
 .status-shipped {
