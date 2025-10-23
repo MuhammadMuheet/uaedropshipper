@@ -47,7 +47,10 @@
                                             <button type="button" class="btn btn-success me-4" data-bs-toggle="modal" data-bs-target="#importModal">
                                                 <span class="btn-text-inner">Import from Excel</span>
                                             </button>
-                                        
+                                            <button type="button" class="btn btn-success me-4" onclick="exportAreas()">
+                                                <span class="btn-text-inner">Export to Excel</span>
+                                            </button>
+
                                             <button type="button" class="btn btn-light-primary me-3" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target_bulk" id="assignOrdersBtn" style="display: none;">
     <span class="svg-icon svg-icon-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -307,7 +310,7 @@
 function importAreas() {
     var formData = new FormData(document.getElementById("importForm"));
     $("#importSubmit").text("Importing...").prop("disabled", true);
-    
+
     $.ajax({
         url: "{{ route('import_areas') }}",
         type: "POST",
@@ -317,18 +320,18 @@ function importAreas() {
         processData: false,
         success: function(response) {
             $("#importSubmit").text("Import").prop("disabled", false);
-            
+
             if (response.success) {
                 $('#importModal').modal('hide');
                 $('#table').DataTable().ajax.reload(null, false);
-                
+
                 let msg = response.message;
                 if (response.stats) {
                     msg += `<br>Created: ${response.stats.created}, Updated: ${response.stats.updated}, Failed: ${response.stats.failed}`;
                 }
-                
+
                 toastr.success(msg, 'Import Results', {timeOut: 10000, extendedTimeOut: 5000});
-                
+
                 if (response.failed_rows && response.failed_rows.length > 0) {
                     console.log("Failed rows:", response.failed_rows);
                     // Optionally show failed rows to user
@@ -424,6 +427,10 @@ function importAreas() {
                 $('#assignOrdersBtn').hide();
             });
         });
+
+        function exportAreas() {
+    window.location.href = "{{ route('export_areas') }}";
+}
     </script>
     <script>
 

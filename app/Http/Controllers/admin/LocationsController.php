@@ -287,10 +287,10 @@ class LocationsController extends Controller
     try {
         $import = new AreasImport();
         Excel::import($import, $request->file('import_file'));
-        
+
         $message = "Successfully imported {$import->getSuccessCount()} new areas. ";
         $message .= "Updated {$import->getUpdatedCount()} existing areas.";
-        
+
         if ($import->getFailCount() > 0) {
             $message .= " {$import->getFailCount()} rows failed.";
         }
@@ -312,6 +312,38 @@ class LocationsController extends Controller
             'success' => false,
             'message' => 'Error during import: ' . $e->getMessage()
         ]);
+    }
+}
+
+public function export(Request $request)
+{
+    if (!ActivityLogger::hasPermission('locations', 'view')) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized action.'
+        ], 403);
+    }
+
+    try {
+        $areas = Area::with('state')->get();
+        $exportData = $areas->map(function ($area) {
+            return [
+                'State Name' => $area->state ? $area->state->state : 'N/A',
+                'Area' => $area->area,
+                'Shipping Cost' => $area->shipping ?? 'N/A',
+            ];
+        })->toArray();
+
+        $filename = 'areas_export_' . now()->format('Ymd_His') . '.xlsx';
+
+        ActivityLogger::UserLog('Exported areas to Excel file');
+
+        return Excel::download(new \App\Exports\AreasExport($exportData), $filename);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error during export: ' . $e->getMessage()
+        ], 500);
     }
 }
 }

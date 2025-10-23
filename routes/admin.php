@@ -192,6 +192,7 @@ Route::middleware(['auth', 'module:locations,view'])->group(function () {
     Route::get('/areas', [LocationsController::class, 'all_areas'])->name('all_areas');
     Route::post('/bulk-update-area', [LocationsController::class, 'bulk_update_area'])->name('bulk_update_area');
     Route::post('/import-areas', [LocationsController::class, 'import'])->name('import_areas');
+    Route::get('/export-areas', [LocationsController::class, 'export'])->name('export_areas');
 });
 Route::middleware(['auth', 'module:locations,add'])->group(function () {
     Route::post('/states', [LocationsController::class, 'add_states'])->name('add_states');
