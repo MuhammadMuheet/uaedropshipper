@@ -260,39 +260,84 @@ function clearCheckoutFormData() {
         });
     }
 
-    function get_area_shipping(selectedValue) {
-        console.log(selectedValue)
-        $.ajax({
-            url: "{{Route('get_areas_shipping')}}",
-            type: "get",
-            data: {
-                id: selectedValue,
-            },
-            cache: false,
-            success: function (dataResult) {
-                $('#shipping').html(dataResult.shipping+' AED');
-                $('#shipping_input').val(dataResult.shipping);
-                setTimeout(function () {
-                    get_total()
-                }, 1000);
-            }
-        });
-    }
-    function get_total() {
-        $('#total').html('');
-        $('#total_input').val('');
-        var shipping = parseFloat($('#shipping_input').val()) || 0;
-        var subtotal = parseFloat($('#subtotal_input').val()) || 0;
-        var service_charge = parseFloat($('#service_charge_input').val()) || 0;
+    // function get_area_shipping(selectedValue) {
+    //     console.log(selectedValue)
+    //     $.ajax({
+    //         url: "{{Route('get_areas_shipping')}}",
+    //         type: "get",
+    //         data: {
+    //             id: selectedValue,
+    //         },
+    //         cache: false,
+    //         success: function (dataResult) {
+    //             $('#shipping').html(dataResult.shipping+' AED');
+    //             $('#shipping_input').val(dataResult.shipping);
+    //             setTimeout(function () {
+    //                 get_total()
+    //             }, 1000);
+    //         }
+    //     });
+    // }
 
-      var total = shipping + subtotal + service_charge;
-        if(!isNaN(total) && total != ''){
-            $('#total').html(total.toFixed(2)+ ' AED');
-        }else{
-            $('#total').html('0 AED');
+
+    function get_area_shipping(selectedValue) {
+    console.log(selectedValue)
+    $.ajax({
+        url: "{{Route('get_areas_shipping')}}",
+        type: "get",
+        data: {
+            id: selectedValue,
+        },
+        cache: false,
+        success: function (dataResult) {
+            $('#shipping').html(dataResult.shipping+' AED');
+            $('#shipping_input').val(dataResult.shipping);
+
+            // Reset profit to zero when shipping changes
+            resetProfitToZero();
+
+            setTimeout(function () {
+                get_total()
+            }, 1000);
         }
-        $('#total_input').val(total);
+    });
+}
+
+
+    // function get_total() {
+    //     $('#total').html('');
+    //     $('#total_input').val('');
+    //     var shipping = parseFloat($('#shipping_input').val()) || 0;
+    //     var subtotal = parseFloat($('#subtotal_input').val()) || 0;
+    //     var service_charge = parseFloat($('#service_charge_input').val()) || 0;
+
+    //   var total = shipping + subtotal + service_charge;
+    //     if(!isNaN(total) && total != ''){
+    //         $('#total').html(total.toFixed(2)+ ' AED');
+    //     }else{
+    //         $('#total').html('0 AED');
+    //     }
+    //     $('#total_input').val(total);
+    // }
+    // Also update get_total to reset profit if needed
+function get_total() {
+    $('#total').html('');
+    $('#total_input').val('');
+    var shipping = parseFloat($('#shipping_input').val()) || 0;
+    var subtotal = parseFloat($('#subtotal_input').val()) || 0;
+    var service_charge = parseFloat($('#service_charge_input').val()) || 0;
+
+    var total = shipping + subtotal + service_charge;
+    if(!isNaN(total) && total != ''){
+        $('#total').html(total.toFixed(2)+ ' AED');
+    }else{
+        $('#total').html('0 AED');
     }
+    $('#total_input').val(total);
+
+    // Reset profit if total changes significantly (optional)
+    // resetProfitToZero();
+}
     $(document).ready(function () {
         loadCartData();
         get_cart_subtotal()
@@ -364,30 +409,61 @@ function clearCheckoutFormData() {
 
         updateCart(cartId, enteredQty, productType, productId, variationId);
     });
-    function updateCart(cartId, quantity, productType, productId, variationId) {
-        $.ajax({
-            url: "{{ route('update_cart_ajax') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                cart_id: cartId,
-                quantity: quantity,
-                product_id: productId,
-                product_variation_id: variationId
-            },
-            success: function (response) {
-                if (response.status === 1) {
-                    loadCartData();
-                    get_cart_subtotal()
-                    setTimeout(function () {
-                        get_total()
-                    }, 1000);
-                } else {
-                    alert(response.message);
-                }
+    // function updateCart(cartId, quantity, productType, productId, variationId) {
+    //     $.ajax({
+    //         url: "{{ route('update_cart_ajax') }}",
+    //         type: "POST",
+    //         data: {
+    //             _token: "{{ csrf_token() }}",
+    //             cart_id: cartId,
+    //             quantity: quantity,
+    //             product_id: productId,
+    //             product_variation_id: variationId
+    //         },
+    //         success: function (response) {
+    //             if (response.status === 1) {
+    //                 loadCartData();
+    //                 get_cart_subtotal()
+    //                 setTimeout(function () {
+    //                     get_total()
+    //                 }, 1000);
+    //             } else {
+    //                 alert(response.message);
+    //             }
+    //         }
+    //     });
+    // }
+    // Update the updateCart function to reset profit
+function updateCart(cartId, quantity, productType, productId, variationId) {
+    $.ajax({
+        url: "{{ route('update_cart_ajax') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            cart_id: cartId,
+            quantity: quantity,
+            product_id: productId,
+            product_variation_id: variationId
+        },
+        success: function (response) {
+            if (response.status === 1) {
+                loadCartData();
+                get_cart_subtotal()
+
+                // Reset profit when cart changes
+                resetProfitToZero();
+
+                setTimeout(function () {
+                    get_total()
+                }, 1000);
+            } else {
+                alert(response.message);
             }
-        });
-    }
+        }
+    });
+}
+
+
     function calculate_profit (){
         cod_amount = $('#cod_amount').val();
 
@@ -454,6 +530,26 @@ get_total()
         }
     });
     }
+    //function to reset profit
+function resetProfitToZero() {
+    $('#profit').html('0 AED');
+    $('#profit_input').val('0');
+    $('#cod_amount').val('0');
+    $('#service_charge').html('0 AED');
+    $('#service_charge_input').val('0');
+    $('#service_charge_input_id').val('');
+
+    // Clear the place order button
+    $('#PlaceOrder').empty();
+    $('#PlaceOrder').append(`
+        <div class="card-footer text-center">
+            <h4 class="text-warning">Please Calculate Profit to Place Order</h4>
+        </div>
+    `);
+}
+
+
+
     // function placeOrder() {
     //     let formData = {
     //         cus_name: $('#cus_name').val(),
