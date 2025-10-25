@@ -30,7 +30,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             <div class="stat-icon me-3">
-                                <i class="fas fa-dollar-sign"></i>
+                                <span> د.إ</span>
                             </div>
                             <div>
                                 <p class="stat-title">Total Revenue</p>

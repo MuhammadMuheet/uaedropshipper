@@ -1443,7 +1443,10 @@
                         </div>
                         <div class="dashboard-stats">
                             <div class="stat-card">
-                                <div class="stat-number">$45K</div>
+                                <div class="stat-number">
+                                    100K+
+                                    <span>د.إ</span>
+                                </div>
                                 <div class="stat-label">Monthly Revenue</div>
                             </div>
                             <div class="stat-card">
