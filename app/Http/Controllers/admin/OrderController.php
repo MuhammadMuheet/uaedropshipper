@@ -158,6 +158,46 @@ class OrderController extends Controller
                     $totalOut_for_deliveryCount +
                     $totalFutureCount;
 
+                    $totalAmountIn = 0;
+                    $totalAmountOut = 0;
+                    $totalWallet = 0;
+
+                    $queryTrans = Transaction::query();
+
+                    if (!empty($request->logistic_company)) {
+                        $queryTrans->where('user_id', $request->logistic_company)->where('user_type', 'logistic_company');
+                    }
+
+                    if (!empty($request->seller)) {
+                        $queryTrans->where('user_id', $request->seller)->where('user_type', 'seller');
+                    }
+
+                    if (!empty($request->current_date)) {
+                        $queryTrans->whereDate('created_at', '=', $request->current_date);
+                    }
+
+                    if (!empty($request->start_date)) {
+                        $queryTrans->whereDate('created_at', '>=', $request->start_date);
+                    }
+
+                    if (!empty($request->end_date)) {
+                        $queryTrans->whereDate('created_at', '<=', $request->end_date);
+                    }
+
+                    $transactions = $queryTrans->get();
+
+
+foreach ($transactions as $item) {
+    if ($item->amount_type == 'in') {
+        $totalAmountIn += $item->amount;
+    } elseif ($item->amount_type == 'out') {
+        $totalAmountOut += $item->amount;
+    }
+}
+
+$totalWallet = $totalAmountIn - $totalAmountOut;
+
+
                 return Datatables::of($data)
                     ->addColumn('customerName', function ($data) {
                         if (!empty($data->customer_name)) {
@@ -294,6 +334,7 @@ class OrderController extends Controller
                     ->with('totalOut_for_deliveryCount', $totalOut_for_deliveryCount)
                     ->with('totalFutureCount', $totalFutureCount)
                     ->with('service_chargesCount', $service_chargesCount)
+                    ->with('totalWallet', number_format($totalWallet, 2, '.', ''))
                     ->with('totalOrdersCount', $totalOrdersCount)
                     ->rawColumns(['COD', 'LogisticCompany', 'BulkAction', 'Location', 'SellerName', 'OrderPlacedBy', 'customerName', 'statusView', 'action'])
                     ->make(true);

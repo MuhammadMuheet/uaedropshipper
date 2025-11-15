@@ -13,7 +13,7 @@
         /*    size: 4in 6.5in;*/
         /*    margin: 0;*/
         /*}*/
-    
+
         /*@media print {*/
         /*    body {*/
         /*        width: 4in;*/
@@ -21,7 +21,7 @@
         /*        margin: 0;*/
         /*        padding: 0;*/
         /*    }*/
-    
+
         /*    .order-slip {*/
         /*        width: 100%;*/
         /*        height: 100%;*/
