@@ -452,13 +452,13 @@
                             @forelse ($recentOrders as $order)
                                 <tr style="border-bottom: 1px solid var(--border-color);">
                                     <td class="fw-semibold" style="padding: 1rem;">
-                                        {{ $order->sub_seller ? ($order->sub_seller->unique_id ?? 'N/A') . '-' . $order->id : '#ORD-' . $order->id }}
+                                        {{@$order->subSeller->unique_id}}-{{$order->id}}
                                     </td>
                                     <td style="padding: 1rem;">{{ ucfirst($order->customer_name) ?? 'N/A' }}</td>
                                     <td style="padding: 1rem;">
                                         <span class="status-badge status-{{ strtolower(str_replace(' ', '_', $order->status)) }}">{{ $order->status }}</span>
                                     </td>
-                                    <td class="fw-bold" style="padding: 1rem;">AED {{ number_format($order->total, 2) }}</td>
+                                    <td class="fw-bold" style="padding: 1rem;">AED {{$order->cod_amount}}</td>
                                 </tr>
                             @empty
                                 <tr>

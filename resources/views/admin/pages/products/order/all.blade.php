@@ -270,6 +270,17 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-6 col-md-3 mb-4">
+                                                    <div class="card-shadow card rounded">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                                <h4 class="ms-1 mb-0" id="totalwallet">0</h4>
+                                                            </div>
+                                                            <p class="mb-1">Total Wallet</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
 
@@ -683,6 +694,7 @@
                         $('#totalOut_for_deliveryCount').html(json.totalOut_for_deliveryCount);
                         $('#totalFutureCount').html(json.totalFutureCount);
                         $('#service_chargesCount').html(json.service_chargesCount);
+                        $('#totalwallet').html(json.totalWallet);
                         return json.data;
                     }
                 },
