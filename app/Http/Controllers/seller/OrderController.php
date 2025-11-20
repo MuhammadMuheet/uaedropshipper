@@ -552,6 +552,15 @@ class OrderController extends Controller
                         $subSellerUniqueId = $subSeller->unique_id ?? 'N/A';
                         return $subSellerUniqueId . '-' . $data->id;
                     })
+                    ->addColumn('LogisticCompany', function ($data) {
+                        $LogisticCompanyData =  User::where('id', $data->company_id)->first();
+                        if (!empty($LogisticCompanyData)) {
+                            $LogisticCompany = ucfirst($LogisticCompanyData->name);
+                        } else {
+                            $LogisticCompany = 'N/A';
+                        }
+                        return $LogisticCompany;
+                    })
                     ->addColumn('Location', function ($data) {
                         $stateData =  State::where('id', $data->state_id)->first();
                         $areaData =  Area::where('id', $data->area_id)->first();
@@ -607,7 +616,7 @@ class OrderController extends Controller
                     ->with('totalOut_for_deliveryCount', $totalOut_for_deliveryCount)
                     ->with('totalFutureCount', $totalFutureCount)
                     ->with('totalOrdersCount', $totalOrdersCount)
-                    ->rawColumns(['BulkAction', 'COD', 'Location', 'OrderPlacedBy', 'customerName', 'statusView', 'action'])
+                    ->rawColumns(['BulkAction', 'LogisticCompany' ,'COD', 'Location', 'OrderPlacedBy', 'customerName', 'statusView', 'action'])
                     ->make(true);
             }
             ActivityLogger::UserLog(Auth::user()->name . ' Open Order Page');

@@ -296,7 +296,8 @@
                                                         <th class="min-w-25px">id</th>
                                                         <th class="min-w-25px">Order id</th>
                                                         <th class="min-w-70px">Customer Name</th>
-                                                        <th class="min-w-125px">Order Placed By</th>
+                                                        <th class="min-w-125px">Order By</th>
+                                                        <th class="min-w-125px">Logistic Company</th>
                                                         <th class="min-w-125px">Location</th>
                                                         <th class="min-w-30px">COD [AED]</th>
                                                         <th class="min-w-40px">Status</th>
@@ -541,6 +542,10 @@
                     {
                         data: 'OrderPlacedBy',
                         name: 'OrderPlacedBy'
+                    },
+                    {
+                        data: 'LogisticCompany',
+                        name: 'LogisticCompany'
                     },
                     {
                         data: 'Location',

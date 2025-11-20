@@ -368,7 +368,7 @@
                                                         <!--<th class="min-w-25px">Order id</th>-->
                                                         <th class="min-w-70px">Customer Name</th>
                                                         <th class="min-w-70px">Seller Name</th>
-                                                        <th class="min-w-125px">Order Placed By</th>
+                                                        <th class="min-w-125px">Order By</th>
                                                         <th class="min-w-125px">Logistic Company</th>
                                                         <th class="min-w-125px">Location</th>
                                                         <th class="min-w-30px">COD </th>
